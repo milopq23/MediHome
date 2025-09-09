@@ -1,3 +1,18 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+html{
+    scrollbar-behavior: smooth;
+}
+
+*{
+    font-family:Roboto, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.popins {
+    font-family: 'Poppins', sans-serif;
+}

@@ -1,11 +1,28 @@
+
 <script>
   let isOpen = false;
+  let userName = "Nguyễn Văn A";
 </script>
 
-<nav class="bg-white shadow-md px-4 py-3">
+<nav class="bg-[#E3F2FD] shadow-lg px-4 py-3 rounded-b-lg ">
   <div class="max-w-7xl mx-auto flex items-center justify-between">
-    <!-- Logo -->
-    <a href="/" class="text-2xl font-bold text-blue-600">MyApp</a>
+    
+    <!-- Logo --> 
+    <a href="/" class="text-2xl font-bold">
+      <span class="text-[#2F80ED]">Medi</span><span class="text-[#09a94c]">Home</span>
+    </a>
+
+    <!-- Search Box (Center) -->
+    <div class="hidden md:flex flex-1 justify-center px-4">
+      <div class="w-full max-w-md flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-400">
+        <i class="fa-solid fa-magnifying-glass text-gray-500"></i>
+        <input
+          type="text"
+          placeholder="Tìm kiếm sản phẩm..."
+          class="w-full bg-transparent focus:outline-none"
+        />
+      </div>
+    </div>
 
     <!-- Hamburger Icon (Mobile) -->
     <button class="md:hidden px-4" on:click={() => isOpen = !isOpen}>
@@ -19,17 +36,33 @@
     <!-- Menu Items -->
     <div class={`flex-col md:flex md:flex-row md:items-center gap-4 
                 ${isOpen ? 'flex' : 'hidden'} md:flex`}>
-      <a href="/" class="text-gray-700 hover:text-blue-600">Trang chủ</a>
-      <a href="/about" class="text-gray-700 hover:text-blue-600">Giới thiệu</a>
-      <a href="/contact" class="text-gray-700 hover:text-blue-600">Liên hệ</a>
-      <a href="/login" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Đăng nhập</a>
+      <!-- <a href="/" class="text-gray-700 hover:text-blue-600">Trang chủ</a> -->
+      <!-- <a href="/about" class="text-gray-700 hover:text-blue-600">Giới thiệu</a>
+      
+      <a href="/contact" class="text-gray-700 hover:text-blue-600">Liên hệ</a> -->
+      <a href="/cart" class="flex items-center gap-1 text-gray-700 hover:text-blue-600">
+        <i class="fa-solid fa-cart-shopping text-xl text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"></i>
+      </a>
+
+      <!-- Login / User Info -->
+      {#if userName}
+        <div class="flex items-center gap-2 text-gray-700">
+          <i class="fa-solid fa-user"></i>
+          <span>{userName}</span>
+        </div>
+      {:else}
+        <a href="/login" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+          Đăng nhập
+        </a>
+      {/if}
+      
     </div>
   </div>
 
   <!-- Sidebar Menu (Mobile) -->
-  <div class={`fixed top-0 right-0 h-full w-60 bg-white shadow-lg transform 
+  <div class={`fixed top-0 right-0 h-full w-60 bg-[#E3F2FD] shadow-lg transform 
               transition-transform duration-300 z-40 p-6 flex flex-col gap-4
-              ${isOpen ? 'translate-x-0' : 'translate-x-full'} md:hidden`}>
+              ${isOpen ? 'translate-0-x' : 'translate-x-full'} md:hidden`}>
     <button class="self-end mb-4" on:click={() => isOpen = false}>
       ❌
     </button>
