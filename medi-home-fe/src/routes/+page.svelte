@@ -1,5 +1,5 @@
 <script>
-  import Navbar from '$lib/components/Navbar.svelte';
+  import Navbar from '$lib/components/SideBar.svelte';
 </script>
 
 <main class="max-w-4xl mx-auto mt-10 px-4">
