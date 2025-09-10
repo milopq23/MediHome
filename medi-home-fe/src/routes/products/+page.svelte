@@ -2,6 +2,10 @@
 <script>
   import ProductCard from '$lib/components/ProductCard.svelte';
 
+
+  let totalPages = 10;
+  let currentPage = 1;
+
   let products = [
     {
       drugName: "Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)",
@@ -30,6 +34,24 @@
     //   image: "https://via.placeholder.com/100"
     // }
   ];
+  
+  function goToPage(page) {
+    if (page >= 1 && page <= totalPages) {
+      currentPage = page;
+      // Logic tải dữ liệu sản phẩm cho trang hiện tại
+    }
+  }
+
+  function nextPage() {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  }
+  function prevPage() {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  }
 </script>
 
 <h1 class="text-2xl font-bold mb-4">Sản phẩm</h1>
@@ -44,6 +66,26 @@
       packaging={product.packaging}
     />
   {/each}
+</div>
+
+<div class="flex justify-center mt-6 space-x-2">
+    <button on:click={prevPage} class="px-4 py-2 text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-100">
+        Prev
+    </button>
+    <button class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+        1
+    </button>
+    <button class="px-4 py-2 text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-100">
+        2   
+    </button>
+    <p class="px-4 py-2 text-blue-600 bg-white border">...</p>
+    <button class="px-4 py-2 text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-100">
+        {totalPages}
+    </button>
+    
+    <button on:click={nextPage} class="px-4 py-2 text-blue-600 bg-white border border-blue-600 rounded hover:bg-blue-100">
+        Next
+    </button>
 </div>
 
       <!-- dosage={product.dosage}

@@ -40,22 +40,12 @@
 
 <div class="min-h-screen bg-gray-100">
 
-  <!-- <Header /> -->
+	<!-- <Header /> -->
 
   <Navbar />
 
   <main class="max-w-3xl mx-auto p-4">
-    <h2 class="text-2xl font-semibold mb-4">Trang chủ</h2>
 	<slot />
-    <!-- <p class="mb-2">
-      Đây là phần nội dung chính. Kéo xuống để xem footer vẫn hiển thị.
-    </p>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse
-      lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor...
-    </p>
-    <div class="h-[1500px] bg-gray-200 mt-6 rounded">Nội dung dài để test cuộn</div> -->
-	
   </main>
 
   <Footer />
