@@ -1,7 +1,8 @@
 
 <script>
   let isOpen = false;
-  let userName = "Nguyễn Văn A";
+  // let userName ;
+  let userName = "Nguyễn Huỳnh Phú Quý aaaaaaaaaaa";
 </script>
 
 <nav class="bg-[#E3F2FD] shadow-lg px-4 py-3 rounded-b-lg ">
@@ -14,18 +15,18 @@
 
     <!-- Search Box (Center) -->
     <div class="hidden md:flex flex-1 justify-center px-4">
-      <div class="w-full max-w-md flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-400">
-        <i class="fa-solid fa-magnifying-glass text-gray-500"></i>
+      <div class="w-full  max-w-md flex items-center gap-2 px-4 py-2 bg-blue-100  rounded-lg focus-within:ring-2 focus-within:ring-blue-400">
+        <i class="fa-solid fa-magnifying-glass text-gray-500 "></i>
         <input
           type="text"
           placeholder="Tìm kiếm sản phẩm..."
-          class="w-full bg-transparent focus:outline-none"
+          class="w-full bg-transparent focus:outline-none rounded-lg  border-gray-300"
         />
       </div>
     </div>
 
     <!-- Hamburger Icon (Mobile) -->
-    <button class="md:hidden px-4" on:click={() => isOpen = !isOpen}>
+    <button class="md:hidden px-4" on:click={() => isOpen = !isOpen}  aria-label="Menu">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
            viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" 
@@ -38,23 +39,27 @@
                 ${isOpen ? 'flex' : 'hidden'} md:flex`}>
       <!-- <a href="/" class="text-gray-700 hover:text-blue-600">Trang chủ</a> -->
       <!-- <a href="/about" class="text-gray-700 hover:text-blue-600">Giới thiệu</a>
-      
       <a href="/contact" class="text-gray-700 hover:text-blue-600">Liên hệ</a> -->
-      <a href="/cart" class="flex items-center gap-1 text-gray-700 hover:text-blue-600">
+      <a href="/cart" class="flex items-center gap-1 text-gray-700 hover:text-blue-600" aria-label="Giỏ hàng">
         <i class="fa-solid fa-cart-shopping text-xl text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"></i>
       </a>
 
       <!-- Login / User Info -->
-      {#if userName}
-        <div class="flex items-center gap-2 text-gray-700">
-          <i class="fa-solid fa-user"></i>
-          <span>{userName}</span>
-        </div>
-      {:else}
-        <a href="/login" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-          Đăng nhập
-        </a>
-      {/if}
+       <div class="max-w-[180px]">
+        {#if userName}
+          <div class="flex items-center gap-2 text-gray-700 w-full hover:text-blue-600 transition-colors duration-200 cursor-pointer">
+            <a href="/profile" class="truncate overflow-hidden whitespace-nowrap hover:underline">
+            <!-- <i class="fa-solid fa-user"></i> -->
+              {userName}
+            </a>
+          </div>
+        {:else}
+          <a href="/login" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 w-full inline-block text-center">
+            Đăng nhập/Đăng ký
+          </a>
+        {/if}
+       <div>
+
       
     </div>
   </div>
@@ -69,12 +74,12 @@
     <a href="/" class="text-gray-800 hover:text-blue-600" on:click={() => isOpen = false}>Trang chủ</a>
     <a href="/about" class="text-gray-800 hover:text-blue-600" on:click={() => isOpen = false}>Giới thiệu</a>
     <a href="/contact" class="text-gray-800 hover:text-blue-600" on:click={() => isOpen = false}>Liên hệ</a>
-    <a href="/login" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" on:click={() => isOpen = false}>Đăng nhập</a>
+    <a href="/login" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" on:click={() => isOpen = false}>Đăng nhập/Đăng ký</a>
   </div>
 
   <!-- Black overlay khi sidebar mở -->
   {#if isOpen}
-    <div class="fixed inset-0 backdrop-blur-sm bg-black/20 z-30 md:hidden" on:click={() => isOpen = false}></div>
+    <button class="fixed inset-0 backdrop-blur-sm bg-black/20 z-30 md:hidden" aria-label="Menu" on:click={() => isOpen = false}></button>
   {/if}
 
 </nav>
