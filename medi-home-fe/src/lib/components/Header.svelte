@@ -1,77 +1,112 @@
 <script>
-    import {sidebarOpen} from '../index.js';
+	import { sidebarOpen } from '../index.js';
+	import SearchBar from './SearchBar.svelte';
 
-    let userName;
+	let userName ;
+	let showSearch = false;
 
-    function toggleSidebar() {
-        sidebarOpen.update(n => !n);
-    }
+	function toggleSidebar() {
+		sidebarOpen.update((n) => !n);
+	}
 </script>
 
-<nav class="bg-[#E3F2FD] shadow-lg px-4 py-3 rounded-b-lg ">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    
-    <!-- Logo --> 
-    <a href="/" class="text-2xl font-bold">
-      <span class="text-[#2F80ED]">Medi</span><span class="text-[#09a94c]">Home</span>
-    </a>
+<nav class="rounded-b-lg bg-[#E3F2FD] px-4 py-3 shadow-lg">
+	<div class="mx-auto flex w-full max-w-7xl items-center justify-between">
+		<!-- Logo -->
+		<a href="/" class="text-2xl font-bold">
+			<span class="text-[#2F80ED]">Medi</span><span class="text-[#09a94c]">Home</span>
+		</a>
 
-    <!-- Search Box (Center) -->
-    <div class="flex md:flex flex-1 justify-center px-4">
-      <div class="w-full  max-w-md flex items-center gap-2 px-4 py-2 bg-blue-100  rounded-lg focus-within:ring-2 focus-within:ring-blue-400">
-        <i class="fa-solid fa-magnifying-glass text-gray-500 "></i>
-        <input
-          type="text"
-          placeholder="Tìm kiếm sản phẩm..."
-          class="w-full bg-transparent focus:outline-none rounded-lg  border-gray-300"
-        />
-      </div>
-      
+		<!-- Search Bar (Desktop) -->
+		<div class="hidden flex-1 justify-center px-4 md:flex">
+			<div
+				class="flex w-full max-w-[500px] items-center gap-2 rounded-lg bg-blue-100 px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 md:flex"
+			>
+				<i class="fa-solid fa-magnifying-glass text-gray-500"></i>
+				<input
+					type="text"
+					placeholder="Tìm kiếm sản phẩm..."
+					class="w-full rounded-lg border-gray-300 bg-transparent focus:outline-none"
+				/>
+			</div>
+		</div>
 
-    </div>
+		<!-- <SearchBar (Mobile)/> -->
+		<div class="flex flex-row items-center gap-4 md:flex">
+			{#if !showSearch}
+				<button
+					class=" flex justify-end text-xl text-gray-700 focus:outline-none md:hidden"
+					on:click={() => (showSearch = !showSearch)}
+					aria-label="Toggle Search"
+				>
+					<i class="fa-solid fa-magnifying-glass"></i>
+				</button>
+			{/if}
+			<!-- Mobile search input (show/hide) -->
+			{#if showSearch}
+				<div
+					class="flex w-1/2 items-center gap-2 rounded-lg bg-blue-100 px-4 py-2 focus-within:ring-2 focus-within:ring-blue-400 md:flex"
+				>
+					<i class="fa-solid fa-magnifying-glass text-gray-500"></i>
+					<input
+						type="text"
+						placeholder="Tìm kiếm sản phẩm..."
+						class="w-full rounded-lg border-gray-300 bg-transparent focus:outline-none"
+					/>
+				</div>
+			{/if}
 
-    
-    <div class="flex md:flex md:flex-row md:items-center gap-4 ">
-      <a href="/cart" class="flex items-center gap-1 text-gray-700 hover:text-blue-600" aria-label="Giỏ hàng">
-        <i class="fa-solid fa-cart-shopping text-xl text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"></i>
-      </a>
+			<a
+				href="/cart"
+				class="flex items-center gap-1 text-gray-700 hover:text-blue-600"
+				aria-label="Giỏ hàng"
+			>
+				<i
+					class="fa-solid fa-cart-shopping cursor-pointer text-xl text-gray-500 transition-colors duration-200 hover:text-blue-600"
+				></i>
+			</a>
 
-      <!-- <div>
-        <a href="/login" class="flex items-center md:hidden text-gray-700 hover:text-blue-600 transition-colors duration-200 cursor-pointer" aria-label="Đăng nhập">
-            <i class="fa-solid fa-user text-xl text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"></i>
-          </a>
-      </div> -->
-      <!-- Login / User Info -->
-      <div class="max-w-[190px] ">
-        {#if userName}
-          <div class="hidden md:flex items-center gap-2 text-gray-700 w-full hover:text-blue-600 transition-colors duration-200 cursor-pointer">
-            <a href="/profile" class="truncate overflow-hidden whitespace-nowrap hover:underline">
-            
-              {userName}
-            </a>
-          </div>
-          <a href="/profile" class="md:hidden items-center text-gray-700 hover:text-blue-600 transition-colors duration-200 cursor-pointer text-xl">
-            <i class="fa-solid fa-user"></i>
-          </a>
-        {:else}
-          <a href="/login" class="hidden bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 w-full md:inline-block text-center">
-            <i class="fa-solid fa-user"></i>  
-            Đăng nhập/Đăng ký
-          </a>
-          <div>
-            <a href="/login" class="flex items-center md:hidden text-gray-700 hover:text-blue-600 transition-colors duration-200 cursor-pointer" aria-label="Đăng nhập">
-                <i class="fa-solid fa-user text-xl text-gray-500 hover:text-blue-600 transition-colors duration-200 cursor-pointer"></i>
-              </a>
-          </div> 
-          
-        {/if}
-      </div>
-    </div>
-    <!-- <button class="md:hidden px-4" on:click={toggleSidebar}  aria-label="Menu">
+			<!-- Login / User Info -->
+			<div class="flex max-w-[190px] items-center">
+				{#if userName}
+					<div
+						class="text-g ray-700 hidden w-full cursor-pointer items-center gap-2 transition-colors duration-200 hover:text-blue-600 md:flex"
+					>
+						<a href="/profile" class="overflow-hidden truncate whitespace-nowrap hover:underline">
+							Xin chào {userName}
+						</a>
+					</div>
+					<a
+						href="/profile"
+						class="cursor-pointer items-center text-xl text-gray-700 transition-colors duration-200 hover:text-blue-600 md:hidden"
+						aria-label="Tài khoản"
+					>
+						<i class="fa-solid fa-user"></i>
+					</a>
+				{:else}
+					<a
+						href="/login"
+						class="hidden w-full rounded bg-blue-600 px-3 py-1 text-center text-white hover:bg-blue-700 md:inline-block"
+					>
+						<i class="fa-solid fa-user"></i>
+						Đăng nhập/Đăng ký
+					</a>
+					<div>
+						<a href="/login" class="flex items-center gap-1 md:hidden" aria-label="Đăng nhập">
+							<i
+								class="fa-solid fa-user cursor-pointer text-xl text-gray-500 transition-colors duration-200 hover:text-blue-600"
+							></i>
+						</a>
+					</div>
+				{/if}
+			</div>
+		</div>
+		<!-- <button class="md:hidden px-4" on:click={toggleSidebar}  aria-label="Menu">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
             viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" 
               stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     </button> -->
+	</div>
 </nav>
