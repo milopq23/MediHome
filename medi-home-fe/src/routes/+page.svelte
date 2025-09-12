@@ -1,8 +1,10 @@
 <script>
+	import AdBanner from '$lib/components/AdBanner.svelte';
 	import Navbar from '$lib/components/SideBar.svelte';
 </script>
 
-<main class="mx-auto mt-10 max-w-4xl px-4">
+
+<main>
 	<h1 class="mb-4 text-3xl font-bold">Chào mừng đến với MyApp</h1>
 	<p class="mb-2">Đây là phần nội dung chính. Kéo xuống để xem footer vẫn hiển thị.</p>
 	<p>
