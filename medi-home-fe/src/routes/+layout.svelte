@@ -26,9 +26,7 @@
 
 <div class="min-h-screen max-h-screen bg-gray-100">
 	<Header />
-
 	<main class="flex-1 justify-center items-center w-full">
-			<AdBanner />
 		<slot />
 	</main>
 	{#if show}
