@@ -11,19 +11,14 @@
 		<div class="m-4">
 			<h3 class="mb-4 font-semibold">Về Pharmacy</h3>
 			<ul class="space-y-1">
-				<li><a href="#">Giới thiệu</a></li>
-				<li><a href="#">Hệ thống cửa hàng</a></li>
-				<li><a href="#">Giấy phép kinh doanh</a></li>
-				<li><a href="#">Quy chế hoạt động</a></li>
-				<li><a href="#">Chính sách đổi trả & bảo hành</a></li>
-				<li><a href="#">Chính sách giao hàng</a></li>
-				<li><a href="#">Chính sách bảo mật</a></li>
-				<li><a href="#">Chính sách nội dung</a></li>
-				<li><a href="#">Chính sách bảo vệ dữ liệu</a></li>
-				<li><a href="#">Chính sách thanh toán</a></li>
-				<li><a href="#">Thành viên</a></li>
-				<li><a href="#">FAQ</a></li>
-				<li><a href="#">Bệnh viện</a></li>
+				<li><a href="/about">Giới thiệu</a></li>
+				<li><a href="/about">Hệ thống cửa hàng</a></li>
+				<li><a href="/policy">Chính sách đổi trả & bảo hành</a></li>
+				<li><a href="/policy">Chính sách giao hàng</a></li>
+				<li><a href="/policy">Chính sách bảo mật</a></li>
+				<li><a href="/policy">Chính sách nội dung</a></li>
+				<li><a href="/policy">Chính sách bảo vệ dữ liệu</a></li>
+				<li><a href="/policy">Chính sách thanh toán</a></li>
 			</ul>
 		</div>
 
@@ -31,7 +26,7 @@
 		<div class="m-4">
 			<h3 class="mb-4 font-semibold">Danh mục</h3>
 			<ul class="space-y-1">
-				<li><a href="#">Thuốc</a></li>
+				<li><a href="/product">Thuốc</a></li>
 				<li><a href="#">Thực phẩm chức năng</a></li>
 				<li><a href="#">Chăm sóc cá nhân</a></li>
 				<li><a href="#">Mẹ & Bé</a></li>
@@ -87,25 +82,6 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Cột 4: App & QR -->
-	<!-- <div>
-      <h3 class="font-semibold mb-2">Tải ứng dụng</h3>
-      <img src="https://via.placeholder.com/100x100?text=QR" alt="QR Code" class="mb-2 w-24 h-24" />
-      <div class="flex gap-2">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Apple_App_Store_logo.svg" alt="App Store" class="w-20" />
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" class="w-20" />
-      </div>
-    </div> -->
-
-	<!-- Cột 5: Thanh toán & chứng nhận -->
-	<!-- <div class="col-span-2 md:col-span-4 lg:col-span-1"> -->
-	<!-- <h4 class="font-semibold mb-2">Chứng nhận bởi</h4>
-      <img src="https://via.placeholder.com/100x40?text=DMCA" alt="DMCA" class="mb-2" />
-      <img src="https://via.placeholder.com/100x40?text=BoCongThuong" alt="BCT" class="mb-4" /> -->
-
-	<!-- </div> -->
-	<!-- </div> -->
 
 	<div class="border-t border-gray-300 px-4 py-4 text-center text-xs text-gray-600">
 		Công Ty Cổ Phần Dược Phẩm Pharmacy - Trụ sở: 248A Nơ Trang Long, Phường Bình Thạnh, TP.HCM<br />

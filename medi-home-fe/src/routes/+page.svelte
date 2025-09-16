@@ -23,37 +23,73 @@
 	// Mock danh sách sản phẩm
 	let products = [
 		{
-			id: 1,
-			drugName: 'Paracetamol 500mg',
-			price: '25,000đ',
-			image: 'https://via.placeholder.com/150x150?text=Paracetamol',
-			unit: 'viên'
+			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
+			price: '60.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
+			unit: '/hộp',
+			packaging: '3 vỉ x 10 viên'
 		},
 		{
-			id: 2,
-			drugName: 'Vitamin C 1000mg',
-			price: '45,000đ',
-			image: 'https://via.placeholder.com/150x150?text=Vitamin+C',
-			unit:'hộp'
+			drugName: 'Thuốc Cetirizine Stada 10mg điều trị viêm mũi dị ứng, mày đay (10 vỉ x 10 viên)',
+			price: '48.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033097_cetirizin_stada_10mg_10x10_6872_61c9_large_81d9335efe.jpg',
+			unit: '/hộp',
+			packaging: '10 vỉ x 10 viên'
 		},
 		{
-			id: 3,
-			drugName: 'Khẩu trang y tế',
-			price: '30,000đ',
-			image: 'https://via.placeholder.com/150x150?text=Khau+Trang'
+			drugName: 'Thuốc Vitamin C 500mg SPHARM phòng và trị thiếu vitamin C (10 vỉ x 10 viên)',
+			price: '25.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_03587_e8e7e30119.jpg',
+			unit: '/viên',
+			packaging: '10 vỉ x 10 viên'
 		},
 		{
-			id: 4,
-			drugName: 'Gel rửa tay khô',
-			price: '35,000đ',
-			image: 'https://via.placeholder.com/150x150?text=Gel+Rua+Tay'
+			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
+			price: '60.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
+			unit: '/hộp',
+			packaging: '3 vỉ x 10 viên'
+		},{
+			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
+			price: '60.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
+			unit: '/hộp',
+			packaging: '3 vỉ x 10 viên'
+		},
+		{
+			drugName: 'Thuốc Cetirizine Stada 10mg điều trị viêm mũi dị ứng, mày đay (10 vỉ x 10 viên)',
+			price: '48.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033097_cetirizin_stada_10mg_10x10_6872_61c9_large_81d9335efe.jpg',
+			unit: '/hộp',
+			packaging: '10 vỉ x 10 viên'
+		},
+		{
+			drugName: 'Thuốc Vitamin C 500mg SPHARM phòng và trị thiếu vitamin C (10 vỉ x 10 viên)',
+			price: '25.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_03587_e8e7e30119.jpg',
+			unit: '/viên',
+			packaging: '10 vỉ x 10 viên'
+		},
+		{
+			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
+			price: '60.000đ',
+			image:
+				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
+			unit: '/hộp',
+			packaging: '3 vỉ x 10 viên'
 		}
+			
 	];
 </script>
 
-<div class="flex min-h-screen bg-gray-50">
-	<!-- Main content -->
-	<main class="flex-1 p-4">
+<div class="flex-1 max-full bg-gray-50 py-10">
 		<!-- Giới thiệu -->
 
 		<section class="mb-10 text-center">
@@ -66,6 +102,40 @@
 		<!-- Banner quảng cáo -->
 		<div class="mb-6 flex justify-center">
 			<AdBanner />
+		</div>
+
+
+		<div class="bg-red-500 py-3	">
+			<div class="px-4 text-white font-bold text-lg mb-2">
+				Săn sale
+			</div>
+			<!-- Container cuộn ngang -->
+			<div class="flex-1 overflow-x-auto scroll-hidden w-full px-2 py-2">
+				<div class="flex gap-4 snap-x snap-mandatory px-4 flex-shrink-0 snap-start ">
+					{#each products as product}
+						<!-- <ProductCard
+							drugName={product.drugName}
+							price={product.price}
+							image={product.image}
+							unit={product.unit}
+							packaging={product.packaging}
+						/> -->
+						<div
+							class="flex-shrink-0 snap-start bg-white rounded-lg shadow-md p-3
+								w-40 md:w-72 box-border"
+						>
+							<img
+								src={product.image}
+								alt={product.drugName}
+								class="w-40 h-40 object-cover rounded-md mb-2"
+							/>
+							<div class="text-gray-800 text-base font-semibold truncate">{product.drugName}</div>
+							<div class="text-red-500 font-bold text-base">{product.price}</div>
+						</div>
+					{/each}
+				</div>
+			</div>
+
 		</div>
 
 
@@ -108,14 +178,14 @@
 			<h2 class="mb-4 text-2xl font-semibold text-blue-700">Sản phẩm nổi bật</h2>
 			<div class="grid grid-cols-2 gap-4 md:grid-cols-4">
 				{#each products as product}
-				<ProductCard
-					drugName={product.drugName}
-					price={product.price}
-					image={product.image}
-					unit={product.unit}
-					packaging={product.packaging}
-				/>
-			{/each}
+					<ProductCard
+						drugName={product.drugName}
+						price={product.price}
+						image={product.image}
+						unit={product.unit}
+						packaging={product.packaging}
+					/>
+				{/each}
 			</div>
 		</section>
 
@@ -130,10 +200,4 @@
 		</section>
 
 		<!-- Nội dung dài để test cuộn -->
-		<div
-			class="mt-10 flex h-[1000px] items-center justify-center rounded bg-gray-200 text-gray-500"
-		>
-			Nội dung dài để test cuộn
-		</div>
-	</main>
 </div>
