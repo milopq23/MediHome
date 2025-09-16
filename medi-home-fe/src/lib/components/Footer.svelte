@@ -2,8 +2,7 @@
 	// Nếu cần logic thêm, thêm ở đây
 </script>
 
-<div class="max-w h-2 bg-blue-600"></div>
-<footer class="bg-[#E3F2FD] text-sm text-gray-800">
+<footer class="bg-ice text-sm text-gray-800">
 	<div
 		class="mx-auto grid max-w-7xl grid-cols-2 gap-5 gap-y-10 px-4 py-8 md:grid-cols-3 lg:grid-cols-3"
 	>

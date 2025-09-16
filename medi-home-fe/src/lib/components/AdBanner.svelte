@@ -10,16 +10,16 @@
 			title: 'Quảng cáo 1',
 			description: 'Mô tả quảng cáo 1'
 		},
-		{
-			img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250910031822-0-qqq.png?versionId=cpd2omQWO8A41ZZZyf5RNq1PX1I3Q3fp',
-			title: 'Quảng cáo 2',
-			description: 'Mô tả quảng cáo 2'
-		},
-		{
-			img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250909075535-0-mweb.png?versionId=rvyVlA7FND_P_ZRzI2vb9zxzEQj_i2j_',
-			title: 'Quảng cáo 3',
-			description: 'Mô tả quảng cáo 3'
-		}
+		// {
+		// 	img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250910031822-0-qqq.png?versionId=cpd2omQWO8A41ZZZyf5RNq1PX1I3Q3fp',
+		// 	title: 'Quảng cáo 2',
+		// 	description: 'Mô tả quảng cáo 2'
+		// },
+		// {
+		// 	img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250909075535-0-mweb.png?versionId=rvyVlA7FND_P_ZRzI2vb9zxzEQj_i2j_',
+		// 	title: 'Quảng cáo 3',
+		// 	description: 'Mô tả quảng cáo 3'
+		// }
 	];
 
 	onMount(() => {
@@ -42,19 +42,19 @@
 
 <!-- <div class=" flex items-center justify-center mx-auto my-4"> -->
 <div
-	class="flex flex-1 items-center justify-center grid-cols-3 grid-rows-2  gap-2 overflow-hidden rounded-md md:grid"
+	class="flex-1 items-center justify-center grid-cols-3 grid-rows-2  gap-2 overflow-hidden md:grid"
 >
 	<div class="animate-scroll flex h-full w-full whitespace-nowrap md:col-span-2 md:row-span-2">
 		{#each banners as banner, i}
 			{#if i === current}
-				<div class="relative flex h-full w-full items-center justify-center">
+				<div class="relative flex h-full w-full items-center justify-center ">
 					<!-- Container relative để chứa các nút và ảnh -->
 
 					<!-- Ảnh -->
 					<img
 						src={banner.img}
 						alt={banner.title}
-						class="h-full w-full rounded-xl object-contain shadow-md"
+						class="h-full w-full rounded-none md:rounded-xl object-contain"
 					/>
 
 					<!-- Nút trái -->

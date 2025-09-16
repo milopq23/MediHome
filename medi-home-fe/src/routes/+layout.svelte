@@ -24,9 +24,9 @@
 	});
 </script>
 
-<div class="min-h-screen max-h-screen bg-gray-100">
+<div class="min-h-screen max-h-screen ">
 	<Header />
-	<main class="flex-1 justify-center items-center w-full">
+	<main class="flex-1 justify-center items-center px-0 md:px-40 bg-white w-full">
 		<slot />
 	</main>
 	{#if show}

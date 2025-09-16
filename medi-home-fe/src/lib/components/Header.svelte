@@ -10,7 +10,7 @@
 	}
 </script>
 
-<nav class="sticky top-0 z-50 w-full rounded-b-lg bg-[#E3F2FD] px-4 py-3 shadow-lg">
+<nav class="sticky top-0 z-50 w-full rounded-b-lg bg-ice px-4 py-3 shadow-lg">
 	<div class="mx-auto flex w-full max-w-7xl items-center justify-between">
 		<!-- Logo -->
 		<a href="/" class="text-2xl font-bold">

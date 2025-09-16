@@ -1,6 +1,18 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
+/* @plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography'; */
+
+@layer{
+    @theme{
+        --color-overcast: #f1f1f2;
+        --color-snowblue: #eaf8fb;
+        --color-ice: #a1d6e2;
+        --color-glacierblue: #1995ad;
+        --color-deepglacier: #146c8a;
+        --color-warmgray: #bcbabe;
+        --color-charcoal: #2e2e2e;
+    }
+}
 
 html{
     scrollbar-behavior: smooth;
