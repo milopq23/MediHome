@@ -26,14 +26,14 @@
 			<h3 class="mb-4 font-semibold">Danh mục</h3>
 			<ul class="space-y-1">
 				<li><a href="/product">Thuốc</a></li>
-				<li><a href="#">Thực phẩm chức năng</a></li>
-				<li><a href="#">Chăm sóc cá nhân</a></li>
-				<li><a href="#">Mẹ & Bé</a></li>
-				<li><a href="#">Chăm sóc sắc đẹp</a></li>
-				<li><a href="#">Thiết bị y tế</a></li>
-				<li><a href="#">Doanh nghiệp</a></li>
-				<li><a href="#">Khuyến mãi</a></li>
-				<li><a href="#">Sức khỏe</a></li>
+				<li><a href="/thucpham">Thực phẩm chức năng</a></li>
+				<li><a href="/chamsoc">Chăm sóc cá nhân</a></li>
+				<li><a href="/mevabe">Mẹ & Bé</a></li>
+				<li><a href="/chamsocsacdep">Chăm sóc sắc đẹp</a></li>
+				<li><a href="/thietbiyte">Thiết bị y tế</a></li>
+				<li><a href="/doanhnghiep">Doanh nghiệp</a></li>
+				<li><a href="/khuyenmai">Khuyến mãi</a></li>
+				<li><a href="/suckhoe">Sức khỏe</a></li>
 			</ul>
 		</div>
 
@@ -49,21 +49,21 @@
 			<div class="mt-4">
 				<h4 class="mb-2 font-semibold">Theo dõi chúng tôi</h4>
 				<div class="flex gap-2">
-					<a href="#"
+					<a href="/facebook"
 						><img
 							src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg"
 							alt="Facebook"
 							class="h-5 w-5"
 						/></a
 					>
-					<a href="#"
+					<a href="/youtube"
 						><img
 							src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
 							alt="YouTube"
 							class="h-5 w-5"
 						/></a
 					>
-					<a href="#"
+					<a href="/zalo"
 						><img
 							src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/zalo.svg"
 							alt="Zalo"

@@ -72,7 +72,7 @@
 	];
 </script>
 
-<div class="flex-1 max-full bg-white py-10">
+<div class="flex-1 max-full bg-white py-10 ">
 
 	<!-- Giới thiệu -->
 	<section class="mb-10 text-center">
@@ -94,7 +94,7 @@
 			Săn sale
 		</div> -->
 		<!-- Container cuộn ngang -->
-		<div class="flex-1 overflow-x-auto scroll-hidden w-full px-2 py-2">
+		<div class="flex-1 overflow-x-auto scrollbar-hide w-full px-2 py-2">
 			<div class="flex gap-4 snap-x snap-mandatory px-4 flex-shrink-0 snap-start ">
 				{#each products as product}
 					<div
@@ -150,7 +150,7 @@
 
 	<!-- Sản phẩm nổi bật -->
 	<section>
-		<h2 class="mb-4 text-2xl font-semibold text-blue-700">Sản phẩm nổi bật</h2>
+		<h2 class=" mb-4 text-2xl font-semibold text-blue-700">Sản phẩm nổi bật</h2>
 		<div class="grid grid-cols-2 gap-4 md:grid-cols-4">
 			{#each products as product}
 				<ProductCard
@@ -174,3 +174,14 @@
 		</ul>
 	</section>
 </div>
+
+<style>
+	/* Ẩn scrollbar cho đẹp */
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+</style>

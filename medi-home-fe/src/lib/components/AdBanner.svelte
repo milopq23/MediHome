@@ -10,16 +10,16 @@
 			title: 'Quảng cáo 1',
 			description: 'Mô tả quảng cáo 1'
 		},
-		// {
-		// 	img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250910031822-0-qqq.png?versionId=cpd2omQWO8A41ZZZyf5RNq1PX1I3Q3fp',
-		// 	title: 'Quảng cáo 2',
-		// 	description: 'Mô tả quảng cáo 2'
-		// },
-		// {
-		// 	img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250909075535-0-mweb.png?versionId=rvyVlA7FND_P_ZRzI2vb9zxzEQj_i2j_',
-		// 	title: 'Quảng cáo 3',
-		// 	description: 'Mô tả quảng cáo 3'
-		// }
+		{
+			img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250910031822-0-qqq.png?versionId=cpd2omQWO8A41ZZZyf5RNq1PX1I3Q3fp',
+			title: 'Quảng cáo 2',
+			description: 'Mô tả quảng cáo 2'
+		},
+		{
+			img: 'https://production-cdn.pharmacity.io/digital/795x0/plain/e-com/images/banners/20250909075535-0-mweb.png?versionId=rvyVlA7FND_P_ZRzI2vb9zxzEQj_i2j_',
+			title: 'Quảng cáo 3',
+			description: 'Mô tả quảng cáo 3'
+		}
 	];
 
 	onMount(() => {

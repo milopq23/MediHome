@@ -5,17 +5,17 @@
 <div class="bg-snowblue flex min-h-screen items-center justify-center">
 	<!-- Container -->
 	<div
-		class="w-full mx-3 md:mx-10 lg:mx-20 flex-1 rounded-2xl bg-white md:w-4/5 lg:w-2/3 xl:w-1/2 shadow-md"
+		class="w-full mx-3 md:mx-10 lg:mx-50 flex-1 rounded-2xl bg-white md:w-4/5 lg:w-2/3 shadow-md"
 	>
 		<h1 class="text-charcoal p-4 text-center text-2xl font-bold">Đăng nhập</h1>
 
-		<div class="flex flex-col lg:flex-row items-stretch">
+		<div class="flex flex-col lg:flex-row items-stretch p-5">
 			<!-- Form -->
-			<div class="w-full lg:w-3/5">
+			<div class="w-full lg:w-2/4  min-w-">
 				<form class="space-y-4 p-10">
 					<!-- Email -->
 					<div>
-						<label class="text-md text-charcoal mb-1 block px-2 font-medium">Email</label>
+						<label for="email" class="text-md text-charcoal mb-1 block px-2 font-medium">Email</label>
 						<input
 							type="email"
 							placeholder="youremail@gmail.com"
@@ -25,7 +25,7 @@
 
 					<!-- Password -->
 					<div class="relative">
-						<label class="text-md text-black-300 mb-1 block px-2 font-medium">Mật khẩu</label>
+						<label for="password" class="text-md text-black-300 mb-1 block px-2 font-medium">Mật khẩu</label>
 						<input
 							type={showPassword ? 'text' : 'password'}
 							placeholder="••••••••"
@@ -68,7 +68,7 @@
 			</div>
 
 			<!-- Image -->
-			<div class="hidden lg:flex w-2/5 items-center justify-center p-4">
+			<div class="hidden md:flex-1/4 lg:flex w-2/4 	 items-center justify-center p-4">
 				<img
 					src="https://img.pikbest.com/origin/09/29/90/98rpIkbEsTvK8.png!sw800"
 					alt="Img medicine"

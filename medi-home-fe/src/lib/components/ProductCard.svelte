@@ -2,7 +2,6 @@
 <script>
 	export let drugName;
 	export let image;
-	export let sale;
 	export let price;
 	export let unit; // đơn vị tính VD: /hộp, /viên
 	export let packaging; // quy cách đóng gói VD: 10 vỉ x 10 viên

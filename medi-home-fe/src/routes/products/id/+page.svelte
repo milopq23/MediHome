@@ -27,9 +27,9 @@
 	}
 </script>
 
-<div class="bg-snowblue flex flex-col gap-6 lg:flex-row p-10">
+<div class="flex flex-col gap-6 bg-snowblue p-10 lg:flex-row">
 	<!-- Left: ảnh -->
-	<div class="flex flex-col gap-4 lg:w-1/2 ">
+	<div class="flex flex-col gap-4 lg:w-1/2">
 		<!-- Ảnh lớn -->
 		<img
 			src={selectedImg}
@@ -40,14 +40,17 @@
 		<!-- List ảnh nhỏ -->
 		<div class="scrollbar-hide flex flex-row gap-3 overflow-x-auto">
 			{#each images as img}
-				<img
-					src={img}
-					alt="thumbnail"
-					class="w-30 h-30 flex-shrink-0 cursor-pointer rounded-md border-2 {selectedImg === img
+				<button
+					type="button"
+					class="h-30 w-30 flex-shrink-0 cursor-pointer overflow-hidden rounded-md border-2 p-0 {selectedImg ===
+					img
 						? 'border-blue-500'
-						: 'border-transparent'} transition hover:scale-105"
+						: 'border-transparent'} transition"
 					on:click={() => (selectedImg = img)}
-				/>
+					aria-label="Select image"
+				>
+					<img src={img} alt="thumbnail" class="h-full w-full object-cover" />
+				</button>
 			{/each}
 		</div>
 	</div>
@@ -67,10 +70,10 @@
 		<p>Danh mục: {cate}</p>
 		<p>Thuốc cần kê đơn: {prescription}</p>
 		<p>Dạng bào chế: {dosage}</p>
-        <p>Quy cách: {packageType}</p>
-        <p>Lưu ý: {note}</p>
+		<p>Quy cách: {packageType}</p>
+		<p>Lưu ý: {note}</p>
 		<div>
-			<label class="mb-2 block font-medium text-gray-700">Số lượng:</label>
+			<p class="mb-2 block font-medium text-gray-700">Số lượng:</p>
 			<div class="flex items-center space-x-3">
 				<button
 					type="button"
