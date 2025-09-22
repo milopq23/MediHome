@@ -1,0 +1,21 @@
+cmd/: chứa file main.go, entry point để chạy ứng dụng.
+
+config/: cấu hình (ví dụ: database.go để kết nối DB).
+
+internal/: nơi chứa business logic chính, chia theo layer:
+
+api/: định nghĩa các route, handler (HTTP).
+
+app/: xử lý luồng nghiệp vụ (use case).
+
+model/: định nghĩa entity (struct đại diện cho bảng DB).
+
+repository/: truy vấn DB (CRUD).
+
+server/: khởi tạo server (gin/echo/fiber).
+
+pkg/: chứa các thư viện phụ dùng lại trong dự án.
+
+.env: chứa biến môi trường (cấu hình DB, secret key…).
+
+go.mod, go.sum: quản lý dependency
