@@ -7,5 +7,4 @@ type Address struct{
 	UserID int64
 	Phone string
 	FullName string
-		
 }
