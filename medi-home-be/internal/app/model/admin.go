@@ -2,12 +2,16 @@ package model
 
 import "time"
 
-type Admin struct{
-	AdminID int64 `gorm:"admin_id;primarykey" json:""`
-	Email string
-	Password string
-	Phone string
-	Role string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+type Admin struct {
+	AdminID   int64     `gorm:"column:admin_id;primarykey"`
+	Email     string    `gorm:"column:email;unique;not null" json:"email"`
+	Password  string    `gorm:"column:password" json:"-"`
+	Phone     string    `gorm:"column:phone" json:"phone"`
+	Role      string    `gorm:"column:role" json:"role"`
+	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime"`
+}
+
+func (Admin) TableName() string{
+	return "admins"
 }
