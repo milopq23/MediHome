@@ -1,12 +1,26 @@
 package route
 
 import (
-	"net/http"
+	"medi-home-be/internal/app/handler"
+	"medi-home-be/internal/app/repository"
+	"medi-home-be/internal/app/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser(c*gin.Engine){
-	user := userService.GetAllUser()
-	c.JSON(http.StatusOK,user)
+func UserRoutes(r *gin.Engine){
+
+	// 
+	userRepo := repository.NewUserRepository()
+	userService := service.NewUserService(userRepo)
+	userHandler := handlers.NewUserHandler(userService)
+	user := r.Group("/user")
+	{
+		user.GET("/",userHandler.GetAll)
+		user.GET("/:id",userHandler.GetByID)
+		user.POST("/create",userHandler.Create)
+		// user.PUT("/update",userHandler.Update)
+		user.PATCH("/update/:id",userHandler.Patch)
+		user.DELETE("/delete",userHandler.Delete)
+	}
 }
