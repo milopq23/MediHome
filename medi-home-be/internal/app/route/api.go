@@ -9,5 +9,7 @@ func APIRoute() *gin.Engine{
 	r := gin.Default()
 
 	UserRoutes(r)
+	AdminRoutes(r)
+	
 	return r
 }

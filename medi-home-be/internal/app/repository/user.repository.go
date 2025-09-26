@@ -1,8 +1,11 @@
 package repository
 
 import (
+	// "fmt"
+	// "math/rand"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
+	// "time"
 )
 
 type UserRepository interface {
@@ -12,6 +15,10 @@ type UserRepository interface {
 	Update(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
 	Delete(id uint) error
+
+
+	FindByEmail(email string) (model.User, error)
+	Register(name string, email string, phone string, password string) (model.User, error)
 }
 
 type userRepository struct{}
@@ -65,3 +72,27 @@ func (r *userRepository) Patch(id uint, updates map[string]interface{}) (model.U
 func (r *userRepository) Delete(id uint) error {
 	return config.DB.Delete(&model.User{}, id).Error
 }
+
+func (r *userRepository) LoginUser(email string, password string) (model.User, error) {
+	var user model.User
+	err := config.DB.Where("email = ? AND password = ?", email, password).First(&user).Error
+	return user, err
+}
+
+func (r *userRepository) FindByEmail(email string) (model.User, error) {
+	var user model.User
+	err := config.DB.Where("email = ?", email).First(&user).Error
+	return user, err
+}
+
+func (r *userRepository) Register(name string, email string, phone string, password string) (model.User, error) {
+	user := model.User{
+		Name : name,
+		Email : email,
+		Phone : phone,
+		Password : password,
+	}
+	err := config.DB.Create(user).Error
+	return user, err
+}
+
