@@ -13,7 +13,7 @@ func UserRoutes(r *gin.Engine){
 	// 
 	userRepo := repository.NewUserRepository()
 	userService := service.NewUserService(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService)
 	login := r.Group("/")
 	{
 		login.POST("/login",userHandler.Login)

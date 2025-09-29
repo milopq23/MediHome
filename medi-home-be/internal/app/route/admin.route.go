@@ -11,14 +11,14 @@ import (
 func AdminRoutes(r *gin.Engine){
 	adminRepo := repository.NewAdminRepository()
 	adminService := service.NewAdminService(adminRepo)
-	adminHandler := handlers.NewAdminHandler(adminService)
+	adminHandler := handler.NewAdminHandler(adminService)
 	user := r.Group("/admin")
 	{
 		user.GET("/",adminHandler.GetAll)
 		user.GET("/:id",adminHandler.GetByID)
-		user.POST("/create",adminHandler.Create)
+		user.POST("/",adminHandler.Create)
 		// user.PUT("/update",userHandler.Update)
-		user.PATCH("/update/:id",adminHandler.Patch)
-		user.DELETE("/delete",adminHandler.Delete)
+		user.PATCH("/:id",adminHandler.Patch)
+		user.DELETE("/:id",adminHandler.Delete)
 	}
 }
