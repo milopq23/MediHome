@@ -19,7 +19,7 @@ type UserService interface {
 	Delete(id uint) error
 
 	LoginUser(email string, password string) (string, model.User, error)
-	RegisterUser(email string, password string, checkpassword string, name string, phone string) (*model.User, error)
+	RegisterUser(email string, password string, checkpassword string, name string, phone string, gender string) (*model.User, error)
 }
 
 type userService struct {
@@ -74,7 +74,10 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 			updates[k] = v
 		}
 	}
-	return s.repo.Patch(uint(user.UserID), updates)
+	if user.UserID == nil {
+		return model.User{}, fmt.Errorf("user ID is nil")
+	}
+	return s.repo.Patch(uint(*user.UserID), updates)
 }
 
 func (s *userService) Delete(id uint) error {
@@ -100,55 +103,19 @@ func (s *userService) LoginUser(email string, password string) (string, model.Us
 	return token, user, nil
 }
 
-// func (s *userService) RegisterUser(email, password, checkpassword, name, phone string) (*model.User, error) {
-// 	if password != checkpassword {
-// 		return nil, fmt.Errorf("passwords do not match")
-// 	}
-
-// 	existingUser, err := s.repo.FindByEmail(email)
-// 	if err == nil {
-// 		return nil, fmt.Errorf("email already in use")
-// 	}
-
-// 	hashPassword, err := util.HashPassword(password)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to hash password: %w", err)
-// 	}
-
-// 	user, err := s.repo.Register(name, email, phone, hashPassword)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed to create user: %w", err)
-// 	}
-
-// 	return user, nil
-// }
-
-func (s *userService) RegisterUser(email string, password string, checkpassword string, name string, phone string) (*model.User, error) {
-	_, err := s.repo.FindByEmail(email)
-	if err == nil {
-		return nil, fmt.Errorf("email already in use")
-	}
-	// if err != gorm.ErrRecordNotFound {
-	// 	// ❗ Đây là lỗi thật (không phải "not found")
-	// 	return nil, fmt.Errorf("error checking existing user: %w", err)
-	// }
+func (s *userService) RegisterUser(email string, password string, checkpassword string, name string, phone string,gender string) (*model.User, error) {
 	if password != checkpassword {
 		return nil, fmt.Errorf("passwords do not match")
 	}
-
+	// _, err := s.repo.FindByEmail(email)
+	// if err == nil {
+	// 	return nil, fmt.Errorf("email already in use")
+	// }
 	hashPassword, err := util.HashPassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
-
-	// otp := util.GenderateOTPCode()
-
-	// err = util.SendEmailOTP(email, otp)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate OTP: %w", err)
-	}
-
-	user, err := s.repo.Register(name, email, phone, hashPassword)
+	user, err := s.repo.Register(name, email, phone, hashPassword,gender)
 	if err != nil {
 		return nil, err
 	}

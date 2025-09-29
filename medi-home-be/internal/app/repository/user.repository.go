@@ -3,6 +3,7 @@ package repository
 import (
 	// "fmt"
 	// "math/rand"
+	"fmt"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
 	// "time"
@@ -18,7 +19,7 @@ type UserRepository interface {
 
 
 	FindByEmail(email string) (model.User, error)
-	Register(name string, email string, phone string, password string) (model.User, error)
+	Register(name string, email string, phone string, password string,gender string) (model.User, error)
 }
 
 type userRepository struct{}
@@ -40,7 +41,8 @@ func (r *userRepository) FindByID(id uint) (model.User, error) {
 }
 
 func (r *userRepository) Create(user model.User) (model.User, error) {
-	err := config.DB.Create(&user).Error
+	err := config.DB.Debug().Create(&user).Error
+	fmt.Println("Created user ID:", *user.UserID)
 	return user, err
 }
 
@@ -85,14 +87,19 @@ func (r *userRepository) FindByEmail(email string) (model.User, error) {
 	return user, err
 }
 
-func (r *userRepository) Register(name string, email string, phone string, password string) (model.User, error) {
+func (r *userRepository) Register(name string, email string, phone string, password string,gender string) (model.User, error) {
 	user := model.User{
 		Name : name,
 		Email : email,
 		Phone : phone,
 		Password : password,
+		Gender: gender,
+		Point : 0,
 	}
-	err := config.DB.Create(user).Error
+	err := config.DB.Create(&user).Error
+	if err != nil {
+		return model.User{}, err
+	}
 	return user, err
 }
 

@@ -30,6 +30,7 @@ type RegisterRequest struct {
 	CheckPassword string `json:"checkpassword" binding:"required,eqfield=Password"`
 	Name          string `json:"name" binding:"required"`
 	Phone         string `json:"phone" binding:"required"`
+	Gender		string	`json:gender binding:"required"`
 	
 }
 
@@ -140,7 +141,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	newUser, err := h.service.RegisterUser(user.Email, user.Password, user.CheckPassword, user.Name, user.Phone)
+	newUser, err := h.service.RegisterUser(user.Email, user.Password, user.CheckPassword, user.Name, user.Phone, user.Gender)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
