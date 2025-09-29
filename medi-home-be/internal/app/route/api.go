@@ -11,6 +11,7 @@ func APIRoute() *gin.Engine{
 	UserRoutes(r)
 	AdminRoutes(r)
 	MedicineRoute(r)
+	ShippingRoute(r)
 	
 	return r
 }
