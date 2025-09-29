@@ -9,31 +9,31 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AdminHandler struct{
+type AdminHandler struct {
 	service service.AdminService
 }
 
-func NewAdminHandler(service service.AdminService) *AdminHandler{
+func NewAdminHandler(service service.AdminService) *AdminHandler {
 	return &AdminHandler{service}
 }
 
-func (h *AdminHandler) GetAll(c *gin.Context){
+func (h *AdminHandler) GetAll(c *gin.Context) {
 	admin, err := h.service.GetAll()
-	if err != nil{
-		c.JSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK,admin)
+	c.JSON(http.StatusOK, admin)
 }
 
-func (h *AdminHandler) GetByID(c *gin.Context){
+func (h *AdminHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	admin, err := h.service.GetByID(uint(id))
-	if err != nil{
-		c.JSON(http.StatusNotFound, gin.H{"error":"Admin not found"})
-		return 
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Admin not found"})
+		return
 	}
-	c.JSON(http.StatusOK,admin)
+	c.JSON(http.StatusOK, admin)
 }
 
 func (h *AdminHandler) Create(c *gin.Context) {
@@ -51,23 +51,23 @@ func (h *AdminHandler) Create(c *gin.Context) {
 }
 
 func (h *AdminHandler) Patch(c *gin.Context) {
-	id,_ := strconv.Atoi(c.Param("id"))
+	id, _ := strconv.Atoi(c.Param("id"))
 
-	var input map[string] interface{}
-	if err := c.ShouldBindJSON(&input); err != nil{
+	var input map[string]interface{}
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updated, err := h.service.Patch(uint(id),input)
+	updated, err := h.service.Patch(uint(id), input)
 	if err != nil {
-		c.JSON(http.StatusNotFound,gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
 		return
 	}
-	
-	c.JSON(http.StatusOK,updated)
+
+	c.JSON(http.StatusOK, updated)
 
 }
- 
+
 func (h *AdminHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err := h.service.Delete(uint(id)); err != nil {
@@ -76,5 +76,3 @@ func (h *AdminHandler) Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Admin deleted"})
 }
-
-

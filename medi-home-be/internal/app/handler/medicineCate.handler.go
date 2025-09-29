@@ -13,7 +13,7 @@ type MedicineCateHandler struct {
 	service service.MedicineCateService
 }
 
-func NewMedicineCateHandler(service service.MedicineCateService ) *MedicineCateHandler {
+func NewMedicineCateHandler(service service.MedicineCateService) *MedicineCateHandler {
 	return &MedicineCateHandler{service}
 }
 
@@ -22,9 +22,9 @@ func (h *MedicineCateHandler) GetAll(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}	
+	}
 	c.JSON(http.StatusOK, medicineCates)
-}	
+}
 
 func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -32,7 +32,7 @@ func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine category not found"})
 		return
-	}	
+	}
 	c.JSON(http.StatusOK, medicineCate)
 }
 
@@ -46,7 +46,7 @@ func (h *MedicineCateHandler) Create(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}		
+	}
 	c.JSON(http.StatusCreated, newMedicineCate)
 }
 func (h *MedicineCateHandler) Patch(c *gin.Context) {
@@ -69,6 +69,6 @@ func (h *MedicineCateHandler) Delete(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}	
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "Medicine category deleted successfully"})
 }

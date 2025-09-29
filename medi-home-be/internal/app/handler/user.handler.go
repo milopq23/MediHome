@@ -30,8 +30,7 @@ type RegisterRequest struct {
 	CheckPassword string `json:"checkpassword" binding:"required,eqfield=Password"`
 	Name          string `json:"name" binding:"required"`
 	Phone         string `json:"phone" binding:"required"`
-	Gender		string	`json:"gender" binding:"required"`
-	
+	Gender        string `json:"gender" binding:"required"`
 }
 
 func NewUserHandler(service service.UserService) *UserHandler {
@@ -87,23 +86,23 @@ func (h *UserHandler) Update(c *gin.Context) {
 }
 
 func (h *UserHandler) Patch(c *gin.Context) {
-	id,_ := strconv.Atoi(c.Param("id"))
+	id, _ := strconv.Atoi(c.Param("id"))
 
-	var input map[string] interface{}
-	if err := c.ShouldBindJSON(&input); err != nil{
+	var input map[string]interface{}
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updated, err := h.service.Patch(uint(id),input)
+	updated, err := h.service.Patch(uint(id), input)
 	if err != nil {
-		c.JSON(http.StatusNotFound,gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
 		return
 	}
-	
-	c.JSON(http.StatusOK,updated)
+
+	c.JSON(http.StatusOK, updated)
 
 }
- 
+
 func (h *UserHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err := h.service.Delete(uint(id)); err != nil {
@@ -148,4 +147,3 @@ func (h *UserHandler) Register(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, newUser)
 }
-
