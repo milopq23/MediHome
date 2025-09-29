@@ -3,9 +3,9 @@ package model
 import "time"
 
 type Admin struct {
-	AdminID   int64     `gorm:"column:admin_id;primarykey"`
+	AdminID   int64     `gorm:"column:admin_id;primarykey;autoIncrement"`
 	Email     string    `gorm:"column:email;unique;not null" json:"email"`
-	Password  string    `gorm:"column:password" json:"-"`
+	Password  string    `gorm:"column:password" json:"password"`
 	Phone     string    `gorm:"column:phone" json:"phone"`
 	Role      string    `gorm:"column:role" json:"role"`
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime"`

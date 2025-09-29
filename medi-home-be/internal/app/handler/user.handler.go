@@ -30,7 +30,7 @@ type RegisterRequest struct {
 	CheckPassword string `json:"checkpassword" binding:"required,eqfield=Password"`
 	Name          string `json:"name" binding:"required"`
 	Phone         string `json:"phone" binding:"required"`
-	Gender		string	`json:gender binding:"required"`
+	Gender		string	`json:"gender" binding:"required"`
 	
 }
 

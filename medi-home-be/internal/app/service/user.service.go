@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
@@ -105,17 +106,17 @@ func (s *userService) LoginUser(email string, password string) (string, model.Us
 
 func (s *userService) RegisterUser(email string, password string, checkpassword string, name string, phone string,gender string) (*model.User, error) {
 	if password != checkpassword {
-		return nil, fmt.Errorf("passwords do not match")
+		return nil, errors.New("mật khẩu không khớp")
 	}
-	// _, err := s.repo.FindByEmail(email)
-	// if err == nil {
-	// 	return nil, fmt.Errorf("email already in use")
-	// }
+	_, err := s.repo.FindByEmail(email)
+	if err == nil {
+		return nil, errors.New("email đã tồn tại")
+	}
 	hashPassword, err := util.HashPassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
-	user, err := s.repo.Register(name, email, phone, hashPassword,gender)
+	user, err := s.repo.Register(name, email, phone, hashPassword,gender)	
 	if err != nil {
 		return nil, err
 	}
