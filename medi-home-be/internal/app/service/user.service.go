@@ -12,13 +12,11 @@ import (
 )
 
 type UserService interface {
-	GetAll() ([]model.User, error)
+	GetAll(page,pageSize int) (model.Pagination, error)
 	GetByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
-	Update(id uint, data model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
 	Delete(id uint) error
-
 	LoginUser(email string, password string) (string, model.User, error)
 	RegisterUser(email string, password string, checkpassword string, name string, phone string, gender string) (*model.User, error)
 }
@@ -31,8 +29,8 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo}
 }
 
-func (s *userService) GetAll() ([]model.User, error) {
-	return s.repo.FindAll()
+func (s *userService) GetAll(page,pageSize int) (model.Pagination, error) {
+	return s.repo.FindAll(page,pageSize)
 }
 
 func (s *userService) GetByID(id uint) (model.User, error) {
@@ -43,19 +41,6 @@ func (s *userService) Create(user model.User) (model.User, error) {
 	return s.repo.Create(user)
 }
 
-func (s *userService) Update(id uint, data model.User) (model.User, error) {
-	user, err := s.repo.FindByID(id)
-	if err != nil {
-		return model.User{}, err
-	}
-	user.Name = data.Name
-	user.Phone = data.Phone
-	user.Avatar = data.Avatar
-	user.Password = data.Password
-	user.Gender = data.Gender
-
-	return s.repo.Update(user)
-}
 
 func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, error) {
 	user, err := s.repo.FindByID(id)

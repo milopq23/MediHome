@@ -18,12 +18,15 @@ func NewAdminHandler(service service.AdminService) *AdminHandler {
 }
 
 func (h *AdminHandler) GetAll(c *gin.Context) {
-	admin, err := h.service.GetAll()
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+
+	pagination, err := h.service.GetAll(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, admin)
+	c.JSON(http.StatusOK, pagination)
 }
 
 func (h *AdminHandler) GetByID(c *gin.Context) {

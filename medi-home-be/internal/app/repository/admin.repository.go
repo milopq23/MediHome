@@ -3,14 +3,13 @@ package repository
 import (
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
-	
+	"medi-home-be/pkg/helper"
 )
 
 type AdminRepository interface{
-	FindAll() ([]model.Admin,error)
+	FindAll(page, pageSize int) (model.Pagination,error)
 	FindByID(id uint) (model.Admin,error)
 	Create(admin model.Admin) (model.Admin,error)
-	// Update(admin model.Admin) (model.Admin, error)
 	Patch(id uint, updates map[string]interface{}) (model.Admin, error)
 	Delete(id uint) error
 }
@@ -21,11 +20,48 @@ func NewAdminRepository() AdminRepository{
 	return &adminRepository{}
 }
 
-func (r *adminRepository) FindAll() ([]model.Admin,error){
-	var admin []model.Admin
-	err:= config.DB.Find(&admin).Error
-	return admin,err
+type AdminResponse struct {
+	AdminID     uint   `json:"admin_id"`
+	Name       string `json:"name"`
+	Email      string `json:"email"`
+	Phone      string `json:"phone"`
+	Role	   string `json:"role"`
 }
+
+func (r *adminRepository) FindAll(page,pageSize int) (model.Pagination,error){
+	var admin []model.Admin
+	var total int64
+
+	pagination := model.NewPagination(page, pageSize)
+
+	err := config.DB.Model(&model.Admin{}).Count(&total).Error
+	if err != nil {
+		return model.Pagination{}, err
+	}
+	pagination.Total = total
+
+	err = config.DB.Scopes(helper.Paginate(pagination.Page, pagination.PageSize)).
+		Order("admin_id ASC").
+		Find(&admin).Error
+
+	if err != nil {
+		return model.Pagination{}, err
+	}
+
+	var adminResponses []AdminResponse
+	for _, a := range admin {
+		adminResponses = append(adminResponses, AdminResponse{
+			AdminID: uint(a.AdminID),
+			Email:   a.Email,
+			Phone:   a.Phone,
+			Role:    a.Role,
+		})
+	}
+	pagination.Data = adminResponses
+
+	return *pagination, nil
+}
+
 
 func (r *adminRepository) FindByID(id uint) (model.Admin,error){
 	var admin model.Admin

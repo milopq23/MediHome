@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -18,6 +17,7 @@ func NewMedicineCateHandler(service service.MedicineCateService) *MedicineCateHa
 	return &MedicineCateHandler{service}
 }
 
+// #region List All
 func (h *MedicineCateHandler) GetAll(c *gin.Context) {
 	medicineCates, err := h.service.GetAll()
 	if err != nil {
@@ -27,6 +27,9 @@ func (h *MedicineCateHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, medicineCates)
 }
 
+// #endregion
+
+// #region List Cate con
 func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	medicineCate, err := h.service.ListChildren(int64(id))
@@ -37,6 +40,9 @@ func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
 	c.JSON(http.StatusOK, medicineCate)
 }
 
+// #endregion
+
+// #region Create Cate cha
 func (h *MedicineCateHandler) CreateParentCate(c *gin.Context) {
 	var medicineCate model.MedicineCate
 	if err := c.ShouldBindJSON(&medicineCate); err != nil {
@@ -51,6 +57,9 @@ func (h *MedicineCateHandler) CreateParentCate(c *gin.Context) {
 	c.JSON(http.StatusCreated, newMedicineCate)
 }
 
+// #endregion
+
+// #region Create Cate
 func (h *MedicineCateHandler) Create(c *gin.Context) {
 	var medicineCate model.MedicineCate
 	if err := c.ShouldBindJSON(&medicineCate); err != nil {
@@ -65,7 +74,9 @@ func (h *MedicineCateHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newMedicineCate)
 }
 
+// #endregion
 
+// #region Patch Cate
 func (h *MedicineCateHandler) Patch(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
@@ -74,14 +85,17 @@ func (h *MedicineCateHandler) Patch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updatedMedicineCate, err := h.service.Patch(uint(id),input)
-	log.Println("Updated MedicineCate:", updatedMedicineCate)
+	updatedMedicineCate, err := h.service.Patch(uint(id), input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, updatedMedicineCate)
 }
+
+// #endregion
+
+// #region Delete Cate
 
 func (h *MedicineCateHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -92,3 +106,5 @@ func (h *MedicineCateHandler) Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Medicine category deleted successfully"})
 }
+
+// #endregion

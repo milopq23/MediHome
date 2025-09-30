@@ -38,12 +38,15 @@ func NewUserHandler(service service.UserService) *UserHandler {
 }
 
 func (h *UserHandler) GetAll(c *gin.Context) {
-	users, err := h.service.GetAll()
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+
+	pagination, err := h.service.GetAll(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, pagination)
 }
 
 func (h *UserHandler) GetByID(c *gin.Context) {
@@ -70,20 +73,6 @@ func (h *UserHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newUser)
 }
 
-func (h *UserHandler) Update(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	var input model.User
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	updated, err := h.service.Update(uint(id), input)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, updated)
-}
 
 func (h *UserHandler) Patch(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))

@@ -6,7 +6,7 @@ import(
 )
 
 type AdminService interface{
-	GetAll() ([]model.Admin,error)
+	GetAll(page,pageSize int) (model.Pagination,error)
 	GetByID(id uint) (model.Admin,error)
 	Create(admin model.Admin) (model.Admin,error)
 	Patch(id uint, updates map[string]interface{}) (model.Admin,error)
@@ -21,8 +21,8 @@ func NewAdminService(repo repository.AdminRepository) AdminService{
 	return &adminService{repo}
 }
 
-func (s *adminService) GetAll() ([]model.Admin,error){
-	return s.repo.FindAll()
+func (s *adminService) GetAll(page,pageSize int) (model.Pagination,error){
+	return s.repo.FindAll(page, pageSize)
 }
 
 func (s *adminService) GetByID(id uint) (model.Admin,error){
