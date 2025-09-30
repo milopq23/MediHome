@@ -30,8 +30,9 @@ func MedicineRoute(r *gin.Engine) {
 	medicineCate := r.Group("/medicine-cate")
 	{
 		medicineCate.GET("/", medicineCateHandler.GetAll)
-		medicineCate.GET("/:id/children", medicineCateHandler.ListChildren)
-		medicineCate.POST("/", medicineCateHandler.Create)
+		medicineCate.GET("/children/:id", medicineCateHandler.ListChildren)
+		medicineCate.POST("/parent", medicineCateHandler.CreateParentCate)
+		medicineCate.POST("/children", medicineCateHandler.Create)
 		medicineCate.PUT("/:id", medicineCateHandler.Patch)
 		medicineCate.PATCH("/:id", medicineCateHandler.Patch)
 		medicineCate.DELETE("/:id", medicineCateHandler.Delete)

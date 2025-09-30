@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -36,6 +37,20 @@ func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
 	c.JSON(http.StatusOK, medicineCate)
 }
 
+func (h *MedicineCateHandler) CreateParentCate(c *gin.Context) {
+	var medicineCate model.MedicineCate
+	if err := c.ShouldBindJSON(&medicineCate); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	newMedicineCate, err := h.service.CreateParentCate(medicineCate)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, newMedicineCate)
+}
+
 func (h *MedicineCateHandler) Create(c *gin.Context) {
 	var medicineCate model.MedicineCate
 	if err := c.ShouldBindJSON(&medicineCate); err != nil {
@@ -49,13 +64,18 @@ func (h *MedicineCateHandler) Create(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, newMedicineCate)
 }
+
+
 func (h *MedicineCateHandler) Patch(c *gin.Context) {
-	var medicineCate model.MedicineCate
-	if err := c.ShouldBindJSON(&medicineCate); err != nil {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	var input map[string]interface{}
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updatedMedicineCate, err := h.service.Patch(medicineCate)
+	updatedMedicineCate, err := h.service.Patch(uint(id),input)
+	log.Println("Updated MedicineCate:", updatedMedicineCate)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

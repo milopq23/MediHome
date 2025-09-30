@@ -1,0 +1,10 @@
+[build]
+  cmd = "go build -o tmp/main.exe ./cmd"  # Đường dẫn đến thư mục chứa main.go
+  bin = "tmp/main.exe"                    # File thực thi sau khi build
+  full_bin = ""                           # (Tùy chọn) Đường dẫn đầy đủ, nếu cần
+  include_ext = ["go"]                    # Theo dõi file .go
+  exclude_dir = ["tmp", "vendor"]         # Bỏ qua thư mục không cần theo dõi
+  stop_on_error = true                    # Dừng nếu có lỗi khi build
+
+[run]
+  cmd = "tmp/main.exe" 

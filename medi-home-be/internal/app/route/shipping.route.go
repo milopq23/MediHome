@@ -15,10 +15,10 @@ func ShippingRoute(r *gin.Engine) {
 	shipping := r.Group("/shipping")
 	{
 		shipping.GET("/", shippingHandler.GetAll)
-		shipping.GET("/:id", shippingHandler.GetByID)
-		shipping.POST("/", shippingHandler.Create)
-		shipping.PUT("/:id", shippingHandler.Patch)
-		shipping.PATCH("/:id", shippingHandler.Patch)
+		// shipping.GET("/:id", shippingHandler.GetByID)
+		// shipping.POST("/", shippingHandler.Create)
+		// shipping.PUT("/:id", shippingHandler.Patch)
+		// shipping.PATCH("/:id", shippingHandler.Patch)
 		shipping.DELETE("/:id", shippingHandler.Delete)
 	}
 }

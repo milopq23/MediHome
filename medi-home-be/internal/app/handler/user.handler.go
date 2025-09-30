@@ -93,13 +93,13 @@ func (h *UserHandler) Patch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	updated, err := h.service.Patch(uint(id), input)
+	updatedUser, err := h.service.Patch(uint(id), input)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, updated)
+	c.JSON(http.StatusOK, updatedUser)
 
 }
 
