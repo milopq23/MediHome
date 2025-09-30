@@ -37,6 +37,7 @@ func NewUserHandler(service service.UserService) *UserHandler {
 	return &UserHandler{service}
 }
 
+// #region
 func (h *UserHandler) GetAll(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
@@ -49,6 +50,9 @@ func (h *UserHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, pagination)
 }
 
+// #endregion
+
+// #region
 func (h *UserHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := h.service.GetByID(uint(id))
@@ -59,6 +63,9 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// #endregion
+
+// #region
 func (h *UserHandler) Create(c *gin.Context) {
 	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -73,7 +80,9 @@ func (h *UserHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newUser)
 }
 
+// #endregion
 
+// #region
 func (h *UserHandler) Patch(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
@@ -89,9 +98,11 @@ func (h *UserHandler) Patch(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, updatedUser)
-
 }
 
+// #endregion
+
+// #region
 func (h *UserHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err := h.service.Delete(uint(id)); err != nil {
@@ -101,6 +112,9 @@ func (h *UserHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted"})
 }
 
+// #endregion
+
+// #region
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginRequest
 
@@ -123,6 +137,9 @@ func (h *UserHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// #endregion
+
+// #region
 func (h *UserHandler) Register(c *gin.Context) {
 	var user RegisterRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -136,3 +153,5 @@ func (h *UserHandler) Register(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, newUser)
 }
+
+// #endregion

@@ -9,7 +9,6 @@ type MedicineRepository interface {
 	GetAll() ([]model.Medicine,error)
 	FindByID(id int64) (model.Medicine, error)
 	Create(medicine model.Medicine) (model.Medicine, error)
-	Update(medicine model.Medicine) (model.Medicine, error)
 	Patch(medicine model.Medicine) (model.Medicine, error)
 	Delete(id int64) error
 }
@@ -37,10 +36,6 @@ func (r *medicineRepository) Create(medicine model.Medicine) (model.Medicine, er
 	return medicine, err
 }
 
-func (r *medicineRepository) Update(medicine model.Medicine) (model.Medicine, error) {
-	err := config.DB.Save(&medicine).Error
-	return medicine, err
-}
 
 func (r *medicineRepository) Patch(medicine model.Medicine) (model.Medicine, error) {
 	err := config.DB.Save(&medicine).Error

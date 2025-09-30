@@ -63,7 +63,7 @@ func (h *AdminHandler) Patch(c *gin.Context) {
 	}
 	updated, err := h.service.Patch(uint(id), input)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 

@@ -9,7 +9,6 @@ type MedicineService interface {
 	GetAll() ([]model.Medicine, error)
 	GetByID(id int64) (model.Medicine, error)
 	Create(medicine model.Medicine) (model.Medicine, error)
-	Update(medicine model.Medicine) (model.Medicine, error)
 	Patch(medicine model.Medicine) (model.Medicine, error)
 	Delete(id int64) error
 }
@@ -32,10 +31,6 @@ func (s *medicineService) GetByID(id int64) (model.Medicine, error) {
 
 func (s *medicineService) Create(medicine model.Medicine) (model.Medicine, error) {
 	return s.repo.Create(medicine)
-}
-
-func (s *medicineService) Update(medicine model.Medicine) (model.Medicine, error) {
-	return s.repo.Update(medicine)
 }
 
 func (s *medicineService) Patch(medicine model.Medicine) (model.Medicine, error) {

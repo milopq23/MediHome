@@ -26,15 +26,15 @@ func (h *ShippingHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, shippings)
 }
 
-// func (h *ShippingHandler) GetByID(c *gin.Context) {
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	shipping, err := h.service.GetByID(uint(id))	
-// 	if err != nil {
-// 		c.JSON(http.StatusNotFound, gin.H{"error": "Shipping not found"})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, shipping)
-// }
+func (h *ShippingHandler) GetByID(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	shipping, err := h.service.GetByID(int64(id))	
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Shipping not found"})
+		return
+	}
+	c.JSON(http.StatusOK, shipping)
+}
 
 func (h *ShippingHandler) Create(c *gin.Context) {
 	var shipping model.Shipping
