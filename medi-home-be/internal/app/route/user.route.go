@@ -9,8 +9,6 @@ import (
 )
 
 func UserRoutes(r *gin.Engine){
-
-	// 
 	userRepo := repository.NewUserRepository()
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
@@ -22,10 +20,10 @@ func UserRoutes(r *gin.Engine){
 	user := r.Group("/user")
 	{
 		user.GET("/",userHandler.GetAll)
-		user.GET("/:id",userHandler.GetByID)
-		user.POST("/",userHandler.Create)
-		// user.PUT("/update",userHandler.Update)
-		user.PATCH("/:id",userHandler.Patch)
-		user.DELETE("/:id",userHandler.Delete)
+		// user.GET("/:id",userHandler.GetByID)
+		// user.POST("/",userHandler.Create)
+		// // user.PUT("/update",userHandler.Update)
+		// user.PATCH("/:id",userHandler.Patch)
+		// user.DELETE("/:id",userHandler.Delete)
 	}
 }
