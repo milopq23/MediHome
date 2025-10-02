@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+
+.btn-delete{
+    @apply  bg-red-500  text-black hover:bg-red-700 hover:text-white rounded-lg px-4 p-2;
+}
+
+.btn-create{
+    @apply  bg-green-500 text-black hover:bg-green-700 hover:text-white rounded-lg px-4 p-2;
+}
+
+.btn-edit{
+    @apply  bg-blue-500 text-black hover:bg-blue-700 hover:text-white rounded-lg px-4 p-2;
+}
