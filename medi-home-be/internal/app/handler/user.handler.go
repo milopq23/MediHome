@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -39,6 +40,7 @@ func NewUserHandler(service service.UserService) *UserHandler {
 
 // #region
 func (h *UserHandler) GetAll(c *gin.Context) {
+	log.Println("GetAll called")
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
 
