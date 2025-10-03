@@ -38,9 +38,17 @@ func NewUserHandler(service service.UserService) *UserHandler {
 	return &UserHandler{service}
 }
 
+func (h *UserHandler) TotalActive(c*gin.Context){
+	total, err := h.service.TotalActive()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, total)
+}
+
 // #region
 func (h *UserHandler) GetAll(c *gin.Context) {
-	log.Println("GetAll called")
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
 
@@ -87,6 +95,7 @@ func (h *UserHandler) Create(c *gin.Context) {
 // #region
 func (h *UserHandler) Patch(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
+	log.Print("handler")
 
 	var input map[string]interface{}
 	if err := c.ShouldBindJSON(&input); err != nil {

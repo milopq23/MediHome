@@ -1,7 +1,6 @@
 package route
 
 import (
-	"log"
 	"medi-home-be/internal/app/handler"
 	"medi-home-be/internal/app/repository"
 	"medi-home-be/internal/app/service"
@@ -9,24 +8,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(r *gin.Engine){
+func UserRoutes(r *gin.RouterGroup) {
 	userRepo := repository.NewUserRepository()
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
-	log.Print("user")
-	// login := r.Group("/")
-	// {
-	// 	login.POST("/login",userHandler.Login)
-	// 	login.POST("/register",userHandler.Register)
-	// }
-	user := r.Group("/api/user")
+	login := r.Group("/")
 	{
-		log.Print("api user")
-		user.GET("/",userHandler.GetAll)
-		// user.GET("/:id",userHandler.GetByID)
-		// user.POST("/",userHandler.Create)
+		login.POST("/login", userHandler.Login)
+		login.POST("/register", userHandler.Register)
+	}
+	user := r.Group("/user")
+	{
+		user.GET("/", userHandler.GetAll)
+		user.GET("/total",userHandler.TotalActive)
+		user.GET("/:id", userHandler.GetByID)
+		user.POST("/", userHandler.Create)
 		// // user.PUT("/update",userHandler.Update)
-		// user.PATCH("/:id",userHandler.Patch)
-		// user.DELETE("/:id",userHandler.Delete)
+		user.PATCH("/:id", userHandler.Patch)
+		user.DELETE("/:id", userHandler.Delete)
 	}
 }

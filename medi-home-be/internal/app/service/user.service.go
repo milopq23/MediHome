@@ -12,7 +12,8 @@ import (
 )
 
 type UserService interface {
-	GetAll(page,pageSize int) (model.Pagination, error)
+	TotalActive() (int64,error)
+	GetAll(page, pageSize int) (model.Pagination, error)
 	GetByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
@@ -29,8 +30,12 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo}
 }
 
-func (s *userService) GetAll(page,pageSize int) (model.Pagination, error) {
-	return s.repo.FindAll(page,pageSize)
+func (s *userService) TotalActive() (int64,error) {
+	return s.repo.TotalActive()
+}
+
+func (s *userService) GetAll(page, pageSize int) (model.Pagination, error) {
+	return s.repo.FindAll(page, pageSize)
 }
 
 func (s *userService) GetByID(id uint) (model.User, error) {
@@ -40,7 +45,6 @@ func (s *userService) GetByID(id uint) (model.User, error) {
 func (s *userService) Create(user model.User) (model.User, error) {
 	return s.repo.Create(user)
 }
-
 
 func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, error) {
 	user, err := s.repo.FindByID(id)
@@ -63,7 +67,8 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 	if user.UserID == nil {
 		return model.User{}, fmt.Errorf("user ID is nil")
 	}
-	return s.repo.Patch(uint(*user.UserID), updates)
+
+	return s.repo.Patch	(uint(*user.UserID), updates)
 }
 
 func (s *userService) Delete(id uint) error {
@@ -89,7 +94,7 @@ func (s *userService) LoginUser(email string, password string) (string, model.Us
 	return token, user, nil
 }
 
-func (s *userService) RegisterUser(email string, password string, checkpassword string, name string, phone string,gender string) (*model.User, error) {
+func (s *userService) RegisterUser(email string, password string, checkpassword string, name string, phone string, gender string) (*model.User, error) {
 	if password != checkpassword {
 		return nil, errors.New("mật khẩu không khớp")
 	}
@@ -101,7 +106,7 @@ func (s *userService) RegisterUser(email string, password string, checkpassword 
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
-	user, err := s.repo.Register(name, email, phone, hashPassword,gender)	
+	user, err := s.repo.Register(name, email, phone, hashPassword, gender)
 	if err != nil {
 		return nil, err
 	}

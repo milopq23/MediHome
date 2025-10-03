@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminRoutes(r *gin.Engine){
+func AdminRoutes(r *gin.RouterGroup){
 	adminRepo := repository.NewAdminRepository()
 	adminService := service.NewAdminService(adminRepo)
 	adminHandler := handler.NewAdminHandler(adminService)

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MedicineRoute(r *gin.Engine) {
+func MedicineRoute(r *gin.RouterGroup) {
 	medicineRepo := repository.NewMedicineRepository()
 	medicineService := service.NewMedicineService(medicineRepo)
 	medicineHandler := handler.NewMedicineHandler(medicineService)

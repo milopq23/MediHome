@@ -9,6 +9,7 @@ import (
 )
 
 type UserRepository interface {
+	TotalActive() (int64, error)
 	FindAll(page, pageSize int) (model.Pagination, error)
 	FindByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
@@ -32,6 +33,18 @@ type UserResponse struct {
 	Email      string `json:"email"`
 	Gender     string `json:"gender"`
 	IsVerified bool   `json:"is_verified"`
+}
+
+func (r *userRepository) TotalActive() (int64, error) {
+	var totalActive int64
+	err := config.DB.Model(&model.User{}).
+		Where("is_verified = ?", true).
+		Count(&totalActive).Error
+
+	if err != nil {
+		return 0, err
+	}
+	return totalActive, nil
 }
 
 // #region List All Pagination
@@ -62,6 +75,7 @@ func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
 			Name:       u.Name,
 			Email:      u.Email,
 			Phone:      u.Phone,
+			Gender:     u.Gender,
 			IsVerified: u.IsVerified,
 		})
 	}

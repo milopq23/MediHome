@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ShippingRoute(r *gin.Engine) {
+func ShippingRoute(r *gin.RouterGroup) {
 	shippingRepo := repository.NewShippingRepository()
 	shippingService := service.NewShippingService(shippingRepo)
 	shippingHandler := handler.NewShippingHandler(shippingService)

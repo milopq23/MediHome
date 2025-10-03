@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DosageFormRoute(r *gin.Engine){
+func DosageFormRoute(r *gin.RouterGroup){
 	dosageRepo := repository.NewDosageFormRepository()
 	dosageService := service.NewDosageFormService(dosageRepo)
 	dosageHandler := handler.NewDosageFormHandler(dosageService)
