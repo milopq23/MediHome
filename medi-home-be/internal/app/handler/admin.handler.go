@@ -29,6 +29,20 @@ func (h *AdminHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, pagination)
 }
 
+func (h *AdminHandler) TotalAdmin(c *gin.Context){
+	role := c.Query("role")
+	if role == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Thiếu role"})
+		return
+	}	
+	admin, err := h.service.TotalAdmin(role)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Total admin not found"})
+		return
+	}
+	c.JSON(http.StatusOK, admin)
+}
+
 func (h *AdminHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	admin, err := h.service.GetByID(uint(id))

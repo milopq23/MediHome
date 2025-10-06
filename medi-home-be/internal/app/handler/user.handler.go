@@ -38,7 +38,7 @@ func NewUserHandler(service service.UserService) *UserHandler {
 	return &UserHandler{service}
 }
 
-func (h *UserHandler) TotalActive(c*gin.Context){
+func (h *UserHandler) TotalActive(c *gin.Context) {
 	total, err := h.service.TotalActive()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -78,6 +78,7 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 // #region
 func (h *UserHandler) Create(c *gin.Context) {
 	var user model.User
+	log.Print(user)
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -104,7 +105,7 @@ func (h *UserHandler) Patch(c *gin.Context) {
 	}
 	updatedUser, err := h.service.Patch(uint(id), input)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"er                                                                                                                                                                                                                   ror": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 

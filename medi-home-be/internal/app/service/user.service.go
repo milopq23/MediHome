@@ -12,7 +12,7 @@ import (
 )
 
 type UserService interface {
-	TotalActive() (int64,error)
+	TotalActive() (int64, error)
 	GetAll(page, pageSize int) (model.Pagination, error)
 	GetByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
@@ -30,7 +30,7 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo}
 }
 
-func (s *userService) TotalActive() (int64,error) {
+func (s *userService) TotalActive() (int64, error) {
 	return s.repo.TotalActive()
 }
 
@@ -52,11 +52,13 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 		return model.User{}, err
 	}
 	allowedFields := map[string]bool{
-		"name":     true,
-		"phone":    true,
-		"avatar":   true,
-		"password": true,
-		"gender":   true,
+		"name":        true,
+		"email":       true,
+		"phone":       true,
+		"avatar":      true,
+		"password":    true,
+		"gender":      true,
+		"is_verified": true,
 	}
 	updates := make(map[string]interface{})
 	for k, v := range data {
@@ -68,7 +70,7 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 		return model.User{}, fmt.Errorf("user ID is nil")
 	}
 
-	return s.repo.Patch	(uint(*user.UserID), updates)
+	return s.repo.Patch(uint(*user.UserID), updates)
 }
 
 func (s *userService) Delete(id uint) error {

@@ -9,6 +9,7 @@ import (
 type AdminRepository interface{
 	FindAll(page, pageSize int) (model.Pagination,error)
 	FindByID(id uint) (model.Admin,error)
+	TotalAdmin(role string) (int64,error)
 	Create(admin model.Admin) (model.Admin,error)
 	Patch(id uint, updates map[string]interface{}) (model.Admin, error)
 	Delete(id uint) error
@@ -52,6 +53,7 @@ func (r *adminRepository) FindAll(page,pageSize int) (model.Pagination,error){
 	for _, a := range admin {
 		adminResponses = append(adminResponses, AdminResponse{
 			AdminID: uint(a.AdminID),
+			Name : a.Name,
 			Email:   a.Email,
 			Phone:   a.Phone,
 			Role:    a.Role,
@@ -62,6 +64,11 @@ func (r *adminRepository) FindAll(page,pageSize int) (model.Pagination,error){
 	return *pagination, nil
 }
 
+func (r *adminRepository) TotalAdmin(role string) (int64, error) {
+	var count int64
+	err:=config.DB.Model(&model.Admin{}).Where("role = ?", role).Count(&count).Error
+	return count,err
+}
 
 func (r *adminRepository) FindByID(id uint) (model.Admin,error){
 	var admin model.Admin
