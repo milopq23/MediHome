@@ -93,7 +93,7 @@
 
 	function confirmDelete(id) {
 		showConfirmDelete = true;
-		user.user_id  = id
+		user.user_id = id;
 	}
 
 	function openForm(mode, userData) {
@@ -174,7 +174,7 @@
 					<td class="w-[400px] border p-2">{user.email}</td>
 					<td class="w-[150px] border p-2">{user.phone}</td>
 					<td class="w-[100px] border p-2">{user.gender}</td>
-					<td class="w-[100px] border p-2">{user.is_verified}</td>
+					<td class="w-[100px] border p-2">{user.is_verified ? 'Đã xác thực' : 'Chưa xác thực'}</td>
 					<td class="w-[350px] border p-2">
 						<div class="flex gap-2">
 							<button
@@ -193,7 +193,7 @@
 								Sửa</button
 							>
 							<button
-								on:click={()=>confirmDelete(user.user_id)}
+								on:click={() => confirmDelete(user.user_id)}
 								class="btn-delete flex items-center gap-1"
 							>
 								<Trash2 class="h-5  w-5" />
@@ -312,15 +312,20 @@
 				</label>
 			</div>
 
-			<!-- <div class="flex items-center space-x-2">
-					<input
-						type="checkbox"
-						bind:checked={user.is_verified}
-						id="verified"
-						class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500"
-					/>
-					<label for="verified" class="font-medium select-none">Đã xác thực</label>
-				</div> -->
+			<div class="flex items-center space-x-2">
+				<label for="verified" class="font-medium select-none">
+					Kích hoạt:
+					<select
+						bind:value={user.is_verified}
+						required
+						disabled={formMode === 'view'}
+						class="focus:ring-opacity-50 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+					>
+						<option value="true">Đã xác thực</option>
+						<option value="false">Chưa xác thực</option>
+					</select>
+				</label>
+			</div>
 
 			<div class="mt-6 flex justify-end space-x-3">
 				{#if formMode === 'view'}
