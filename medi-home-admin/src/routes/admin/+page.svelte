@@ -35,28 +35,21 @@
 				: 'Chi tiết quản trị viên';
 
 	async function reloadAction() {
-		await loadAdmins;
-		await totalAdmin();
-		await totalStaff();
+		await loadAdmins();
+		await totalByRole('Admin');
+		await totalByRole('Staff');
 	}
-	async function totalAdmin() {
+	async function totalByRole(role) {
 		try {
-			const role = 'Admin';
-			adminTotal = await getTotalRole(role);
+			const count = await getTotalRole(role)
+			if(role === 'Admin') adminTotal = count
+			else staffTotal = count;
 		} catch (err) {
 			// error = 'Không thể tải.';
 			console.error(err);
 		}
 	}
-	async function totalStaff() {
-		try {
-			const role = 'Staff';
-			staffTotal = await getTotalRole(role);
-		} catch (err) {
-			// error = 'Không thể tải.';
-			console.error(err);
-		}
-	}
+	// 
 
 	async function loadAdmins(currentPage = 1) {
 		try {
@@ -102,8 +95,8 @@
 
 	onMount(() => {
 		loadAdmins();
-		totalAdmin();
-		totalStaff();
+		totalByRole('Admin');
+		totalByRole('Staff');
 		// totalActice();
 	});
 
