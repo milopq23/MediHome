@@ -25,7 +25,7 @@
 		role: ''
 	};
 
-	let formMode = 'create' || 'view' || 'edit';
+	let formMode = 'create';
 
 	$: formTitle =
 		formMode === 'create'
@@ -41,15 +41,13 @@
 	}
 	async function totalByRole(role) {
 		try {
-			const count = await getTotalRole(role)
-			if(role === 'Admin') adminTotal = count
+			const count = await getTotalRole(role);
+			if (role === 'Admin') adminTotal = count;
 			else staffTotal = count;
 		} catch (err) {
-			// error = 'Không thể tải.';
 			console.error(err);
 		}
 	}
-	// 
 
 	async function loadAdmins(currentPage = 1) {
 		try {
@@ -97,7 +95,6 @@
 		loadAdmins();
 		totalByRole('Admin');
 		totalByRole('Staff');
-		// totalActice();
 	});
 
 	function confirmDelete(id) {

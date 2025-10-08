@@ -1,6 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { Plus, ChevronUp, Pencil, Trash2 } from 'lucide-svelte';
+	import {getAllCate} from '$lib/api/medicine-cate.js'
 
 	let categories = [];
 
@@ -9,9 +10,21 @@
 	// Trạng thái mở rộng từng danh mục cha (theo ID)
 	let expanded = new Set();
 
-	onMount(async () => {
-		const res = await fetch('http://localhost:8000/api/medicine-cate/'); // URL thực tế của bạn
-		categories = await res.json();
+
+	async function loadCates() {
+		try {
+			const res = await getAllCate();
+			categories = res;
+			
+		} catch (error) {
+			console.error(error)
+		}
+		
+	}
+	onMount( () => {
+		loadCates();
+		// const res = await fetch('http://localhost:8000/api/medicine-cate/'); // URL thực tế của bạn
+		// categories = await res.json();
 	});
 
 	function toggle(id) {

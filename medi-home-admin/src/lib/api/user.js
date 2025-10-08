@@ -1,58 +1,31 @@
 // user.js
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function fetchUsers(page = 1, pageSize = 10) {
+export async function loadUsers(page = 1, pageSize = 10) {
 	try {
-		const response = await fetch(`${API_URL}/api/user/?page=${page}&page_size=${pageSize}`, {
-			method: 'GET',
-			credentials: 'include', // nếu backend dùng cookie/session
-			headers: {
-				'Content-Type': 'application/json'
-				// 'Authorization': 'Bearer <token>' nếu có auth
-			}
-		});
+		const userRes = await fetch(`${API_URL}/api/user/?page=${page}&page_size=${pageSize}`);
+		const user = await userRes.json();
+		// if(!userRes.ok){
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+		// }
 
-		const result = await response.json();
+		const userActiveRes = await fetch(`${API_URL}/api/user/total`);
+		const activeUser = await userActiveRes.json();
 
-		// Giả sử response có cấu trúc { page, page_size, total, data }
+		console.log(user)
+		console.log(activeUser)
+
+	
 
 		return {
-			users: result.data,
-			page: result.page,
-			pageSize: result.page_size,
-			total: result.total
-		}; // chỉ trả về mảng user thôi
+			users: user.data,
+			page: user.page,
+			pageSize: user.page_size,
+			total: user.total,
+			activeUser
+		};
 	} catch (error) {
 		console.error('Lỗi khi gọi danh sách user:', error);
-		throw error;
-	}
-}
-
-
-export async function getTotal() {
-	try {
-		const response = await fetch(`${API_URL}/api/user/total`, {
-			// method: 'GET',
-			// credentials: 'include', // nếu backend dùng cookie/session
-			headers: {
-				'Content-Type': 'application/json'
-				// 'Authorization': 'Bearer <token>' nếu có auth
-			}
-		});
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const result = await response.json();
-		console.log(result);
-		return result;
-	} catch {
-		console.error('Lỗi khi gọi tổng số user hoạt động:', error);
 		throw error;
 	}
 }
@@ -120,8 +93,8 @@ export async function deleteUser(id) {
 			method:'DELETE'
 
 		})
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		if (!res.ok) {
+			throw new Error(`HTTP error! status: ${res.status}`);
 		}
 		const result = await res.json();
 		return result

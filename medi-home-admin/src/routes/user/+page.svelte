@@ -2,17 +2,16 @@
 	import ToolBar from '$lib/components/ToolBar.svelte';
 	import { UserPlus, Pencil, Trash2, Eye } from 'lucide-svelte';
 	import { onMount } from 'svelte';
-	import { fetchUsers, getTotal, addUser, editUser, deleteUser } from '$lib/api/user.js';
+	import { loadUsers, addUser, editUser, deleteUser } from '$lib/api/user.js';
+	let users = [];
+	let total = 0;
+	let page = 1;
+	let pageSize = 10;
+	let userActive = 1;
+	let totalPages = 1;
 
 	let showForm = false;
 	let showConfirmDelete = false;
-
-	let users = [];
-	let page = 1;
-	let pageSize = 10;
-	let total = 0;
-	let totalPages = 1;
-	let totalActiveUser = 1;
 
 	let user = {
 		user_id: null,
@@ -21,10 +20,10 @@
 		password: '',
 		phone: '',
 		gender: '',
-		is_verified: false
+		is_verified: 'false'
 	};
 
-	let formMode = 'create' || 'view' || 'edit';
+	let formMode = 'create';
 
 	$: formTitle =
 		formMode === 'create'
@@ -33,26 +32,17 @@
 				? 'Chỉnh sửa người dùng'
 				: 'Chi tiết người dùng';
 
-	async function totalActice() {
+	async function loadUserPage(currentPage = 1) {
 		try {
-			const result = await getTotal();
-			totalActiveUser = result;
-		} catch (err) {
-			// error = 'Không thể tải.';
-			console.error(err);
-		}
-	}
-
-	async function loadUsers(currentPage = 1) {
-		try {
-			const result = await fetchUsers(currentPage, pageSize);
+			const result = await loadUsers(currentPage, pageSize);
 			users = result.users;
 			page = result.page;
 			pageSize = result.pageSize;
 			total = result.total;
 			totalPages = Math.ceil(total / pageSize);
+
+			userActive = result.activeUser;
 		} catch (err) {
-			// error = 'Không thể tải danh sách người dùng.';
 			console.error(err);
 		}
 	}
@@ -68,7 +58,6 @@
 				console.log('Cập nhật thành công:', result);
 			}
 			toggleForm();
-			loadUsers();
 		} catch (error) {
 			console.log(error);
 		}
@@ -76,19 +65,16 @@
 
 	async function confirmUserDelete(id) {
 		try {
-			await deleteUser(id); // Gọi API xoá
+			await deleteUser(id);
 			showConfirmDelete = false;
-
-			await loadUsers();
-			// userToDelete = null;
+			await loadUserPage();
 		} catch (err) {
 			console.error('Xoá thất bại:', err);
 		}
 	}
 
 	onMount(() => {
-		loadUsers();
-		totalActice();
+		loadUserPage();
 	});
 
 	function confirmDelete(id) {
@@ -100,6 +86,7 @@
 		formMode = mode;
 		if (userData) {
 			user = { ...userData };
+			console.log(user);
 		} else {
 			user = {
 				user_id: null,
@@ -108,7 +95,7 @@
 				password: '',
 				phone: '',
 				gender: '',
-				is_verified: false
+				is_verified: 'Chưa xác thực'
 			};
 		}
 		showForm = true;
@@ -116,7 +103,7 @@
 
 	function goToPage(p) {
 		if (p >= 1 && p <= totalPages) {
-			loadUsers(p);
+			loadUserPage(p);
 		}
 	}
 
@@ -146,9 +133,7 @@
 			<h1 class="">Đã kích hoạt</h1>
 			<div class="flex items-center justify-center">
 				<h1 class="text-4xl font-bold">
-					{totalActiveUser}<span class="text-xl font-normal"
-						>/{Math.max(total, totalActiveUser)}</span
-					>
+					{userActive}<span class="text-xl font-normal">/{total}</span>
 				</h1>
 			</div>
 		</div>
@@ -319,8 +304,10 @@
 						bind:value={user.is_verified}
 						required
 						disabled={formMode === 'view'}
+						on:change={() => console.log('user.is_verified:', user.is_verified)}
 						class="focus:ring-opacity-50 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
 					>
+						<!-- <option value="">-- Chọn --</option> -->
 						<option value="true">Đã xác thực</option>
 						<option value="false">Chưa xác thực</option>
 					</select>
