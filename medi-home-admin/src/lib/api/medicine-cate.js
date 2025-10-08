@@ -2,12 +2,12 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 
 export async function getAllCate(){
     try {
-        const res = await fetch(`${API_URL}/api/medicine-cate`)
-        console.log(res)
+        const res = await fetch(`${API_URL}/api/medicine-cate/`)
         if(!res.ok){
             throw new Error(`HTTP error! status: ${res.status}`);
         }
         const result = await res.json();
+        console.log(result)
         return result
     } catch (error) {
         console.error('Lỗi khi gọi danh sách loại thuốc:', error);
@@ -15,10 +15,10 @@ export async function getAllCate(){
     }
 }
 
-export async function createCateParent(category){
+export async function createCate(category){
     try {
         console.log("Dữ liệu POST", category)
-        const res = await fetch(`${API_URL}/api/medicine-cate/parent`,{
+        const res = await fetch(`${API_URL}/api/medicine-cate/children`,{
             method:'POST',
             body:JSON.stringify(category)
         })
@@ -71,7 +71,6 @@ export async function patchCate(id,category){
 
 export async function deleteCate(id){
     try {
-        console.log("Dữ liệu Delete", category)
         const res = await fetch(`${API_URL}/api/medicine-cate/${id}`,{
             method:'DELETE',
         })
