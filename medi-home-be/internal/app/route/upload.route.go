@@ -16,5 +16,6 @@ func UploadRoute(r *gin.RouterGroup) {
 	}
 	service := service.NewCloudinaryService(cld)
 	handler := handler.NewUploadHandler(service)
-	r.POST("/upload", handler.Upload)
+	r.POST("/upload", handler.SingleUpload)
+	r.POST("/multi_upload",handler.MultiUpload)
 }
