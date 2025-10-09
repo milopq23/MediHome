@@ -27,25 +27,8 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	route.APIRoute(r)
-	// route.UserRoutes(r)
-	// Tạo instance handler ở đây
-	// userRepo := repository.NewUserRepository()
-	// userService := service.NewUserService(userRepo)
-	// userHandler := handler.NewUserHandler(userService)
-
-	// Đăng ký route /api/user với handler GetAll trực tiếp trong main.go
-	// r.GET("/api/user", userHandler.GetAll)
 	
-
-	// r.Use(cors.New(cors.Config{
-	//     AllowOrigins:     []string{"http://localhost:3000"},
-	//     AllowMethods:     []string{"GET", "POST", "OPTIONS"},
-	//     AllowHeaders:     []string{"Origin", "Content-Type"},
-	//     ExposeHeaders:    []string{"Content-Length"},
-	//     AllowCredentials: true,
-	//     MaxAge:           12 * time.Hour,
-	// }))
+	route.APIRoute(r)
 
 	r.GET("/api/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{

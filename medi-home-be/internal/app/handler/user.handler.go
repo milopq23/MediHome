@@ -78,7 +78,6 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 // #region
 func (h *UserHandler) Create(c *gin.Context) {
 	var user model.User
-	log.Print(user)
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

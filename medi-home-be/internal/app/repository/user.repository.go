@@ -15,7 +15,6 @@ type UserRepository interface {
 	Create(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
 	Delete(id uint) error
-
 	FindByEmail(email string) (model.User, error)
 	Register(name string, email string, phone string, password string, gender string) (model.User, error)
 }

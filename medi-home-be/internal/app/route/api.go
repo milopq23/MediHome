@@ -12,4 +12,5 @@ func APIRoute(r *gin.Engine) {
 	MedicineRoute(api)
 	ShippingRoute(api)
 	DosageFormRoute(api)
+	UploadRoute(api)
 }
