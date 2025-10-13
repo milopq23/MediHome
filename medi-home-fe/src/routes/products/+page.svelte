@@ -1,89 +1,30 @@
 <!-- src/routes/products/+page.svelte -->
 <script>
 	import ProductCard from '$lib/components/ProductCard.svelte';
+	import { listMedicine } from '$lib/api/medicine.js';
+	import { onMount } from 'svelte';
 
 	let totalPages = 10;
-	let currentPage = 1;
+	let pageSize = 10;
+	let total = 0;
+	let page = 1;
+	let medicines = [];
 
-	let products = [
-		{
-			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
-			price: '60.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
-			unit: '/hộp',
-			packaging: '3 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Cetirizine Stada 10mg điều trị viêm mũi dị ứng, mày đay (10 vỉ x 10 viên)',
-			price: '48.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033097_cetirizin_stada_10mg_10x10_6872_61c9_large_81d9335efe.jpg',
-			unit: '/hộp',
-			packaging: '10 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Vitamin C 500mg SPHARM phòng và trị thiếu vitamin C (10 vỉ x 10 viên)',
-			price: '25.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_03587_e8e7e30119.jpg',
-			unit: '/viên',
-			packaging: '10 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
-			price: '60.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
-			unit: '/hộp',
-			packaging: '3 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Cetirizine Stada 10mg điều trị viêm mũi dị ứng, mày đay (10 vỉ x 10 viên)',
-			price: '48.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033097_cetirizin_stada_10mg_10x10_6872_61c9_large_81d9335efe.jpg',
-			unit: '/hộp',
-			packaging: '10 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Vitamin C 500mg SPHARM phòng và trị thiếu vitamin C (10 vỉ x 10 viên)',
-			price: '25.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_03587_e8e7e30119.jpg',
-			unit: '/viên',
-			packaging: '10 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Exopadin 60mg Trường Thọ điều trị viêm mũi dị ứng, mày đay (3 vỉ x 10 viên)',
-			price: '60.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/768x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/IMG_0238_fc19904162.jpg',
-			unit: '/hộp',
-			packaging: '3 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Cetirizine Stada 10mg điều trị viêm mũi dị ứng, mày đay (10 vỉ x 10 viên)',
-			price: '48.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/00033097_cetirizin_stada_10mg_10x10_6872_61c9_large_81d9335efe.jpg',
-			unit: '/hộp',
-			packaging: '10 vỉ x 10 viên'
-		},
-		{
-			drugName: 'Thuốc Vitamin C 500mg SPHARM phòng và trị thiếu vitamin C (10 vỉ x 10 viên)',
-			price: '25.000đ',
-			image:
-				'https://cdn.nhathuoclongchau.com.vn/unsafe/375x0/filters:quality(90)/https://cms-prod.s3-sgn09.fptcloud.com/DSC_03587_e8e7e30119.jpg',
-			unit: '/viên',
-			packaging: '10 vỉ x 10 viên'
+	async function listMedicinePage(currentPage = 1) {
+		try {
+			const result = await listMedicine(currentPage, pageSize);
+			medicines = result.medicines;
+			page = result.page;
+			pageSize = result.pageSize;
+			total = result.total;
+			totalPages = Math.ceil(total / pageSize);
+		} catch (error) {
+			console.log('medicine', error);
 		}
-		// {
-		//   drugName: "Vitamin C",
-		//   price: "15.000đ",
-		//   image: "https://via.placeholder.com/100"
-		// }
-	];
+	}
+	onMount(() => {
+		listMedicinePage();
+	});
 
 	function goToPage(page) {
 		if (page >= 1 && page <= totalPages) {
@@ -107,13 +48,12 @@
 <h1 class="mb-4 text-2xl font-bold">Sản phẩm</h1>
 
 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-	{#each products as product}
+	{#each medicines as medicine}
 		<ProductCard
-			drugName={product.drugName}
-			price={product.price}
-			image={product.image}
-			unit={product.unit}
-			packaging={product.packaging}
+			name={medicine.name}
+			thumbnail={medicine.thumbnail}
+			price={medicine.price}
+			packaging={medicine.package}
 		/>
 	{/each}
 </div>
@@ -143,4 +83,4 @@
 </div>
 
 <!-- dosage={product.dosage}
-      instructions={product.instructions} -->
+		instructions={product.instructions} -->
