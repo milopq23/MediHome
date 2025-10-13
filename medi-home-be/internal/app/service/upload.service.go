@@ -13,7 +13,7 @@ import (
 
 type CloudinaryService interface {
 	UploadFile(file multipart.File, filename string, folder string) (string, error)
-	HandelRequest(c *gin.Context) (string, error)
+		HandelRequest(c *gin.Context) (string, error)
 	// UploadMultiFileHandleRequest(r *http.Request) ([]string, error)
 	UploadMultiFileHandleRequestFromGin(c *gin.Context) ([]string, error)
 }

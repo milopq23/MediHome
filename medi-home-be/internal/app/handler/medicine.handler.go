@@ -18,12 +18,16 @@ func NewMedicineHandler(service service.MedicineService) *MedicineHandler {
 }
 
 func (h *MedicineHandler) GetAll(c *gin.Context) {
-	medicines, err := h.service.GetAll()
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
+
+	pagination, err := h.service.GetAll(page, pageSize)
+	
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}	
-	c.JSON(http.StatusOK, medicines)
+	c.JSON(http.StatusOK, pagination)
 }
 
 func (h *MedicineHandler) GetByID(c *gin.Context) {

@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
+	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 )
 
 type MedicineService interface {
-	GetAll() ([]model.Medicine, error)
+	GetAll(page, pageSize int) (model.Pagination, error)
 	GetByID(id int64) (model.Medicine, error)
 	Create(medicine model.Medicine) (model.Medicine, error)
 	Patch(medicine model.Medicine) (model.Medicine, error)
@@ -18,11 +20,15 @@ type medicineService struct {
 }
 
 func NewMedicineService(repo repository.MedicineRepository) MedicineService {
-	return &medicineService{}
+	return &medicineService{repo}
 }
 
-func (s *medicineService) GetAll() ([]model.Medicine, error) {
-	return s.repo.GetAll()
+func (s *medicineService) GetAll(page, pageSize int) (model.Pagination, error) {
+	if s.repo == nil {
+		log.Println("s.repo is nil!") // Log lỗi rõ ràng
+		return model.Pagination{}, errors.New("internal error: repository not initialized")
+	}
+	return s.repo.FindAll(page, pageSize)
 }
 
 func (s *medicineService) GetByID(id int64) (model.Medicine, error) {

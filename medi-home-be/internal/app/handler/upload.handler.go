@@ -32,21 +32,6 @@ func (h *UploadHandler) SingleUpload(c *gin.Context) {
 	})
 }
 
-// func (h *UploadHandler) MultiUpload(c *gin.Context) {
-// 	urls, err := h.CloudinaryService.UploadMultiFileHandleRequest(c.Request)
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{
-// 			"error":   "Upload failed",
-// 			"details": err.Error(),
-// 		})
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"message": "Upload successful",
-// 		"urls":     urls,
-// 	})
-// }
 
 func (h *UploadHandler) MultiUpload(c *gin.Context) {
 	log.Println(">> Nhận request multi_upload")

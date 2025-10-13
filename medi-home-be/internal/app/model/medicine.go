@@ -4,8 +4,8 @@ import "time"
 
 type Medicine struct {
 	MedicineID       int64     `gorm:"column:medicine_id;primarykey;autoIncrement"`
-	MedicineCateID   int64     `gorm:"column:medicine_cate_id;not null" json:"medicine_cate_id"`
-	DosageFormID     int64     `gorm:"column:dosage_form_id;not null" json:"dosage_form_id"`
+	MedicineCateID   int64     `gorm:"column:medicinecate_id;not null" json:"medicinecate_id"`
+	DosageFormID     int64     `gorm:"column:dosageform_id;not null" json:"dosageform_id"`
 	Code             string    `gorm:"column:code;unique;not null" json:"code"`
 	Name             string    `gorm:"column:name;not null" json:"name"`
 	Thumbnail        string    `gorm:"column:thumbnail" json:"thumbnail"`
@@ -29,3 +29,4 @@ type Medicine struct {
 	MedicineCate *MedicineCate `gorm:"foreignKey:MedicineCateID;references:MedicineCateID" json:"medicine_cate,omitempty"`
 	DosageForm   *DosageForm   `gorm:"foreignKey:DosageFormID;references:DosageFormID" json:"dosage_form,omitempty"`
 }
+
