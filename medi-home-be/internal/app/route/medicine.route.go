@@ -12,15 +12,19 @@ func MedicineRoute(r *gin.RouterGroup) {
 	medicineRepo := repository.NewMedicineRepository()
 	medicineService := service.NewMedicineService(medicineRepo)
 	medicineHandler := handler.NewMedicineHandler(medicineService)
+	adminMedicine := r.Group("/admin/medicine")
+	{
+		adminMedicine.GET("/", medicineHandler.GetAll)
+		adminMedicine.GET("/:id", medicineHandler.GetByID)
+		adminMedicine.POST("/", medicineHandler.Create)
+		adminMedicine.PUT("/:id", medicineHandler.Patch)
+		adminMedicine.PATCH("/:id", medicineHandler.Patch)
+		adminMedicine.DELETE("/:id", medicineHandler.Delete)
+	}
+	
 	medicine := r.Group("/medicine")
 	{
-		medicine.GET("/", medicineHandler.GetAll)
-		medicine.GET("/:id", medicineHandler.GetByID)
-		medicine.POST("/", medicineHandler.Create)
-		medicine.PUT("/:id", medicineHandler.Patch)
-		medicine.PATCH("/:id", medicineHandler.Patch)
-		medicine.DELETE("/:id", medicineHandler.Delete)
-
+		medicine.GET("/",medicineHandler.ListMedicine)
 
 	}
 

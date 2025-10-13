@@ -77,3 +77,16 @@ func (h *MedicineHandler) Delete(c *gin.Context) {
 	}
 	c.Status(http.StatusNoContent)
 }
+
+func (h *MedicineHandler) ListMedicine(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+
+	pagination, err := h.service.ListMedicine(page, pageSize)
+	
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}	
+	c.JSON(http.StatusOK, pagination)
+}
