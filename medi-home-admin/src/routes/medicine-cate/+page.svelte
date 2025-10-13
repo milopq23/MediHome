@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { Plus, ChevronUp, Pencil, Trash2 } from 'lucide-svelte';
-	import { getAllCate, createCate, patchCate, deleteCate } from '$lib/api/medicine-cate.js';
+	import { getAllCate, createCate, patchCate, deleteCate, upload } from '$lib/api/medicine-cate.js';
 
 	let categories = [];
 	let expandedIds = [];
@@ -13,6 +13,8 @@
 		parent_id: null
 	};
 
+	let file = null;
+	let previewUrl = '';
 	let formMode = 'create';
 	let showForm = false;
 	let showConfirmDelete = false;
@@ -38,13 +40,27 @@
 		}
 	}
 
+	async function onFileChange(event) {
+		file = event.target.files[0];
+		if (file) {
+			// Tạo URL tạm thời để preview
+			previewUrl = URL.createObjectURL(file);
+		} else {
+			previewUrl = '';
+		}
+	}
+
 	async function submitForm(event) {
 		event.preventDefault();
 		try {
 			if (formMode === 'create') {
+				await upload(file);
 				await createCate(category);
+				
 			} else if (formMode === 'edit') {
-				await patchCate(category.medicinecate_id,category);
+				await upload(file);
+				await patchCate(category.medicinecate_id, category);
+				
 			}
 			await loadCates();
 			toggleForm();
@@ -198,9 +214,32 @@
 					</select>
 				</label>
 			</div>
-			{#if category}
-				<p class="text-sm text-gray-500">Đang chọn parent_id: {category.parent_id}</p>
-			{/if}
+
+			<div>
+				<label class="block font-medium  text-gray-900 dark:text-white"
+					>Icon:
+					<div class="flex justify-center">
+						{#if previewUrl}
+								<img
+									src={previewUrl}
+									alt="Ảnh preview"
+									class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
+								/>
+						{:else}
+							<div class="h-[200px] w-[200px] rounded-xl border-solid bg-gray-300 flex justify-center items-center">
+								<Plus class="h-5 w-5"  />
+							</div>
+							
+						{/if}
+					</div>
+					<input
+						class="hidden"
+						type="file"
+						accept="image/*"
+						on:change={onFileChange}
+					/>
+				</label>
+			</div>
 
 			<!-- Nút hành động -->
 			<div class="mt-6 flex justify-end gap-2">
@@ -247,4 +286,3 @@
 		</div>
 	</div>
 {/if}
-
