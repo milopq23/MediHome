@@ -42,6 +42,8 @@
 	},
 	"dependencies": {
 		"@tailwindcss/line-clamp": "^0.4.4",
+		"lucide": "^0.545.0",
+		"lucide-svelte": "^0.545.0",
 		"tailwind-scrollbar-hide": "^4.0.0"
 	}
 }
