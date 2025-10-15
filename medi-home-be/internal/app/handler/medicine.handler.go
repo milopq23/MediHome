@@ -75,7 +75,7 @@ func (h *MedicineHandler) Delete(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, gin.H{"message":"Xoá thành công medicine"})
 }
 
 func (h *MedicineHandler) ListMedicine(c *gin.Context) {
