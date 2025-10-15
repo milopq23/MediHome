@@ -2,7 +2,7 @@ const API_URL = import.meta.env.VITE_GO_PORT
 
 export async function loadMedicines(page = 1, pageSize = 10){
     try {
-        const medicineRes =  await fetch(`${API_URL}/api/medicine/?page=${page}&page_size=${pageSize}`)
+        const medicineRes =  await fetch(`${API_URL}/api/admin/medicine/?page=${page}&page_size=${pageSize}`)
         const medicine = await medicineRes.json();
         return {
             medicines: medicine.data,
@@ -17,7 +17,7 @@ export async function loadMedicines(page = 1, pageSize = 10){
 
 export async function addMedicine(medicine) {
     try {
-        const res =  await fetch(`${API_URL}/api/medicine`,{
+        const res =  await fetch(`${API_URL}/api/admin/medicine`,{
             medthod:'POST',
             headers:{
 
@@ -35,7 +35,7 @@ export async function addMedicine(medicine) {
 
 export async function patchMedicine(medicine){
     try {
-        const res =  await fetch(`${API_URL}/api/medicine`,{
+        const res =  await fetch(`${API_URL}/api/admin/medicine`,{
             medthod:'PATCH',
             headers:{
 

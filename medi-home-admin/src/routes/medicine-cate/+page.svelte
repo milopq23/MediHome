@@ -56,11 +56,9 @@
 			if (formMode === 'create') {
 				await upload(file);
 				await createCate(category);
-				
 			} else if (formMode === 'edit') {
 				await upload(file);
 				await patchCate(category.medicinecate_id, category);
-				
 			}
 			await loadCates();
 			toggleForm();
@@ -216,28 +214,24 @@
 			</div>
 
 			<div>
-				<label class="block font-medium  text-gray-900 dark:text-white"
+				<label class="block font-medium text-gray-900 dark:text-white"
 					>Icon:
 					<div class="flex justify-center">
 						{#if previewUrl}
-								<img
-									src={previewUrl}
-									alt="Ảnh preview"
-									class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
-								/>
+							<img
+								src={previewUrl}
+								alt="Ảnh preview"
+								class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
+							/>
 						{:else}
-							<div class="h-[200px] w-[200px] rounded-xl border-solid bg-gray-300 flex justify-center items-center">
-								<Plus class="h-5 w-5"  />
+							<div
+								class="flex h-[200px] w-[200px] items-center justify-center rounded-xl border-solid bg-gray-300"
+							>
+								<Plus class="h-5 w-5" />
 							</div>
-							
 						{/if}
 					</div>
-					<input
-						class="hidden"
-						type="file"
-						accept="image/*"
-						on:change={onFileChange}
-					/>
+					<input class="hidden" type="file" accept="image/*" on:change={onFileChange} />
 				</label>
 			</div>
 
