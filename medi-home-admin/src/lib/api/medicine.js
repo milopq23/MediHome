@@ -50,3 +50,16 @@ export async function patchMedicine(medicine){
         console.log("Lỗi patch user", error)
     }
 } 
+
+export async function  apiDeleteMedicne(id) {
+    try {
+        const res =  await fetch(`${API_URL}/api/admin/medicine/${id}`,{
+            method:'DELETE'
+        })
+        const result =  await res.json();
+        // console.log('Lỗi result delete',result)
+        return result
+    } catch (error) {
+        console.log("Lỗi delete medicine", error)
+    }
+}
