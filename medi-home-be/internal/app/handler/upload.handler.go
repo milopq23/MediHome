@@ -26,10 +26,7 @@ func (h *UploadHandler) SingleUpload(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Upload successful",
-		"url":     url,
-	})
+	c.JSON(http.StatusOK, url)
 }
 
 
