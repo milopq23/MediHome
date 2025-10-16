@@ -1,80 +1,79 @@
 <script>
+	import { Plus } from 'lucide-svelte';
 
+	let previewUrl = '';
 </script>
 
-
 <!-- {#if showPopup} -->
-	<div class="fixed inset-0 z-40 bg-black/50"></div>
+<div class="flex items-center justify-center p-4">
 	<div
-		class="fixed top-1/2 left-1/2 z-60 mx-auto w-full max-w-md -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-6 shadow-lg"
+		class="max-h-full w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800"
 	>
 		<form>
 			<div class="mb-6 grid gap-6 md:grid-cols-2">
 				<div>
-					<label
-						for="first_name"
-						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Code</label
+					<label for="code" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Code</label
 					>
 					<input
 						type="text"
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="John"
+						class="border-gray-300F block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder="MED001"
 						required
 					/>
 				</div>
 				<div>
 					<label
-						for="last_name"
+						for="medicine_name"
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tên thuốc</label
 					>
 					<input
 						type="text"
-						id="last_name"
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Doe"
+						placeholder="Paracetamol"
 						required
 					/>
 				</div>
+				<!-- này làm select -->
 				<div>
-					<label for="company" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Company</label
+					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Danh mục</label
 					>
 					<input
 						type="text"
 						id="company"
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Flowbite"
+						placeholder="Thuốc dị ứng"
 						required
 					/>
 				</div>
 				<div>
-					<label for="phone" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Phone number</label
+					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Thuốc kê đơn</label
 					>
 					<input
-						type="tel"
-						id="phone"
+						type=""
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="123-45-678"
+						placeholder="Có"
 						pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
 						required
 					/>
 				</div>
 				<div>
 					<label for="website" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Website URL</label
+						>Đóng gói</label
 					>
 					<input
 						type="url"
 						id="website"
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="flowbite.com"
+						placeholder="Có"
 						required
 					/>
 				</div>
 				<div>
 					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Unique visitors (per month)</label
+						>Dạng bào chế</label
 					>
 					<input
 						type="number"
@@ -83,6 +82,49 @@
 						placeholder=""
 						required
 					/>
+				</div>
+			</div>
+
+			<div>
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Hình chính:
+				</label>
+				<div class="flex justify-center">
+					{#if previewUrl}
+						<img
+							src={previewUrl}
+							alt="Ảnh preview"
+							class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
+						/>
+					{:else}
+						<div
+							class="flex h-[100px] w-[100px] items-center justify-center rounded-xl border-solid bg-gray-300"
+						>
+							<Plus class="h-5 w-5" />
+						</div>
+					{/if}
+					<input class="hidden" type="file" accept="image/*" on:change={onFileChange} />
+				</div>
+			</div>
+			<div>
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Hình chính:
+				</label>
+				<div class="flex justify-center">
+					{#if previewUrl}
+						<img
+							src={previewUrl}
+							alt="Ảnh preview"
+							class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
+						/>
+					{:else}
+						<div
+							class="flex h-[100px] w-[100px] items-center justify-center rounded-xl border-solid bg-gray-300"
+						>
+							<Plus class="h-5 w-5" />
+						</div>
+					{/if}
+					<input class="hidden" type="file" multiple accept="image/*" on:change={onFileChange} />
 				</div>
 			</div>
 			<div class="mb-6">
@@ -146,3 +188,4 @@
 			>
 		</form>
 	</div>
+</div>

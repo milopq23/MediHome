@@ -1,6 +1,6 @@
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function getAllCate() {
+export async function apiGetAllCate() {
 	try {
 		const res = await fetch(`${API_URL}/api/medicine-cate/`);
 		if (!res.ok) {
@@ -15,7 +15,7 @@ export async function getAllCate() {
 	}
 }
 
-export async function createCate(category) {
+export async function apiCreateCate(category) {
 	try {
 		console.log('Dữ liệu POST', category);
 		const res = await fetch(`${API_URL}/api/medicine-cate/children`, {
@@ -33,7 +33,7 @@ export async function createCate(category) {
 	}
 }
 
-export async function createCateChild(category) {
+export async function apiCreateCateChild(category) {
 	try {
 		console.log('Dữ liệu POST', category);
 		const res = await fetch(`${API_URL}/api/medicine-cate/children`, {
@@ -51,7 +51,7 @@ export async function createCateChild(category) {
 	}
 }
 
-export async function patchCate(id, category) {
+export async function apiPatchCate(id, category) {
 	try {
 		console.log('Dữ liệu PATCH', category);
 		const res = await fetch(`${API_URL}/api/medicine-cate/${id}`, {
@@ -69,7 +69,7 @@ export async function patchCate(id, category) {
 	}
 }
 
-export async function deleteCate(id) {
+export async function apiDeleteCate(id) {
 	try {
 		const res = await fetch(`${API_URL}/api/medicine-cate/${id}`, {
 			method: 'DELETE'
@@ -85,10 +85,10 @@ export async function deleteCate(id) {
 	}
 }
 
-export async function upload(fileName) {
+export async function apiUploadIcon(fileName) {
 	const formData = new FormData();
 	formData.append('file', fileName);
-	// formData.append('folder', folderName);
+	formData.append('folder', 'medicine-cate');
 	try {
 		const res = await fetch(`${API_URL}/api/upload`, {
 			method: 'POST',
@@ -97,6 +97,7 @@ export async function upload(fileName) {
 		if (!res.ok) {
 			console.log('Lỗi post ảnh');
 		}
+		console.log("Post ảnh thành công",res)
 		return await res.json();
 	} catch (error) {
 		throw error;

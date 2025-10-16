@@ -1,7 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import { Plus, ChevronUp, Pencil, Trash2 } from 'lucide-svelte';
-	import { getAllCate, createCate, patchCate, deleteCate, upload } from '$lib/api/medicine-cate.js';
+	import {
+		apiGetAllCate,
+		apiCreateCate,
+		apiPatchCate,
+		apiDeleteCate,
+		apiUploadIcon
+	} from '$lib/api/medicine-cate.js';
 
 	let categories = [];
 	let expandedIds = [];
@@ -15,6 +21,7 @@
 
 	let file = null;
 	let previewUrl = '';
+	let imgDB = '';
 	let formMode = 'create';
 	let showForm = false;
 	let showConfirmDelete = false;
@@ -32,7 +39,7 @@
 
 	async function loadCates() {
 		try {
-			const res = await getAllCate();
+			const res = await apiGetAllCate();
 			categories = res;
 			// categories = res;
 		} catch (error) {
@@ -54,11 +61,19 @@
 		event.preventDefault();
 		try {
 			if (formMode === 'create') {
-				await upload(file);
-				await createCate(category);
+				const img = await apiUploadIcon(file);
+
+				category.icon = img;
+
+				const result = await apiCreateCate(category);
+				console.log('Kết quả', result);
 			} else if (formMode === 'edit') {
-				await upload(file);
-				await patchCate(category.medicinecate_id, category);
+				const img = await apiUploadIcon(file);
+				category.icon = img;
+				imgDB = category.icon;
+				console.log(category.icon);
+				const result = await apiPatchCate(category.medicinecate_id, category);
+				console.log(result);
 			}
 			await loadCates();
 			toggleForm();
@@ -69,7 +84,7 @@
 
 	async function confirmCateDelete(id) {
 		try {
-			await deleteCate(id);
+			await apiDeleteCate(id);
 			showConfirmDelete = false;
 			await loadCates();
 		} catch (err) {
@@ -217,7 +232,13 @@
 				<label class="block font-medium text-gray-900 dark:text-white"
 					>Icon:
 					<div class="flex justify-center">
-						{#if previewUrl}
+						{#if category.icon}
+							<img
+								src={category.icon}
+								alt="Ảnh preview"
+								class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
+							/>
+						{:else if previewUrl}
 							<img
 								src={previewUrl}
 								alt="Ảnh preview"
