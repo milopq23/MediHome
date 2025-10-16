@@ -3,7 +3,6 @@ package service
 import (
 	// "fmt"
 	"fmt"
-	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 )
@@ -33,16 +32,11 @@ func (s *medicineCateService) ListChildren(id int64) (model.MedicineCate, error)
 	return s.repo.ListChildren(id)
 }
 
-func (s *medicineCateService)  CreateParentCate(medicineCate model.MedicineCate) (model.MedicineCate, error) {
+func (s *medicineCateService) CreateParentCate(medicineCate model.MedicineCate) (model.MedicineCate, error) {
 	return s.repo.CreateParentCate(medicineCate)
 }
 
 func (s *medicineCateService) Create(medicineCate model.MedicineCate) (model.MedicineCate, error) {
-	// if s.repo == nil {
-	// 	log.Printf("s.repo is nil, initializing repository")
-	// 	return nil, errors.New("repository not initialized")
-	// }
-	log.Printf("Creating medicine category: %+v", medicineCate)
 	return s.repo.Create(medicineCate)
 }
 

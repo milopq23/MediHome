@@ -66,11 +66,7 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 			updates[k] = v
 		}
 	}
-	if user.UserID == nil {
-		return model.User{}, fmt.Errorf("user ID is nil")
-	}
-
-	return s.repo.Patch(uint(*user.UserID), updates)
+	return s.repo.Patch(uint(user.UserID), updates)
 }
 
 func (s *userService) Delete(id uint) error {

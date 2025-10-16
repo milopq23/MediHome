@@ -2,14 +2,16 @@ package model
 
 import "time"
 
-type Inventory struct{
-	InventoryID int64
-	MedicineID int64
-	BatchNumber string
-	ImportPrice int64
-	MarkUp int64
-	ExpirationDate time.Time
-	Quantity int64
-	CreatedAt time.Time
-	UpdatedAt time.Time
+type Inventory struct {
+	InventoryID    int64     `gorm:"primaryKey; column:inventory_id; autoIncrement"`
+	MedicineID     int64     `gorm:"column:medicine_id; not null" json:"medicine_id"`
+	BatchNumber    string    `gorm:"column:batch_number; not null" json:"batchnumber"`
+	ImportPrice    int64     `gorm:"column:import_price; not null" json:"importprice"`
+	MarkUp         int64     `gorm:"column:mark_up; not null" json:"markup"`
+	ExpirationDate time.Time `gorm:"column:expiration_date; type:date" json:"expiration_date"`
+	Quantity       int64     `gorm:"column:quantity" json:"quantity"`
+	CreatedAt      time.Time `gorm:"column:created_at;  autoCreateTime"`
+	UpdatedAt      time.Time `gorm:"column:updated_at;autoUpdateTime"`
+
+	Medicine *Medicine `gorm:"foreignKey:MedicineID; references:MedicineID" json:"medicine,omitempty"`
 }

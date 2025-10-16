@@ -70,7 +70,7 @@ func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
 	var userResponses []UserResponse
 	for _, u := range users {
 		userResponses = append(userResponses, UserResponse{
-			UserID:     uint(*u.UserID),
+			UserID:     uint(u.UserID),
 			Name:       u.Name,
 			Email:      u.Email,
 			Phone:      u.Phone,
@@ -99,7 +99,7 @@ func (r *userRepository) FindByID(id uint) (model.User, error) {
 // #region Create User
 func (r *userRepository) Create(user model.User) (model.User, error) {
 	err := config.DB.Debug().Create(&user).Error
-	fmt.Println("Created user ID:", *user.UserID)
+	fmt.Println("Created user ID:", user.UserID)
 	return user, err
 }
 
