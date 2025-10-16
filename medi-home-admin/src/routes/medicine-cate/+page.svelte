@@ -8,6 +8,7 @@
 		apiDeleteCate,
 		apiUploadIcon
 	} from '$lib/api/medicine-cate.js';
+	import TitlePage from '$lib/components/TitlePage.svelte';
 
 	let categories = [];
 	let expandedIds = [];
@@ -126,14 +127,15 @@
 </script>
 
 <div>
-	<div class="flex items-center">
-		<h1 class="flex-1 p-5 text-4xl font-bold">Danh sách danh mục thuốc</h1>
-		<div>
-			<button class="btn-create flex items-center gap-1" on:click={() => openForm('create')}>
-				<Plus class="h-5 w-5" />
-				Thêm
-			</button>
-		</div>
+	<TitlePage titleName="Danh sách thuốc" />
+
+	<!-- Search bar -->
+	<div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+		<input
+			type="text"
+			class="w-full rounded-md border px-3 py-2 text-sm sm:max-w-xs"
+			placeholder="Tìm kiếm thuốc..."
+		/>
 	</div>
 
 	<hr class="m-4" />

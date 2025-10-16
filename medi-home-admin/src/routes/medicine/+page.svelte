@@ -1,6 +1,6 @@
 <script>
 	import { Pencil, Trash2, MoreVertical, Eye, Plus } from 'lucide-svelte';
-	import { loadMedicines, addMedicine, patchMedicine,apiDeleteMedicne } from '$lib/api/medicine.js';
+	import { loadMedicines, addMedicine, patchMedicine,apiDeleteMedicne, apiLoadMedicines } from '$lib/api/medicine.js';
 	import { onMount, onDestroy } from 'svelte';
 	import TitlePage from '$lib/components/TitlePage.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
@@ -19,7 +19,7 @@
 
 	async function loadMedicinePage(currentPage = 1) {
 		try {
-			const result = await loadMedicines(currentPage, pageSize);
+			const result = await apiLoadMedicines(currentPage, pageSize);
 			medicines = result.medicines;
 			page = result.page;
 			pageSize = result.pageSize;
