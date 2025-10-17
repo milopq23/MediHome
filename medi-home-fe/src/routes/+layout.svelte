@@ -26,7 +26,7 @@
 
 <div class="min-h-screen max-h-screen ">
 	<Header />
-	<main class="flex-1 justify-center items-center px-0  md:px-20 lg:px-60 bg-white w-full">
+	<main class="flex-1 justify-center items-center px-0 md:px-20 lg:px-30 bg-white w-full">
 		<slot />
 	</main>
 	{#if show}

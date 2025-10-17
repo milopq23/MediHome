@@ -76,7 +76,7 @@
 
 	<!-- Giới thiệu -->
 	<section class="mb-10 text-center">
-		<h1 class="text-3xl font-bold text-blue-800">Chào mừng đến với Nhà Thuốc MyPharma</h1>
+		<h1 class="text-3xl font-bold text-blue-800">Nhà thuốc ONLINE uy tín</h1>
 		<p class="mt-2 text-gray-600">
 			Chăm sóc sức khỏe gia đình bạn với sản phẩm chính hãng và giá tốt nhất.
 		</p>
@@ -90,9 +90,6 @@
 
 	<div class="flex-1 bg-deepglacier py-3	">
 		<h1 class="px-4 text-red-500 font-bold text-3xl mb-2 items-content" >Săn sale</h1>
-		<!-- <div class="px-4 text-white font-bold text-lg mb-2">
-			Săn sale
-		</div> -->
 		<!-- Container cuộn ngang -->
 		<div class="flex-1 overflow-x-auto scrollbar-hide w-full px-2 py-2">
 			<div class="flex gap-4 snap-x snap-mandatory px-4 flex-shrink-0 snap-start ">
@@ -120,7 +117,7 @@
 		<p class="leading-relaxed text-gray-700">
 			MyPharma là hệ thống nhà thuốc trực tuyến uy tín, cam kết cung cấp các sản phẩm chăm sóc sức
 			khỏe chính hãng với giá cả hợp lý. Với đội ngũ dược sĩ chuyên môn cao, chúng tôi luôn sẵn
-			sàng tư vấn và đồng hành cùng bạn trong hành trình chăm sóc sức khỏe.
+			sàng tư vấn và đồng hành cùng bạn trong hành trình chăm sóc sức khỏe.		
 		</p>
 
 		<ul class="mt-4 list-inside list-disc space-y-1 text-gray-700">
