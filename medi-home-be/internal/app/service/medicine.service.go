@@ -1,6 +1,7 @@
 package service
 
 import (
+	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 )
@@ -15,6 +16,7 @@ type MedicineService interface {
 
 	//User
 	ListMedicine(page, pageSize int) (model.Pagination, error)
+	DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
 }
 
 type medicineService struct {
@@ -47,4 +49,8 @@ func (s *medicineService) Delete(id int64) error {
 
 func (s *medicineService) ListMedicine(page, pageSize int) (model.Pagination, error) {
 	return s.repo.ListMedicineUser(page, pageSize)
+}
+
+func (s *medicineService) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
+	return s.repo.DetailMedicine(id)
 }

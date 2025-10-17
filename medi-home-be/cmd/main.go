@@ -6,8 +6,6 @@ import (
 	"medi-home-be/internal/app/route"
 	"time"
 
-	"net/http"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	// "net/http"
@@ -20,31 +18,18 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000","http://localhost:5173"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	
-	route.APIRoute(r)
 
-	r.GET("/api/hello", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello from Go backend!",
-		})
-	})
+	route.APIRoute(r)
 
 	if err := r.Run(":8000"); err != nil {
 		log.Fatal("Failed", err)
 	}
 
-}
-
-func Hello(c *gin.Context) {
-	hello := gin.H{
-		"message": "HelloWorld",
-	}
-	c.JSON(http.StatusOK, hello)
 }
