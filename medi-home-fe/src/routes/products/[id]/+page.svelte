@@ -3,25 +3,29 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
-	let images = [
-		'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_1.jpg',
-		'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_3.jpg',
-		'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_6.jpg',
-		'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_7.jpg',
-		'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_1.jpg',
-		'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_3.jpg',
-		'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_6.jpg',
-		'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_7.jpg'
-	];
-	let medicine = [];
-	let cate = 'Giảm đau hạ sốt';
-	let packageType = '12 vỉ/hộp';
-	let dosage = 'Viên nén';
-	let prescription = 'Không';
-	let note =
-		'Mọi thông tin trên đây chỉ mang tính chất tham khảo. Vui lòng đọc kĩ thông tin chi tiết ở tờ hướng dẫn sử dụng của sản phẩm.';
+	let medicine = {
+		name : '',
+		storage: ''
+	};
+	// let images = [
+	// 	'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_1.jpg',
+	// 	'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_3.jpg',
+	// 	'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_6.jpg',
+	// 	'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_7.jpg',
+	// 	'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_1.jpg',
+	// 	'https://production-cdn.pharmacity.io/digital/640x640/plain/e-com/images/ecommerce/P01392_3.jpg',
+	// 	'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_6.jpg',
+	// 	'https://prod-cdn.pharmacity.io/e-com/images/ecommerce/P01392_7.jpg'
+	// ];
+	// let medicine = [];
+	// let cate = 'Giảm đau hạ sốt';
+	// let packageType = '12 vỉ/hộp';
+	// let dosage = 'Viên nén';
+	// let prescription = 'Không';
+	// let note =
+	// 	'Mọi thông tin trên đây chỉ mang tính chất tham khảo. Vui lòng đọc kĩ thông tin chi tiết ở tờ hướng dẫn sử dụng của sản phẩm.';
 
-	let selectedImg = images[0];
+	// let selectedImg = images[0];
 	let quantity = 1;
 
 	let id = null;
@@ -29,13 +33,13 @@
 
 	async function detailMedicine(id) {
 		try {
-			const medicine = await apiDetailMedicine(id);
+			medicine = await apiDetailMedicine(id);
 			console.log(medicine);
 		} catch (error) {}
 	}
 
 	onMount(() => {
-		// detailMedicine();
+		detailMedicine(id);
 	});
 
 	function decrease() {
@@ -49,7 +53,7 @@
 <div class="[scroll-padding-top:4rem] scroll-smooth">
 	<div class="flex flex-col gap-6 bg-white p-10 lg:flex-row">
 		<div class="flex flex-col gap-4 lg:w-1/2">
-			<img
+			<!-- <img
 				src={selectedImg}
 				alt="Ảnh sản phẩm"
 				class="aspect-square w-full rounded-xl object-cover"
@@ -69,18 +73,16 @@
 						<img src={img} alt="thumbnail" class="h-full w-full object-cover" />
 					</button>
 				{/each}
-			</div>
+			</div> -->
 		</div>
+		
 		<div class="flex flex-col gap-4 lg:w-1/2">
 			<div>
 				<h1 class="text-xl font-semibold text-slate-900">
-					Viên nén Panadol Extra Đỏ. Giảm triệu chứng đau, hạ sốt (15 vỉ x 12 viên)
+					{medicine.name}
 				</h1>
 				<div class="mt-8 flex flex-wrap gap-4">
 					<p class="text-4xl font-semibold text-red-500">1200 đ</p>
-					<!-- <p class="text-base text-slate-500">
-					<strike>15000</strike> <span class="ml-1 text-sm">Sale</span>
-				</p> -->
 				</div>
 			</div>
 			<div class="flex flex-col">
@@ -115,7 +117,7 @@
 					</li>
 				</ul>
 				<span class="w-40 font-semibold">Lưu ý:</span>
-				<span class="p-2">{note}</span>
+				<span class="p-2"></span>
 			</div>
 			<div>
 				<div class="flex gap-10">
@@ -236,20 +238,7 @@
 			<section id="baoquan" class="scroll-mt-16">
 				<h2 class="mb-2 text-xl font-bold">Bảo quản</h2>
 				<p>
-					Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánBảo quản nơi khô ráo, nhiệt độ dưới
-					30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ em. h sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em.Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em. Bảo quản nơi khô ráo, nhiệt độ dưới 30°C, tránh ánh sáng trực tiếp. Để xa tầm tay trẻ
-					em.
+					{medicine.storage}
 				</p>
 			</section>
 		</div>
