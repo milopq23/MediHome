@@ -4,6 +4,7 @@ import (
 	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
+	"medi-home-be/pkg/util"
 	"net/http"
 	"strconv"
 	"strings"
@@ -49,6 +50,7 @@ func (h *UserHandler) TotalActive(c *gin.Context) {
 
 // #region
 func (h *UserHandler) GetAll(c *gin.Context) {
+
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
 
@@ -74,6 +76,19 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 }
 
 // #endregion
+
+func (h *UserHandler) Hello(c *gin.Context) {
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please login"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Xin chào " + claims.Name, // giả sử claims có trường Name
+	})
+}
 
 // #region
 func (h *UserHandler) Create(c *gin.Context) {
@@ -128,7 +143,6 @@ func (h *UserHandler) Delete(c *gin.Context) {
 // #region
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginRequest
-
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

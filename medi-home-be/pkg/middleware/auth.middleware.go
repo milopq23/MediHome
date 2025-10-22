@@ -4,41 +4,70 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"medi-home-be/pkg/util"
 )
-
 
 type Permission string
 
 const (
-	User  Permission = "user"
 	Admin Permission = "admin"
 	Staff Permission = "staff"
 )
 
-func Authorize(required Permission) func(http.HandlerFunc) http.HandlerFunc {
-	return func(next http.HandlerFunc) http.HandlerFunc {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			authHeader := r.Header.Get("Authorization")
-			if !strings.HasPrefix(authHeader, "Bearer ") {
-				http.Error(w, "Missing token", http.StatusUnauthorized)
-				return
-			}
+// Authorize middleware kiểm tra token và quyền user
+func AdminAuthorize(required Permission) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
+			return
+		}
 
-			tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
-			claims, err := util.ParseJWT(tokenStr)
-			if err != nil {
-				http.Error(w, "Invalid token", http.StatusUnauthorized)
-				return
-			}
+		claims, err := util.ParseJWT(tokenStr)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			return
+		}
 
-			if claims.Role != string(required) {
-				http.Error(w, "Forbidden", http.StatusForbidden)
-				return
-			}
+		if claims.Role != string(required) {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+			return
+		}
 
-			next.ServeHTTP(w, r)
-		})
+		// Lưu thông tin claims vào context Gin để handler có thể lấy
+		c.Set("claims", claims)
+
+		c.Next()
+	}
+}
+
+func UserAuthorize(required Permission) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
+			return
+		}
+
+		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+
+		claims, err := util.ParseJWT(tokenStr)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			return
+		}
+
+		if claims.Role != string(required) {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+			return
+		}
+
+		// Lưu thông tin claims vào context Gin để handler có thể lấy
+		c.Set("claims", claims)
+
+		c.Next()
 	}
 }

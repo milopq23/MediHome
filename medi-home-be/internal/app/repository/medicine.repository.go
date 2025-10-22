@@ -144,3 +144,15 @@ func (r *medicineRepository) DetailMedicine(id int64) (dto.UserDetailMedicineDTO
     }
     return medicine, nil
 }
+
+func (r *medicineRepository) priceMedicineInventory(id int64) (dto.UserDetailMedicineDTO, error) {
+    var medicine dto.UserDetailMedicineDTO
+    err := config.DB.Table("mv_detail_medicine").
+        Where("medicine_id = ?", id).
+        First(&medicine).Error // lấy lỗi từ .Error
+
+    if err != nil {
+        return dto.UserDetailMedicineDTO{}, err // trả về struct rỗng nếu lỗi
+    }
+    return medicine, nil
+}

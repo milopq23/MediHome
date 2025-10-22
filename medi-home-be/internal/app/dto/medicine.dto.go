@@ -19,7 +19,7 @@ type UserListMedicineDTO struct {
 }
 
 type UserDetailMedicineDTO struct {
-	MedicineID       int64  `json:medicine_id`
+	MedicineID       int64  `json:"medicine_id"`
 	MedicineCate     string `gorm:"column:category" json:"medicinecate"`
 	DosageForm       string `gorm:"column:dosageform" json:"dosageform"`
 	Code             string `json:"code"`

@@ -13,14 +13,16 @@ func UserRoutes(r *gin.RouterGroup) {
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 	login := r.Group("/")
+	// login.Use(middleware.Authorize(middleware.User))
 	{
 		login.POST("/login", userHandler.Login)
 		login.POST("/register", userHandler.Register)
 	}
 	user := r.Group("/user")
+	// user.Use(middleware.AdminAuthorize(middleware.Admin))
 	{
 		user.GET("/", userHandler.GetAll)
-		user.GET("/total",userHandler.TotalActive)
+		user.GET("/total", userHandler.TotalActive)
 		user.GET("/:id", userHandler.GetByID)
 		user.POST("/", userHandler.Create)
 		// // user.PUT("/update",userHandler.Update)

@@ -11,6 +11,8 @@ type Medicine struct {
 	Thumbnail        string    `gorm:"column:thumbnail" json:"thumbnail"`
 	Image            string    `gorm:"column:image" json:"image"`
 	Prescription     bool      `gorm:"column:prescription" json:"prescription"`
+	UnitPerStrip     int64     `gorm:"column:unit_per_strip" json:"unitstrip"`
+	UnitPerBox       int64     `gorm:"column:unit_per_box" json:"unitbox"`
 	Usage            string    `gorm:"column:usage" json:"usage"`
 	Package          string    `gorm:"column:package" json:"package"`
 	Indication       string    `gorm:"column:indication" json:"indication"`
@@ -29,4 +31,3 @@ type Medicine struct {
 	MedicineCate *MedicineCate `gorm:"foreignKey:MedicineCateID;references:MedicineCateID" json:"medicine_cate,omitempty"`
 	DosageForm   *DosageForm   `gorm:"foreignKey:DosageFormID;references:DosageFormID" json:"dosage_form,omitempty"`
 }
-
