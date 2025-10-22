@@ -4,6 +4,7 @@ import (
 	"medi-home-be/internal/app/handler"
 	"medi-home-be/internal/app/repository"
 	"medi-home-be/internal/app/service"
+	"medi-home-be/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,7 @@ func UserRoutes(r *gin.RouterGroup) {
 	{
 		user.GET("/", userHandler.GetAll)
 		user.GET("/total", userHandler.TotalActive)
-		user.GET("/:id", userHandler.GetByID)
+		user.GET("/:id",middleware.UserAuthorize(middleware.User), userHandler.GetByID)
 		user.POST("/", userHandler.Create)
 		// // user.PUT("/update",userHandler.Update)
 		user.PATCH("/:id", userHandler.Patch)

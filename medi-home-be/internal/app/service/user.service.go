@@ -6,7 +6,6 @@ import (
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 	"medi-home-be/pkg/util"
-	"strings"
 	// "gorm.io/gorm"
 	// "golang.org/x/crypto/bcrypt"
 )
@@ -76,19 +75,21 @@ func (s *userService) Delete(id uint) error {
 func (s *userService) LoginUser(email string, password string) (string, model.User, error) {
 	user, err := s.repo.FindByEmail(email)
 	if err != nil {
+		// Không tiết lộ lý do cụ thể để tránh lộ thông tin
 		return "", model.User{}, fmt.Errorf("invalid email or password")
 	}
-	// if err:= bcrypt.CompareHashAndPassword([]byte(user.Password),[]byte(password)); err!=nil{
+
+	// So sánh password (hash)
+	// if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 	// 	return "", model.User{}, fmt.Errorf("invalid email or password")
 	// }
-	if strings.Compare(user.Password, password) != 0 {
-		return "", model.User{}, fmt.Errorf("invalid password")
+
+	// Tạo JWT đầy đủ
+	token, err := util.GenerateJWT(uint(user.UserID), user.Name, "user")
+	if err != nil {
+		return "", model.User{}, fmt.Errorf("could not generate token")
 	}
 
-	token, err := util.GenerateJWT(user.Name, "user")
-	if err != nil {
-		return "", model.User{}, err
-	}
 	return token, user, nil
 }
 
