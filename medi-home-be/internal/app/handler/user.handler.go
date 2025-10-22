@@ -27,10 +27,10 @@ type UserDTO struct {
 	Role  string `json:"role"`
 }
 
-// type LoginResponse struct {
-// 	Token string     `json:"token"`
-// 	User  model.User `json:"user"`
-// }
+type LoginResponse struct {
+	Token string     `json:"token"`
+	User  model.User `json:"user"`
+}
 
 type RegisterRequest struct {
 	Email         string `json:"email" binding:"required,email"`
@@ -41,10 +41,10 @@ type RegisterRequest struct {
 	Gender        string `json:"gender" binding:"required"`
 }
 
-type LoginResponse struct {
-	Token string        `json:"token"`
-	User  UserDTO `json:"user"`
-}
+// type LoginResponse struct {
+// 	Token string        `json:"token"`
+// 	User  UserDTO `json:"user"`
+// }
 
 func NewUserHandler(service service.UserService) *UserHandler {
 	return &UserHandler{service}
@@ -165,19 +165,19 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
-	// resp := LoginResponse{
-	// 	Token: token,
-	// 	User:  user,
-	// }
 	resp := LoginResponse{
 		Token: token,
-		User: UserDTO{
-			ID:    uint(user.UserID),
-			Name:  user.Name,
-			Email: user.Email,
-			Role:  "user",
-		},
+		User:  user,
 	}
+	// resp := LoginResponse{
+	// 	Token: token,
+	// 	User: UserDTO{
+	// 		ID:    uint(user.UserID),
+	// 		Name:  user.Name,
+	// 		Email: user.Email,
+	// 		Role:  "user",
+	// 	},
+	// }
 
 	c.JSON(http.StatusOK, resp)
 }
@@ -200,3 +200,24 @@ func (h *UserHandler) Register(c *gin.Context) {
 }
 
 // #endregion
+
+
+func (h *UserHandler) Profile(c *gin.Context) {
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	log.Print("claimsRaw",claimsRaw)
+	claims := claimsRaw.(*util.Claims)
+	log.Print(claims)
+
+
+	user, err := h.service.GetByID(claims.UserID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}

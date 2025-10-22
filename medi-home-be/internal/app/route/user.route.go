@@ -18,10 +18,12 @@ func UserRoutes(r *gin.RouterGroup) {
 	{
 		login.POST("/login", userHandler.Login)
 		login.POST("/register", userHandler.Register)
+		
 	}
 	user := r.Group("/user")
 	// user.Use(middleware.AdminAuthorize(middleware.Admin))
 	{
+		user.GET("/profile/",middleware.UserAuthorize(middleware.User),userHandler.Profile)
 		user.GET("/", userHandler.GetAll)
 		user.GET("/total", userHandler.TotalActive)
 		user.GET("/:id",middleware.UserAuthorize(middleware.User), userHandler.GetByID)
