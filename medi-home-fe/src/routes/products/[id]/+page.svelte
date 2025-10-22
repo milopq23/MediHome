@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	let medicine = {
-		name : '',
+		name: '',
 		storage: ''
 	};
 	// let images = [
@@ -75,7 +75,7 @@
 				{/each}
 			</div> -->
 		</div>
-		
+
 		<div class="flex flex-col gap-4 lg:w-1/2">
 			<div>
 				<h1 class="text-xl font-semibold text-slate-900">
@@ -266,7 +266,7 @@
 
 <style>
 	.scrollbar-hide {
-		-ms-overflow-style: none; /* IE and Edge */
+		-ms-overflow-style: none;
 		scrollbar-width: none; /* Firefox */
 	}
 
