@@ -165,20 +165,12 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
+
 	resp := LoginResponse{
 		Token: token,
 		User:  user,
 	}
-	// resp := LoginResponse{
-	// 	Token: token,
-	// 	User: UserDTO{
-	// 		ID:    uint(user.UserID),
-	// 		Name:  user.Name,
-	// 		Email: user.Email,
-	// 		Role:  "user",
-	// 	},
-	// }
-
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -201,17 +193,15 @@ func (h *UserHandler) Register(c *gin.Context) {
 
 // #endregion
 
-
 func (h *UserHandler) Profile(c *gin.Context) {
 	claimsRaw, exists := c.Get("claims")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
 		return
 	}
-	log.Print("claimsRaw",claimsRaw)
+	log.Print("claimsRaw", claimsRaw)
 	claims := claimsRaw.(*util.Claims)
 	log.Print(claims)
-
 
 	user, err := h.service.GetByID(claims.UserID)
 	if err != nil {

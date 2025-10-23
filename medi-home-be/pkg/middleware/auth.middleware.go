@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
+
+	"medi-home-be/pkg/util"
 
 	"github.com/gin-gonic/gin"
-	"medi-home-be/pkg/util"
 )
 
 type Permission string
@@ -13,7 +13,7 @@ type Permission string
 const (
 	Admin Permission = "admin"
 	Staff Permission = "staff"
-	User Permission = "user"
+	User  Permission = "user"
 )
 
 // Authorize middleware kiểm tra token và quyền user
@@ -47,13 +47,11 @@ const (
 
 func UserAuthorize(required Permission) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if !strings.HasPrefix(authHeader, "Bearer ") {
+		tokenStr, err := c.Cookie("token")
+		if err != nil || tokenStr == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
 			return
 		}
-
-		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
 		claims, err := util.ParseJWT(tokenStr)
 		if err != nil {

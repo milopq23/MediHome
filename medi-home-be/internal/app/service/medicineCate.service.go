@@ -65,7 +65,6 @@ func (s *medicineCateService) Patch(id uint, data map[string]interface{}) (model
 	}
 
 	return s.repo.Patch(uint(medicineCate.MedicineCateID), updates)
-
 }
 
 func (s *medicineCateService) Delete(id int64) error {
