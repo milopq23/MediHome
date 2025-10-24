@@ -2,8 +2,9 @@
 	import { sidebarOpen } from '../index.js';
 	import SearchBar from './SearchBar.svelte';
 
-	let userName;
 	let showSearch = false;
+
+	export let user;
 
 	function toggleSidebar() {
 		sidebarOpen.update((n) => !n);
@@ -68,12 +69,12 @@
 
 			<!-- Login / User Info -->
 			<div class="flex max-w-[190px] items-center">
-				{#if userName}
+				{#if user}
 					<div
 						class="text-g ray-700 hidden w-full cursor-pointer items-center gap-2 transition-colors duration-200 hover:text-blue-600 md:flex"
 					>
-						<a href="/profile" class="overflow-hidden truncate whitespace-nowrap hover:underline">
-							Xin chào {userName}
+						<a href="/profile" class="truncate overflow-hidden whitespace-nowrap hover:underline">
+							Xin chào {user.name}
 						</a>
 					</div>
 					<a
@@ -101,6 +102,5 @@
 				{/if}
 			</div>
 		</div>
-		
 	</div>
 </nav>

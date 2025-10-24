@@ -1,5 +1,7 @@
 <script>
-	import { apiLogin } from '$lib/api/user';
+	// import { apiLogin } from '$lib/api/user';
+	import { goto } from '$app/navigation';
+	import { addAlert } from '$lib/stores/alert';
 
 	let showPassword = false;
 	let email = '';
@@ -9,26 +11,29 @@
 
 	async function handleSubmit(event) {
 		event.preventDefault();
-		const res = await fetch('/auth', {
+		error = '';
+		success = '';
+
+		const res = await fetch('/auth/login', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
 		});
 
+		let data = {};
+		try {
+			data = await res.json();
+		} catch (err) {
+			console.error('Invalid JSON response', err);
+		}
+
 		if (res.ok) {
-			const data = await res.json();
-			success = '✅ Đăng nhập thành công!';
-			error = '';
-			// Optional: chuyển trang sau 1 giây
-			setTimeout(() => {
-				window.location.href = '/dashboard';
-			}, 1000);
+			success = `Đăng nhập thành công! Chào mừng`;
+			addAlert(success, 'success');
+			goto('/');
 		} else {
-			const err = await res.json();
-			error = `❌ Lỗi: ${err?.error || 'Không rõ'}`;
-			success = '';
+			error = `Lỗi: ${data.error || 'Đăng nhập thất bại'}`;
+			addAlert(error, 'error');
 		}
 	}
 </script>
@@ -86,12 +91,6 @@
 					>
 						Đăng nhập
 					</button>
-					{#if error}
-						<p class="text-red-500">{error}</p>
-					{/if}
-					{#if success}
-						<p class="text-green-500">{success}</p>
-					{/if}
 				</form>
 
 				<!-- Link -->

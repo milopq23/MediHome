@@ -10,11 +10,12 @@ export async function POST({ request, cookies, fetch }) {
 	const res = await fetch(`${API_URL}/api/login`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
+		credentials: 'include',
 		body: JSON.stringify({ email, password })
 	});
 
 	if (!res.ok) {
-		return json({ error: 'Sai email hoặc mật khẩu' }, { status: 401 });
+		return json({ error: 'Sai email hoặc mật khẩu' });
 	}
 
 	const { token, user } = await res.json();
@@ -23,9 +24,8 @@ export async function POST({ request, cookies, fetch }) {
 	cookies.set('token', token, {
 		httpOnly: true,
 		sameSite: 'strict',
-		secure: false, // ⚠️ true nếu dùng HTTPS
-		path: '/',
-		maxAge: 60 * 60 * 24
+		secure: false,
+		path: '/'
 	});
 
 	return json({ message: 'Đăng nhập thành công', user });

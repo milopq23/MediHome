@@ -21,9 +21,28 @@ export async function apiLogin(email, password) {
 		}
 
 		const data = await res.json(); // Lấy token + user
-		console.log('✅ Đăng nhập thành công:', data);
 		return data;
 	} catch (error) {
 		console.log('Lỗi token', error);
 	}
 }
+
+// export async function apiProfile() {
+// 	try {
+// 		const res = await fetch(`${API_URL}/api/user/profile`, {
+// 			headers: {
+// 				'Content-Type': 'application/json'
+// 			},
+// 			credentials: 'include'
+// 		});
+// 		if (!res.ok) {
+// 			return 'Không nhận req';
+// 		}
+// 		console.log('res', res);
+// 		const data = await res.json();
+// 		console.log('data', data);
+// 		return data;
+// 	} catch (error) {
+// 		console.log('Lỗi fetch profile', data);
+// 	}
+// }

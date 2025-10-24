@@ -1,12 +1,15 @@
 <script>
 	import '../app.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import Navbar from '$lib/components/SideBar.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import SideBar from '$lib/components/SideBar.svelte';
 	import { onMount } from 'svelte';
 	import AdBanner from '$lib/components/AdBanner.svelte';
+
+	export let data;
+	const { user } = data;
+	console.log(data);
 
 	let show = false;
 
@@ -24,14 +27,14 @@
 	});
 </script>
 
-<div class="min-h-screen max-h-screen ">
-	<Header />
-	<main class="flex-1 justify-center items-center px-0 md:px-20 lg:px-30 bg-white w-full">
+<div class="max-h-screen min-h-screen">
+	<Header {user} />
+	<main class="w-full flex-1 items-center justify-center bg-white px-0 md:px-20 lg:px-30">
 		<slot />
 	</main>
 	{#if show}
 		<button
-			class="bottom-4 right-4 hidden h-12 w-12 justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 focus:outline-none md:fixed md:block"
+			class="right-4 bottom-4 hidden h-12 w-12 justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 focus:outline-none md:fixed md:block"
 			on:click={goToTop}
 			aria-label="Go to top"
 		>
