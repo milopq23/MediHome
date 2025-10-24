@@ -6,6 +6,8 @@ import (
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 	"medi-home-be/pkg/util"
+
+	"golang.org/x/crypto/bcrypt"
 	// "gorm.io/gorm"
 	// "golang.org/x/crypto/bcrypt"
 )
@@ -80,9 +82,9 @@ func (s *userService) LoginUser(email string, password string) (string, model.Us
 	}
 
 	// So sánh password (hash)
-	// if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-	// 	return "", model.User{}, fmt.Errorf("invalid email or password")
-	// }
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return "", model.User{}, fmt.Errorf("invalid email or password")
+	}
 
 	// Tạo JWT đầy đủ
 	token, err := util.GenerateJWT(uint(user.UserID), user.Name, "user")

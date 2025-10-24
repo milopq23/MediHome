@@ -17,7 +17,7 @@ type Claims struct {
 }
 
 func GenerateJWT(userID uint, name string, role string) (string, error) {
-	expirationTime := time.Now().Add(2 * time.Hour)
+	expirationTime := time.Now().Add(1 * time.Hour)
 	claims := &Claims{
 		UserID: userID,
 		Name:   name,
@@ -27,7 +27,6 @@ func GenerateJWT(userID uint, name string, role string) (string, error) {
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtKey)
 }

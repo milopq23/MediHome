@@ -20,16 +20,15 @@ type LoginRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
-type UserDTO struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Role  string `json:"role"`
+type UserTokenDTO struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+	Role string `json:"role"`
 }
 
 type LoginResponse struct {
-	Token string     `json:"token"`
-	User  model.User `json:"user"`
+	Token     string       `json:"token"`
+	UserToken UserTokenDTO `json:"user"`
 }
 
 type RegisterRequest struct {
@@ -59,7 +58,6 @@ func (h *UserHandler) TotalActive(c *gin.Context) {
 	c.JSON(http.StatusOK, total)
 }
 
-// #region
 func (h *UserHandler) GetAll(c *gin.Context) {
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
@@ -73,11 +71,9 @@ func (h *UserHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, pagination)
 }
 
-// #endregion
-
-// #region
 func (h *UserHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
+	log.Print(id)
 	user, err := h.service.GetByID(uint(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
@@ -86,22 +82,6 @@ func (h *UserHandler) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-// #endregion
-
-func (h *UserHandler) Hello(c *gin.Context) {
-	claimsRaw, exists := c.Get("claims")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please login"})
-		return
-	}
-	claims := claimsRaw.(*util.Claims)
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Xin chào " + claims.Name, // giả sử claims có trường Name
-	})
-}
-
-// #region
 func (h *UserHandler) Create(c *gin.Context) {
 	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -116,30 +96,30 @@ func (h *UserHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newUser)
 }
 
-// #endregion
-
-// #region
 func (h *UserHandler) Patch(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	log.Print("handler")
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	log.Print("claimsRaw", claimsRaw)
+	claims := claimsRaw.(*util.Claims)
+	log.Print(claims)
 
 	var input map[string]interface{}
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dữ liệu lỗi"})
 		return
 	}
-	updatedUser, err := h.service.Patch(uint(id), input)
+	updatedUser, err := h.service.Patch(uint(claims.UserID), input)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Patch lỗi"})
 		return
 	}
 
 	c.JSON(http.StatusOK, updatedUser)
 }
 
-// #endregion
-
-// #region
 func (h *UserHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err := h.service.Delete(uint(id)); err != nil {
@@ -149,9 +129,8 @@ func (h *UserHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted"})
 }
 
-// #endregion
+//User
 
-// #region
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -166,17 +145,18 @@ func (h *UserHandler) Login(c *gin.Context) {
 	}
 
 	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
-
+	log.Printf(token)
 	resp := LoginResponse{
 		Token: token,
-		User:  user,
+		UserToken: UserTokenDTO{
+			ID:   uint(user.UserID),
+			Name: user.Name,
+			Role: "user",
+		},
 	}
 	c.JSON(http.StatusOK, resp)
 }
 
-// #endregion
-
-// #region
 func (h *UserHandler) Register(c *gin.Context) {
 	var user RegisterRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -191,23 +171,24 @@ func (h *UserHandler) Register(c *gin.Context) {
 	c.JSON(http.StatusCreated, newUser)
 }
 
-// #endregion
-
 func (h *UserHandler) Profile(c *gin.Context) {
 	claimsRaw, exists := c.Get("claims")
 	if !exists {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
 		return
 	}
-	log.Print("claimsRaw", claimsRaw)
+	log.Println("Lỗi nhận claim",claimsRaw)
 	claims := claimsRaw.(*util.Claims)
-	log.Print(claims)
-
+	log.Println(claims)
 	user, err := h.service.GetByID(claims.UserID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
-
 	c.JSON(http.StatusOK, user)
+}
+
+func (h *UserHandler) LogOut(c *gin.Context) {
+	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"log"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/pkg/helper"
@@ -46,8 +47,6 @@ func (r *userRepository) TotalActive() (int64, error) {
 	return totalActive, nil
 }
 
-// #region List All Pagination
-
 func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
 	var users []model.User
 	var total int64
@@ -84,67 +83,51 @@ func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
 	return *pagination, nil
 }
 
-// #endregion
-
-// #region Get By ID
-
 func (r *userRepository) FindByID(id uint) (model.User, error) {
 	var user model.User
 	err := config.DB.Find(&user, id).Error
 	return user, err
 }
 
-// #endregion
-
-// #region Create User
 func (r *userRepository) Create(user model.User) (model.User, error) {
 	err := config.DB.Debug().Create(&user).Error
 	fmt.Println("Created user ID:", user.UserID)
 	return user, err
 }
 
-// #endregion
-
-// #region Patch User
 func (r *userRepository) Patch(id uint, updates map[string]interface{}) (model.User, error) {
-	err := config.DB.Model(&model.User{}).Where("user_id=?", id).Updates(updates).Error
+	err := config.DB.Model(&model.User{}).Where("user_id = ?", id).Updates(updates).Error
 	if err != nil {
+		log.Printf("Error updating user: %v", err)
 		return model.User{}, err
 	}
 
 	var updated model.User
-	err = config.DB.First(&updated, id).Error
-	return updated, err
+	err = config.DB.Where("user_id = ?", id).First(&updated).Error
+	if err != nil {
+		log.Printf("Error fetching updated user: %v", err)
+		return model.User{}, err
+	}
+
+	return updated, nil
 }
 
-// #endregion
-
-// #region Delete User
 func (r *userRepository) Delete(id uint) error {
 	return config.DB.Delete(&model.User{}, id).Error
 }
 
-// #endregion
-
-// #region Find By Email
 func (r *userRepository) FindByEmail(email string) (model.User, error) {
 	var user model.User
 	err := config.DB.Where("email = ?", email).First(&user).Error
 	return user, err
 }
 
-// #endregion
-
-// #region Login
 func (r *userRepository) LoginUser(email string, password string) (model.User, error) {
 	var user model.User
 	err := config.DB.Where("email = ? AND password = ?", email, password).First(&user).Error
 	return user, err
 }
 
-// #endregion
-
-// #region Register
 func (r *userRepository) Register(name string, email string, phone string, password string, gender string) (model.User, error) {
 	user := model.User{
 		Name:     name,
@@ -160,5 +143,3 @@ func (r *userRepository) Register(name string, email string, phone string, passw
 	}
 	return user, err
 }
-
-// #endregion

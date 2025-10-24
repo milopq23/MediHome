@@ -13,23 +13,25 @@ func UserRoutes(r *gin.RouterGroup) {
 	userRepo := repository.NewUserRepository()
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
-	login := r.Group("/")
-	// login.Use(middleware.Authorize(middleware.User))
+
+	userAuth := middleware.AuthorizeMiddleware(middleware.User)
+
+	user := r.Group("/")
 	{
-		login.POST("/login", userHandler.Login)
-		login.POST("/register", userHandler.Register)
-		
+		user.POST("/login", userHandler.Login)
+		user.POST("/register", userHandler.Register)
+		user.GET("/profile/", userAuth, userHandler.Profile)
+		user.PATCH("/profile/", userAuth, userHandler.Patch)
+		user.POST("/logout", userAuth, userHandler.LogOut)
 	}
-	user := r.Group("/user")
-	// user.Use(middleware.AdminAuthorize(middleware.Admin))
+	userAdmin := r.Group("/user")
 	{
-		user.GET("/profile/",middleware.UserAuthorize(middleware.User),userHandler.Profile)
-		user.GET("/", userHandler.GetAll)
-		user.GET("/total", userHandler.TotalActive)
-		user.GET("/:id",middleware.UserAuthorize(middleware.User), userHandler.GetByID)
-		user.POST("/", userHandler.Create)
-		// // user.PUT("/update",userHandler.Update)
-		user.PATCH("/:id", userHandler.Patch)
-		user.DELETE("/:id", userHandler.Delete)
+
+		userAdmin.GET("/", userHandler.GetAll)
+		userAdmin.GET("/total", userHandler.TotalActive)
+		userAdmin.GET("/:id", userAuth, userHandler.GetByID)
+		userAdmin.POST("/", userHandler.Create)
+		userAdmin.PATCH("/:id", userAuth, userHandler.Patch)
+		userAdmin.DELETE("/:id", userHandler.Delete)
 	}
 }

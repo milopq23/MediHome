@@ -16,56 +16,47 @@ const (
 	User  Permission = "user"
 )
 
-// Authorize middleware kiểm tra token và quyền user
-// func AdminAuthorize(required Permission) gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		authHeader := c.GetHeader("Authorization")
-// 		if !strings.HasPrefix(authHeader, "Bearer ") {
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
-// 			return
-// 		}
+var rolePriority = map[Permission]int{
+	User:  1,
+	Staff: 2,
+	Admin: 3,
+}
 
-// 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+func parseTokenAndSetClaims(c *gin.Context) (*util.Claims, bool) {
+	tokenStr, err := c.Cookie("token")
+	if err != nil || tokenStr == "" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
+		return nil, false
+	}
 
-// 		claims, err := util.ParseJWT(tokenStr)
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-// 			return
-// 		}
+	claims, err := util.ParseJWT(tokenStr)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return nil, false
+	}
 
-// 		if claims.Role != string(required) {
-// 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
-// 			return
-// 		}
+	// Lưu thông tin claims vào context Gin để handler có thể lấy
+	c.Set("claims", claims)
+	c.Set("role", claims.Role)
+	return claims, true
+}
 
-// 		// Lưu thông tin claims vào context Gin để handler có thể lấy
-// 		c.Set("claims", claims)
-
-// 		c.Next()
-// 	}
-// }
-
-func UserAuthorize(required Permission) gin.HandlerFunc {
+func AuthorizeMiddleware(minimumRole Permission) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenStr, err := c.Cookie("token")
-		if err != nil || tokenStr == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
+		claims, ok := parseTokenAndSetClaims(c)
+		if !ok {
 			return
 		}
 
-		claims, err := util.ParseJWT(tokenStr)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		userRole := Permission(claims.Role)
+
+		userLevel, ok1 := rolePriority[userRole]
+		minLevel, ok2 := rolePriority[minimumRole]
+
+		if !ok1 || !ok2 || userLevel < minLevel {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Insufficient permissions"})
 			return
 		}
-
-		if claims.Role != string(required) {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
-			return
-		}
-
-		// Lưu thông tin claims vào context Gin để handler có thể lấy
-		c.Set("claims", claims)
 
 		c.Next()
 	}
