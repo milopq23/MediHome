@@ -37,7 +37,7 @@
 	</aside>
 
 	<!-- Nội dung chính -->
-	<div class="relative flex flex-1 flex-col md:ml-64">
+	<div class="relative flex flex-1 flex-col md:p-10">
 		<header class="flex items-center justify-between bg-white px-4 py-2 shadow md:hidden">
 			<button
 				on:click={() => (sidebarOpen = true)}

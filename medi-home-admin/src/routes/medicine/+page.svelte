@@ -1,5 +1,6 @@
 <script>
 	import { Pencil, Trash2, MoreVertical, Eye, Plus } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 	import TitlePage from '$lib/components/TitlePage.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { pageTitle } from '$lib/store.js';
@@ -18,17 +19,8 @@
 	let showDelete = false;
 	let medicines = data.medicines;
 
-	async function addMedicine() {
-		try {
-			const res = await fetch('/admin/medicine', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(medicine)
-			});
-		} catch (error) {
-			console.error('Lỗi khi thêm thuốc:', error);
-			responseMessage.set('Lỗi khi thêm thuốc!');
-		}
+	function viewMedicine(id){
+		goto(`/medicine/${id}`);
 	}
 
 	function confirmDelete(id) {
@@ -91,7 +83,7 @@
 							<td class="hidden p-2 lg:table-cell">{medicine.prescription ? 'Có' : 'Không'}</td>
 							<td class="p-2">
 								<div class="flex items-center gap-2 text-gray-600">
-									<button class="hidden cursor-pointer md:table-cell" title="Xem"
+									<button class="hidden cursor-pointer md:table-cell" title="Xem" on:click={()=>viewMedicine(medicine.medicine_id)}
 										><Eye class="h-4 w-4" /></button
 									>
 									<button class="hidden cursor-pointer md:table-cell" title="Sửa"

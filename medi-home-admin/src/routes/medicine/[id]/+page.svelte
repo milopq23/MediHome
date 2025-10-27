@@ -1,17 +1,38 @@
 <script>
 	import { Plus } from 'lucide-svelte';
-
+	export let data;
+	console.log('đât', data);
+	let medicine = data;
+	console.log('medicine', medicine);
 	let previewUrl = '';
+	async function addMedicine() {
+		try {
+			const res = await fetch('/admin/medicine', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(medicine)
+			});
+		} catch (error) {
+			console.error('Lỗi khi thêm thuốc:', error);
+			responseMessage.set('Lỗi khi thêm thuốc!');
+		}
+	}
+	async function onFileChange(event) {
+		file = event.target.files[0];
+		if (file) {
+			// Tạo URL tạm thời để preview
+			previewUrl = URL.createObjectURL(file);
+		} else {
+			previewUrl = '';
+		}
+	}
 </script>
 
-<!-- {#if showPopup} -->
-<div class="flex items-center justify-center p-4">
-	<div
-		class="max-h-full w-full max-w-md overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800"
-	>
+<div class="flex items-center justify-center p-10">
+	<div class="max-h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
 		<form>
-			<div class="mb-6 grid gap-6 md:grid-cols-2">
-				<div>
+			<div class="mb-6 grid gap-6 md:grid-cols-3">
+				<div class="col-span-1">
 					<label for="code" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Code</label
 					>
@@ -19,10 +40,11 @@
 						type="text"
 						class="border-gray-300F block w-full rounded-lg border bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 						placeholder="MED001"
+						bind:value={medicine.code}
 						required
 					/>
 				</div>
-				<div>
+				<div class="col-span-2 col-start-2 row-start-1">
 					<label
 						for="medicine_name"
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tên thuốc</label
@@ -30,12 +52,13 @@
 					<input
 						type="text"
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Paracetamol"
+						placeholder="Tên thuốc"
+						bind:value={medicine.name}
 						required
 					/>
 				</div>
 				<!-- này làm select -->
-				<div>
+				<div class="col-span-1 col-start-1 row-start-2">
 					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Danh mục</label
 					>
@@ -47,7 +70,18 @@
 						required
 					/>
 				</div>
-				<div>
+				<div class="col-start-2 row-start-2">
+					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Dạng bào chế</label
+					>
+					<input
+						type="number"
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder="Viên nén"
+						required
+					/>
+				</div>
+				<div class="col-start-3 row-start-2">
 					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Thuốc kê đơn</label
 					>
@@ -59,7 +93,33 @@
 						required
 					/>
 				</div>
-				<div>
+
+				<div class="col-start-1 row-start-3">
+					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Đơn vị(viên/vỉ)</label
+					>
+					<input
+						type="number"
+						id="visitors"
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder=""
+						required
+					/>
+				</div>
+				<div class="col-start-2 row-start-3">
+					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Đơn vị(vỉ/hộp)</label
+					>
+					<input
+						type="number"
+						id="visitors"
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder=""
+						required
+					/>
+				</div>
+
+				<div class="col-span-2 col-start-3 row-start-3">
 					<label for="website" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đóng gói</label
 					>
@@ -71,23 +131,11 @@
 						required
 					/>
 				</div>
-				<div>
-					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Dạng bào chế</label
-					>
-					<input
-						type="number"
-						id="visitors"
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder=""
-						required
-					/>
-				</div>
 			</div>
 
 			<div>
 				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-					>Hình chính:
+					>Ảnh chính:
 				</label>
 				<div class="flex justify-center">
 					{#if previewUrl}
@@ -98,7 +146,7 @@
 						/>
 					{:else}
 						<div
-							class="flex h-[100px] w-[100px] items-center justify-center rounded-xl border-solid bg-gray-300"
+							class="flex h-[200px] w-[200px] items-center justify-center rounded-xl border-solid bg-gray-300"
 						>
 							<Plus class="h-5 w-5" />
 						</div>
@@ -108,7 +156,7 @@
 			</div>
 			<div>
 				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-					>Hình chính:
+					>Ảnh phụ:
 				</label>
 				<div class="flex justify-center">
 					{#if previewUrl}
