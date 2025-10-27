@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Medicine struct {
-	MedicineID       int64     `gorm:"column:medicine_id;primarykey;autoIncrement"`
+	MedicineID       int64     `gorm:"column:medicine_id;primarykey;autoIncrement" json:"medicine_id"`
 	MedicineCateID   int64     `gorm:"column:medicinecate_id;not null" json:"medicinecate_id"`
 	DosageFormID     int64     `gorm:"column:dosageform_id;not null" json:"dosageform_id"`
 	Code             string    `gorm:"column:code;unique;not null" json:"code"`
