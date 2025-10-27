@@ -1,56 +1,40 @@
 <script>
 	import { Pencil, Trash2, MoreVertical, Eye, Plus } from 'lucide-svelte';
-	import { loadMedicines, addMedicine, patchMedicine,apiDeleteMedicne, apiLoadMedicines } from '$lib/api/medicine.js';
-	import { onMount, onDestroy } from 'svelte';
 	import TitlePage from '$lib/components/TitlePage.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
+	import { pageTitle } from '$lib/store.js';
 
+	export let data;
+
+	pageTitle.set('Trang quản lý thuốc');
 	let search = '';
-	let page = 1;
-	let pageSize = 2;
-	let total = 0;
-	let totalPages = 1;
+	let page = data.page;
+	let pageSize = data.pageSize;
+	let total = data.total;
+	let totalPages = Math.ceil(total / pageSize);
 
 	// let showPopup = true;
 	let selectedActionId = null;
 	let showDelete = false;
+	let medicines = data.medicines;
 
-	let medicines = [];
-
-	async function loadMedicinePage(currentPage = 1) {
+	async function addMedicine() {
 		try {
-			const result = await apiLoadMedicines(currentPage, pageSize);
-			medicines = result.medicines;
-			page = result.page;
-			pageSize = result.pageSize;
-			total = result.total;
-			totalPages = Math.ceil(total / pageSize);
+			const res = await fetch('/admin/medicine', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(medicine)
+			});
 		} catch (error) {
-			console.log('load medicinee', error);
+			console.error('Lỗi khi thêm thuốc:', error);
+			responseMessage.set('Lỗi khi thêm thuốc!');
 		}
 	}
-
-	async function deleteMedicine(id) {
-		try {
-			console.log("await",id)
-			const result = await apiDeleteMedicne(id)
-			console.log(result)
-		} catch (error) {
-			console.log('load medicinee', error);
-		}
-	}
-
-	onMount(() => {
-		loadMedicinePage();
-	});
-
-	onDestroy(() => {});
 
 	function confirmDelete(id) {
-		console.log("funciton",id)
+		console.log('funciton', id);
 		showDelete = false;
-		deleteMedicine(id)
-		// medicine.medicine_id = id;
+		deleteMedicine(id);
 	}
 
 	function openAction(id) {
@@ -59,7 +43,6 @@
 
 	function goToPage(p) {
 		if (p >= 1 && p <= totalPages) page = p;
-		loadMedicinePage(page);
 	}
 </script>
 
@@ -127,9 +110,7 @@
 											class="fixed top-1/2 left-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-6 shadow-xl"
 										>
 											<h2 class="mb-4 text-xl font-bold">Xác nhận xoá</h2>
-											<p>
-												Bạn có chắc chắn muốn xoá không?
-											</p>
+											<p>Bạn có chắc chắn muốn xoá không?</p>
 
 											<div class="mt-6 flex justify-end gap-3">
 												<button

@@ -1,25 +1,68 @@
-  <script>
-    import '../app.css';
-  </script>
+<script>
+	import '../app.css';
+	let sidebarOpen = false;
+  import { pageTitle } from '$lib/store.js';
+</script>
 
-  <div class="max-w-full">
-    <!-- Sidebar -->
-    <!-- <nav class="w-64 bg-gray-100 border-r border-gray-300 p-6">
-      <h2 class="text-lg font-semibold mb-4">Admin</h2>
-      <ul class="space-y-2">
-        <li><a href="/medicine" class="block hover:underline">Thuốc</a></li>
-        <li><a href="/medicine-cate" class="block hover:underline">Loại thuốc</a></li>
-        <li><a href="/voucher" class="block hover:underline">Voucher</a></li>
-        <li><a href="/dosage-form" class="block hover:underline">Dạng bào chế</a></li>
-        <li><a href="/admin" class="block hover:underline">Quản trị viên</a></li>
-        <li><a href="/user" class="block hover:underline">Người dùng</a></li>
-        <li><a href="/order" class="block hover:underline">Đơn hàng</a></li>
-        <li><a href="/logout" class="block hover:text-red-500">Đăng xuất</a></li>
-      </ul>
-    </nav> -->
 
-    <!-- Main content -->
-    <main class="max-w-full">
-      <slot />
-    </main>
-  </div>
+<div class="relative flex h-screen overflow-hidden">
+	<!-- Sidebar -->
+	<aside
+		id="sidebar"
+		class="fixed inset-y-0 left-0 z-20 w-64 transform bg-gray-800 text-white transition-transform duration-300 ease-in-out md:relative md:flex md:translate-x-0 md:flex-col"
+		class:translate-x-0={sidebarOpen}
+		class:-translate-x-full={!sidebarOpen}
+	>
+		<div class="flex items-center justify-between px-4 py-4 md:hidden">
+			<span class="text-2xl font-extrabold">MediHome</span>
+			<button on:click={() => (sidebarOpen = false)} class="text-2xl text-white">✕</button>
+		</div>
+
+		<a href="/" class="hidden items-center space-x-2 px-4 py-2 text-white md:flex">
+			<span class="text-2xl font-extrabold">MediHome</span>
+		</a>
+
+		<nav class="mt-4 space-y-1 px-4">
+			<a href="/" class="block rounded px-4 py-2.5 hover:bg-gray-700">Dashboard</a>
+			<a href="/medicine" class="block rounded px-4 py-2.5 hover:bg-gray-700">Thuốc</a>
+			<a href="/medicine-cate" class="block rounded px-4 py-2.5 hover:bg-gray-700">Loại thuốc</a>
+			<a href="/order" class="block rounded px-4 py-2.5 hover:bg-gray-700">Đơn hàng</a>
+			<a href="/voucher" class="block rounded px-4 py-2.5 hover:bg-gray-700">Khuyến mãi</a>
+			<a href="/inventory" class="block rounded px-4 py-2.5 hover:bg-gray-700">Kho</a>
+			<a href="/dosage-form" class="block rounded px-4 py-2.5 hover:bg-gray-700">Dạng bào chế</a>
+			<a href="/user" class="block rounded px-4 py-2.5 hover:bg-gray-700">Người dùng</a>
+			<a href="/admin" class="block rounded px-4 py-2.5 hover:bg-gray-700">Admin</a>
+			<a href="/" class="block rounded px-4 py-2.5 hover:bg-gray-700">Đăng xuất</a>
+		</nav>
+	</aside>
+
+	<!-- Nội dung chính -->
+	<div class="relative flex flex-1 flex-col md:ml-64">
+		<header class="flex items-center justify-between bg-white px-4 py-2 shadow md:hidden">
+			<button
+				on:click={() => (sidebarOpen = true)}
+				class="text-2xl text-gray-700 focus:outline-none"
+			>
+				☰
+			</button>
+      <h1 class="text-2xl font-extrabold">{$pageTitle}</h1>
+      
+		</header>
+
+		<!-- Nội dung chính -->
+		<main class="relative flex-1 overflow-auto p-4 md:p-6">
+			<slot />
+
+			{#if sidebarOpen}
+				<!-- Overlay mờ phủ lên nội dung slot -->
+				<button
+					class="absolute inset-0 z-10 bg-black/30 backdrop-blur-sm transition duration-300 md:hidden"
+					on:click={() => (sidebarOpen = false)}
+          type="button"
+          aria-label="Overlay SideBar"
+				>
+				</button>
+			{/if}
+		</main>
+	</div>
+</div>

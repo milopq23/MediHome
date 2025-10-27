@@ -17,6 +17,6 @@
 				<Plus class="h-5 w-5" />
 				<span class="text-lg sm:text-xl">Thêm</span>
 			</button>
-		</div>
+		</div>	
 	</div>
 </div>
