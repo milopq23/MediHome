@@ -102,9 +102,7 @@ func (h *UserHandler) Patch(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
 		return
 	}
-	log.Print("claimsRaw", claimsRaw)
 	claims := claimsRaw.(*util.Claims)
-	log.Print(claims)
 
 	var input map[string]interface{}
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -145,7 +143,6 @@ func (h *UserHandler) Login(c *gin.Context) {
 	}
 
 	c.SetCookie("token", token, 3600, "/", "localhost", false, true)
-	log.Printf(token)
 	resp := LoginResponse{
 		Token: token,
 		UserToken: UserTokenDTO{
@@ -177,9 +174,7 @@ func (h *UserHandler) Profile(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
 		return
 	}
-	log.Println("Lỗi nhận claim",claimsRaw)
 	claims := claimsRaw.(*util.Claims)
-	log.Println(claims)
 	user, err := h.service.GetByID(claims.UserID)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
