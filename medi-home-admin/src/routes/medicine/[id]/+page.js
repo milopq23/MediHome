@@ -22,7 +22,7 @@ export async function load({ params, fetch }) {
 	};
 	const fetchDosageForm = async () => {
 		try {
-			const res = await fetch(`${API_URL}/api/admin/dosageform`);
+			const res = await fetch(`${API_URL}/api/admin/dosage`);
 			const dosageForm = await res.json();
 			return dosageForm;
 		}
@@ -31,9 +31,10 @@ export async function load({ params, fetch }) {
 		}
 	};
 
-	const [medicine, medicineCate] = await Promise.all([
+	const [medicine, medicineCate, dosageForm] = await Promise.all([
 		fetchMedicine(),
-		fetchMedicineCate()
+		fetchMedicineCate(),
+		fetchDosageForm()
 	]);
 
 	let selectedParent = null;
@@ -51,6 +52,7 @@ export async function load({ params, fetch }) {
 	return {
 		medicine,
 		medicineCate,
+		dosageForm,
 		selectedParent,
 		selectedChild
 	};

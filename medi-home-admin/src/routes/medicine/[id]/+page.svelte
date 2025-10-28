@@ -2,18 +2,14 @@
 	import { Plus } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	export let data;
-	let { medicine, medicineCate, selectedParent,selectedChild } = data;
+	let { medicine, medicineCate, selectedParent, selectedChild, dosageForm } = data;
 	let previewUrl = '';
 
-	
 	let categories = medicineCate;
-
 
 	$: childCategories = selectedParent
 		? medicineCate.find((c) => c.medicinecate_id == selectedParent)?.children || []
 		: [];
-
-
 
 	async function addMedicine() {
 		try {
@@ -97,10 +93,7 @@
 						<option value="" disabled selected>Chọn danh mục</option>
 						{#if childCategories}
 							{#each childCategories as child}
-								<option
-									value={child.medicinecate_id}
-									on:chang={() => console.log(child.medicinecate_id)}>{child.name}</option
-								>
+								<option value={child.medicinecate_id}>{child.name}</option>
 							{/each}
 						{/if}
 					</select>
@@ -113,27 +106,36 @@
 					{/if}
 				</div>
 				<div class="">
-					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Dạng bào chế</label
+					<label
+						for="dosageForm"
+						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Dạng bào chế</label
 					>
-					<input
-						type="number"
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Viên nén"
+					<select
+						id="dosage"
+						bind:value={medicine.dosageform_id}
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
 						required
-					/>
+					>
+						<option class="" value="" disabled selected>Chọn danh mục</option>
+
+						{#each dosageForm as dosage}
+							<option class="" value={dosage.dosageform_id}>{dosage.name}</option>
+						{/each}
+					</select>
 				</div>
 				<div class="">
 					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Thuốc kê đơn</label
 					>
-					<input
-						type=""
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Có"
-						pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+					<select
+						bind:value={medicine.prescription}
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
 						required
-					/>
+					>
+						<option value="" disabled>Chọn danh mục</option>
+						<option value={true} selected>Kê đơn </option>
+						<option value={false} selected>Không kê đơn</option>
+					</select>
 				</div>
 
 				<div class="">
