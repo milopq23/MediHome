@@ -9,7 +9,9 @@ import (
 
 type MedicineCateService interface {
 	GetAll() ([]model.MedicineCate, error)
-	ListChildren(id int64) (model.MedicineCate, error)
+	// ListChildren(id int64) (model.MedicineCate, error)
+	ListChildren() ([]model.MedicineCate, error)
+	ListParent() ([]model.MedicineCate, error)
 	Create(medicineCate model.MedicineCate) (model.MedicineCate, error)
 	CreateParentCate(medicineCate model.MedicineCate) (model.MedicineCate, error)
 	Patch(id uint, updates map[string]interface{}) (model.MedicineCate, error)
@@ -28,8 +30,16 @@ func (s *medicineCateService) GetAll() ([]model.MedicineCate, error) {
 	return s.repo.FindAll()
 }
 
-func (s *medicineCateService) ListChildren(id int64) (model.MedicineCate, error) {
-	return s.repo.ListChildren(id)
+// func (s *medicineCateService) ListChildren(id int64) (model.MedicineCate, error) {
+// 	return s.repo.ListChildren(id)
+// }
+
+
+func (s *medicineCateService) ListChildren() ([]model.MedicineCate, error) {
+	return s.repo.Children()
+}
+func (s *medicineCateService) ListParent() ([]model.MedicineCate, error) {
+	return s.repo.Parent()
 }
 
 func (s *medicineCateService) CreateParentCate(medicineCate model.MedicineCate) (model.MedicineCate, error) {

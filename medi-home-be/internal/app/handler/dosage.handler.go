@@ -17,6 +17,15 @@ func NewDosageFormHandler(service service.DosageFormService) *DosageFormHandler{
 	return &DosageFormHandler{service}
 }
 
+func (h *DosageFormHandler) GetAll(c *gin.Context){
+	dosages, err := h.service.GetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, dosages)
+}
+
 func (h *DosageFormHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	dosage,err := h.service.GetByID(int64(id))

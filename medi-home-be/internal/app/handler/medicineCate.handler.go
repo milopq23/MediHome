@@ -30,9 +30,26 @@ func (h *MedicineCateHandler) GetAll(c *gin.Context) {
 // #endregion
 
 // #region List Cate con
+// func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
+// 	id, _ := strconv.Atoi(c.Param("id"))
+// 	medicineCate, err := h.service.ListChildren(int64(id))
+// 	if err != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine category not found"})
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, medicineCate)
+// }
 func (h *MedicineCateHandler) ListChildren(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	medicineCate, err := h.service.ListChildren(int64(id))
+	medicineCate, err := h.service.ListChildren()
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine category not found"})
+		return
+	}
+	c.JSON(http.StatusOK, medicineCate)
+}
+
+func (h *MedicineCateHandler) ListParent(c *gin.Context) {
+	medicineCate, err := h.service.ListParent()
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine category not found"})
 		return

@@ -71,6 +71,7 @@ func (r *medicineRepository) FindAll(page, pageSize int) (model.Pagination, erro
 	return *pagination, nil
 }
 
+
 func (r *medicineRepository) FindByID(id int64) (model.Medicine, error) {
 	var medicine model.Medicine
 	err := config.DB.Find(&medicine, id).Error

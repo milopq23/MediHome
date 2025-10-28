@@ -8,6 +8,8 @@ import (
 type MedicineCateRepository interface {
 	FindAll() ([]model.MedicineCate, error)
 	FindByID(id int64) (model.MedicineCate, error)
+	Children() ([]model.MedicineCate, error)
+	Parent() ([]model.MedicineCate, error)
 	ListChildren(id int64) (model.MedicineCate, error)
 	Create(medicineCate model.MedicineCate) (model.MedicineCate, error)
 	Patch(id uint, updates map[string]interface{}) (model.MedicineCate, error)
@@ -41,6 +43,18 @@ func (r *medicineCateRepository) FindByID(id int64) (model.MedicineCate, error) 
 func (r *medicineCateRepository) ListChildren(id int64) (model.MedicineCate, error) {
 	var medicineCate model.MedicineCate
 	err := config.DB.Preload("Children").First(&medicineCate, id).Error
+	return medicineCate, err
+}
+
+func (r *medicineCateRepository) Children() ([]model.MedicineCate, error) {
+	var medicineCate []model.MedicineCate
+	err := config.DB.Preload("Children").Where("parent_id IS NOT NULL").Find(&medicineCate).Error
+	return medicineCate, err
+}
+
+func (r *medicineCateRepository) Parent() ([]model.MedicineCate, error) {
+	var medicineCate []model.MedicineCate
+	err := config.DB.Where("parent_id IS NULL").Find(&medicineCate).Error
 	return medicineCate, err
 }
 
@@ -86,7 +100,6 @@ func (r *medicineCateRepository) Patch(id uint, updates map[string]interface{}) 
 }
 
 // #endregion
-
 
 // #region Delete Cate
 

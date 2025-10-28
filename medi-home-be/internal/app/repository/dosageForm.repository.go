@@ -6,10 +6,10 @@ import (
 )
 
 type DosageForm interface {
-	GetAll() ([] model.DosageForm, error)
-	FindByID(id int64) (model.DosageForm,error)
-	Create(dosageForm model.DosageForm) (model.DosageForm,error)
-	Patch(id int64, updates map[string] interface{}) (model.DosageForm, error)
+	GetAll() ([]model.DosageForm, error)
+	FindByID(id int64) (model.DosageForm, error)
+	Create(dosageForm model.DosageForm) (model.DosageForm, error)
+	Patch(id int64, updates map[string]interface{}) (model.DosageForm, error)
 	Delete(id int64) error
 }
 
@@ -19,7 +19,7 @@ func NewDosageFormRepository() DosageForm {
 	return &dosageFormRepository{}
 }
 
-func (r *dosageFormRepository)  GetAll() ([]model.DosageForm,error) {
+func (r *dosageFormRepository) GetAll() ([]model.DosageForm, error) {
 	var dosageForms []model.DosageForm
 	err := config.DB.Find(&dosageForms).Error
 	return dosageForms, err
@@ -36,16 +36,16 @@ func (r *dosageFormRepository) Create(dosageForm model.DosageForm) (model.Dosage
 	return dosageForm, err
 }
 
-func (r *dosageFormRepository) Patch(id int64, updates map[string] interface{}) (model.DosageForm, error) {
+func (r *dosageFormRepository) Patch(id int64, updates map[string]interface{}) (model.DosageForm, error) {
 	err := config.DB.Model(&model.DosageForm{}).Where("dosageform_id=?").Updates(updates).Error
-	if err != nil{
-		return model.DosageForm{},err
+	if err != nil {
+		return model.DosageForm{}, err
 	}
 
 	var updated model.DosageForm
 
-	err = config.DB.First(&updated,id).Error
-	
+	err = config.DB.First(&updated, id).Error
+
 	return updated, err
 }
 func (r *dosageFormRepository) Delete(id int64) error {
