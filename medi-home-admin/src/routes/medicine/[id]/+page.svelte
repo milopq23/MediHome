@@ -1,10 +1,20 @@
 <script>
 	import { Plus } from 'lucide-svelte';
+	import { onMount } from 'svelte';
 	export let data;
-	console.log('đât', data);
-	let medicine = data;
-	console.log('medicine', medicine);
+	let { medicine, medicineCate, selectedParent,selectedChild } = data;
 	let previewUrl = '';
+
+	
+	let categories = medicineCate;
+
+
+	$: childCategories = selectedParent
+		? medicineCate.find((c) => c.medicinecate_id == selectedParent)?.children || []
+		: [];
+
+
+
 	async function addMedicine() {
 		try {
 			const res = await fetch('/admin/medicine', {
@@ -44,7 +54,7 @@
 						required
 					/>
 				</div>
-				<div class="col-span-2 col-start-2 row-start-1">
+				<div class="md:col-span-2">
 					<label
 						for="medicine_name"
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tên thuốc</label
@@ -57,20 +67,52 @@
 						required
 					/>
 				</div>
-				<!-- này làm select -->
-				<div class="col-span-1 col-start-1 row-start-2">
+				<div class="">
 					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Danh mục</label
+						>Danh mục cha</label
 					>
-					<input
-						type="text"
-						id="company"
+					<select
+						id="category"
+						bind:value={selectedParent}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Thuốc dị ứng"
 						required
-					/>
+					>
+						<option value="" disabled selected>Chọn danh mục</option>
+						{#each categories as parent}
+							<option value={parent.medicinecate_id}>{parent.name}</option>
+						{/each}
+					</select>
 				</div>
-				<div class="col-start-2 row-start-2">
+				<div class="">
+					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Danh mục con</label
+					>
+					<select
+						id="childCategory"
+						bind:value={selectedChild}
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
+						required
+						disabled={!selectedParent}
+					>
+						<option value="" disabled selected>Chọn danh mục</option>
+						{#if childCategories}
+							{#each childCategories as child}
+								<option
+									value={child.medicinecate_id}
+									on:chang={() => console.log(child.medicinecate_id)}>{child.name}</option
+								>
+							{/each}
+						{/if}
+					</select>
+					{#if childCategories.length > 0}
+						<ul class="mt-2">
+							{#each selectedParent.children as child}
+								<li>{child.name}</li>
+							{/each}
+						</ul>
+					{/if}
+				</div>
+				<div class="">
 					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Dạng bào chế</label
 					>
@@ -81,7 +123,7 @@
 						required
 					/>
 				</div>
-				<div class="col-start-3 row-start-2">
+				<div class="">
 					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Thuốc kê đơn</label
 					>
@@ -94,7 +136,7 @@
 					/>
 				</div>
 
-				<div class="col-start-1 row-start-3">
+				<div class="">
 					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đơn vị(viên/vỉ)</label
 					>
@@ -106,7 +148,7 @@
 						required
 					/>
 				</div>
-				<div class="col-start-2 row-start-3">
+				<div class="">
 					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đơn vị(vỉ/hộp)</label
 					>
@@ -119,7 +161,7 @@
 					/>
 				</div>
 
-				<div class="col-span-2 col-start-3 row-start-3">
+				<div class="">
 					<label for="website" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đóng gói</label
 					>

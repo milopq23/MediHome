@@ -2,10 +2,16 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 
 export async function apiGetAllCate() {
 	try {
-		const res = await fetch(`${API_URL}/api/medicine-cate/`);
+		const res = await fetch(`${API_URL}/api/admin/medicinecate/`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
 		if (!res.ok) {
 			throw new Error(`HTTP error! status: ${res.status}`);
 		}
+		console.log('rés', res);
 		const result = await res.json();
 		console.log(result);
 		return result;
@@ -97,7 +103,7 @@ export async function apiUploadIcon(fileName) {
 		if (!res.ok) {
 			console.log('Lỗi post ảnh');
 		}
-		console.log("Post ảnh thành công",res)
+		console.log('Post ảnh thành công', res);
 		return await res.json();
 	} catch (error) {
 		throw error;
