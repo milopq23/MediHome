@@ -1,9 +1,8 @@
 <script>
 	import '../app.css';
 	let sidebarOpen = false;
-  import { pageTitle } from '$lib/store.js';
+	import { pageTitle } from '$lib/store.js';
 </script>
-
 
 <div class="relative flex h-screen overflow-hidden">
 	<!-- Sidebar -->
@@ -36,8 +35,7 @@
 		</nav>
 	</aside>
 
-	<!-- Nội dung chính -->
-	<div class="relative flex flex-1 flex-col md:p-10">
+	<div class="relative flex flex-1 flex-col">
 		<header class="flex items-center justify-between bg-white px-4 py-2 shadow md:hidden">
 			<button
 				on:click={() => (sidebarOpen = true)}
@@ -45,21 +43,22 @@
 			>
 				☰
 			</button>
-      <h1 class="text-2xl font-extrabold">{$pageTitle}</h1>
-      
-		</header>
 
-		<!-- Nội dung chính -->
-		<main class="relative flex-1 overflow-auto p-4 md:p-6">
+			<h1 class="text-2xl font-extrabold">{$pageTitle}</h1>
+		</header>
+		<!-- <div class="hidden md:items-center md:justify-center bg-white px-6 py-4 md:flex">
+			<h1 class="text-5xl font-extrabold">{$pageTitle}</h1>
+		</div> -->
+
+		<main class="relative flex-1 overflow-auto p-2 md:p-6">
 			<slot />
 
 			{#if sidebarOpen}
-				<!-- Overlay mờ phủ lên nội dung slot -->
 				<button
 					class="absolute inset-0 z-10 bg-black/30 backdrop-blur-sm transition duration-300 md:hidden"
 					on:click={() => (sidebarOpen = false)}
-          type="button"
-          aria-label="Overlay SideBar"
+					type="button"
+					aria-label="Overlay SideBar"
 				>
 				</button>
 			{/if}

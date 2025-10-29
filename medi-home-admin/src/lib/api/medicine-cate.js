@@ -107,6 +107,5 @@ export async function apiUploadIcon(fileName) {
 		return await res.json();
 	} catch (error) {
 		throw error;
-	}
-	F;
+	};
 }

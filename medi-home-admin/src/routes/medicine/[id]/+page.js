@@ -13,7 +13,7 @@ export async function load({ params, fetch }) {
 	};
 	const fetchMedicineCate = async () => {
 		try {
-			const res = await fetch(`${API_URL}/api/admin/medicinecate`);
+			const res = await fetch(`${API_URL}/api/admin/medicinecate/`);
 			const medicineCate = await res.json();
 			return medicineCate;
 		} catch (error) {
@@ -22,7 +22,7 @@ export async function load({ params, fetch }) {
 	};
 	const fetchDosageForm = async () => {
 		try {
-			const res = await fetch(`${API_URL}/api/admin/dosage`);
+			const res = await fetch(`${API_URL}/api/admin/dosage/`);
 			const dosageForm = await res.json();
 			return dosageForm;
 		}

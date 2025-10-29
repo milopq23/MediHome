@@ -1,9 +1,15 @@
 <script>
+	import { pageTitle } from '$lib/store.js';
 	import { Plus } from 'lucide-svelte';
-	import { onMount } from 'svelte';
+	let title = 'Chi tiết thuốc';
+
+	pageTitle.set(title);
+
 	export let data;
 	let { medicine, medicineCate, selectedParent, selectedChild, dosageForm } = data;
+
 	let previewUrl = '';
+	let previewUrls = [];
 
 	let categories = medicineCate;
 
@@ -23,19 +29,34 @@
 			responseMessage.set('Lỗi khi thêm thuốc!');
 		}
 	}
-	async function onFileChange(event) {
-		file = event.target.files[0];
-		if (file) {
-			// Tạo URL tạm thời để preview
-			previewUrl = URL.createObjectURL(file);
-		} else {
-			previewUrl = '';
+	// async function onFileChange(event) {
+	// 	file = event.target.files[0];
+	// 	if (file) {
+	// 		// Tạo URL tạm thời để preview
+	// 		previewUrl = URL.createObjectURL(file);
+	// 	} else {
+	// 		previewUrl = '';
+	// 	}
+	// }
+
+	function onFileChange(event) {
+		const files = event.target.files;
+		for (const file of files) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				previewUrls = [...previewUrls, e.target.result]; // thêm URL mới vào mảng
+			};
+			reader.readAsDataURL(file);
 		}
 	}
 </script>
 
-<div class="flex items-center justify-center p-10">
+<div class="flex items-center justify-center">
 	<div class="max-h-full w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
+		<div class="hidden md:flex md:justify-center md:py-10">
+			<h1 class="text-5xl font-extrabold">{title}</h1>
+		</div>
+
 		<form>
 			<div class="mb-6 grid gap-6 md:grid-cols-3">
 				<div class="col-span-1">
@@ -123,6 +144,45 @@
 						{/each}
 					</select>
 				</div>
+
+				<div class="">
+					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Đơn vị(viên/vỉ)</label
+					>
+					<input
+						type="number"
+						bind:value={medicine.unitstrip}
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder=""
+						required
+					/>
+				</div>
+				<div class="">
+					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Đơn vị(vỉ/hộp)</label
+					>
+					<input
+						type="number"
+						bind:value={medicine.unitbox}
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder=""
+						required
+					/>
+				</div>
+
+				<div class="">
+					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Đóng gói</label
+					>
+					<input
+						type="url"
+						bind:value={medicine.package}
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+						placeholder="Hộp 10 vỉ x 10 viên"
+						required
+					/>
+				</div>
+
 				<div class="">
 					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Thuốc kê đơn</label
@@ -139,39 +199,13 @@
 				</div>
 
 				<div class="">
-					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Đơn vị(viên/vỉ)</label
+					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Nhà sản xuất</label
 					>
 					<input
-						type="number"
-						id="visitors"
+						bind:value={medicine.manufacturer}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder=""
-						required
-					/>
-				</div>
-				<div class="">
-					<label for="visitors" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Đơn vị(vỉ/hộp)</label
-					>
-					<input
-						type="number"
-						id="visitors"
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder=""
-						required
-					/>
-				</div>
-
-				<div class="">
-					<label for="website" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Đóng gói</label
-					>
-					<input
-						type="url"
-						id="website"
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						placeholder="Có"
+						placeholder="Công ty ABC"
 						required
 					/>
 				</div>
@@ -202,60 +236,144 @@
 				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Ảnh phụ:
 				</label>
-				<div class="flex justify-center">
-					{#if previewUrl}
-						<img
-							src={previewUrl}
-							alt="Ảnh preview"
-							class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
-						/>
+				<label class="flex cursor-pointer flex-wrap justify-center gap-2">
+					{#if previewUrls.length > 0}
+						{#each previewUrls as url, index}
+							<img
+								src={url}
+								alt="Ảnh preview"
+								class="max-h-[200px] max-w-[200px] rounded object-contain"
+							/>
+						{/each}
 					{:else}
 						<div
-							class="flex h-[100px] w-[100px] items-center justify-center rounded-xl border-solid bg-gray-300"
+							class="flex h-[150px] w-[150px] items-center justify-center rounded-xl border-solid bg-gray-300"
 						>
 							<Plus class="h-5 w-5" />
 						</div>
 					{/if}
 					<input class="hidden" type="file" multiple accept="image/*" on:change={onFileChange} />
-				</div>
+				</label>
 			</div>
 			<div class="mb-6">
-				<label for="email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-					>Email address</label
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Cách dùng</label
 				>
-				<input
-					type="email"
-					id="email"
-					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="john.doe@company.com"
+				<textarea
+					type="text"
+					bind:value={medicine.usage}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
 					required
-				/>
+				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="password" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-					>Password</label
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Chỉ định</label
 				>
-				<input
-					type="password"
-					id="password"
-					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="•••••••••"
+				<textarea
+					type="text"
+					bind:value={medicine.indication}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
 					required
-				/>
+				></textarea>
 			</div>
 			<div class="mb-6">
-				<label
-					for="confirm_password"
-					class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-					>Confirm password</label
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Tác dụng phụ</label
 				>
-				<input
-					type="password"
-					id="confirm_password"
-					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="•••••••••"
+				<textarea
+					type="text"
+					bind:value={medicine.adverse}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
 					required
-				/>
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Chống chỉ định</label
+				>
+				<textarea
+					type="text"
+					bind:value={medicine.contraindication}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Thận trọng</label
+				>
+				<textarea
+					type="text"
+					bind:value={medicine.precaution}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Ảnh hưởng của thuốc lên khả năng lái xe và vận hành máy móc</label
+				>
+				<textarea
+					type="text"
+					bind:value={medicine.ability}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Phụ nữ có thai hoặc đang cho con bú</label
+				>
+				<textarea
+					type="text"
+					bind:value={medicine.pregnancy}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Tương tác thuốc
+				</label>
+				<textarea
+					type="text"
+					bind:value={medicine.drug_interaction}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Bảo quản</label
+				>
+				<textarea
+					type="text"
+					bind:value={medicine.storage}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
+			</div>
+			<div class="mb-6">
+				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					>Lưu ý</label
+				>
+				<textarea
+					type="text"
+					bind:value={medicine.note}
+					class="block h-30 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+					placeholder="Uống mỗi lần 2 viên, ngày 3 lần"
+					required
+				></textarea>
 			</div>
 			<div class="mb-6 flex items-start">
 				<div class="flex h-5 items-center">
@@ -268,7 +386,7 @@
 					/>
 				</div>
 				<label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-					>I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500"
+					>I agree with the <a href="" class="text-blue-600 hover:underline dark:text-blue-500"
 						>terms and conditions</a
 					>.</label
 				>

@@ -1,11 +1,9 @@
 <script>
-	// import { createEventDispatcher } from 'svelte';
-
 	export let page = 1;
 	export let pageSize = 10;
 	export let total = 1;
 	export let totalPages = 1;
-    export let goToPage
+	export let goToPage;
 	// const dispatch = createEventDispatcher();
 
 	// function goToPage(p) {

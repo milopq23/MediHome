@@ -1,21 +1,41 @@
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-/** @type {import('./$types').PageLoad} */
 export async function load({ fetch, url }) {
-  const page = Number(url.searchParams.get('page') ?? 1);
-  const pageSize = 10;
+	const page = Number(url.searchParams.get('page') ?? 1);
+	// const page = Number(url.searchParams.get('page') ?? 1);
+	const pageSize = 15;
 
-  const resUser = await fetch(`${API_URL}/api/user/?page=${page}&page_size=${pageSize}`);
-  const userData = await resUser.json();
+	const fetchUser = async () => {
+		try {
+			const res = await fetch(`${API_URL}/api/admin/user/?page=${page}&page_size=${pageSize}`);
+			const user = await res.json();
+			return user;
+		} catch (error) {
+			console.log('Lỗi load list user:', error);
+		}
+	};
+	// const resUser = await fetch(`${API_URL}/api/admin/user/?page=${page}&page_size=${pageSize}`);
+	// const userData = await resUser.json();
 
-  const resTotal = await fetch(`${API_URL}/api/user/total`);
-  const totalActiveUser = await resTotal.json();
+	const fetchTotalUserActive = async () => {
+		try {
+			const res = await fetch(`${API_URL}/api/admin/user/total`);
+			const total = await res.json();
+			return total;
+		} catch (error) {
+			console.log('Lỗi load user active:', error);
+		}
+	};
 
-  return {
-    users: userData.data ?? [],
-    page: userData.page ?? page,
-    pageSize: userData.page_Size ?? pageSize,
-    total: userData.total ?? 0,
-    totalActiveUser
-  };
+	// const resTotal = await fetch(`${API_URL}/api/admin/user/total`);
+	// const totalActiveUser = await resTotal.json();
+
+	const [user, total] = await Promise.all([fetchUser(), fetchTotalUserActive()]);
+	return {
+		users: user.data ?? [],
+		page: user.page ?? page,
+		pageSize: user.page_Size ?? pageSize,
+		total: user.total ?? 0,
+		totalActive: total
+	};
 }
