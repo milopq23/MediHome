@@ -1,9 +1,12 @@
 <script>
+	// import { createEventDispatcher } from 'svelte';
+
 	export let page = 1;
 	export let pageSize = 10;
 	export let total = 1;
 	export let totalPages = 1;
 	export let goToPage;
+	export let reloadPage;
 	// const dispatch = createEventDispatcher();
 
 	// function goToPage(p) {
@@ -55,5 +58,7 @@
 		>
 			»
 		</button>
+
+		<button class="ml-4 bg-gray-300 px-2 py-1" on:click={reloadPage}>Reload</button>
 	</div>
 </div>

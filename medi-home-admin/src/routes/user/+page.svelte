@@ -1,8 +1,6 @@
 <script>
 	import ToolBar from '$lib/components/ToolBar.svelte';
 	import { UserPlus, Pencil, Trash2, Eye, MoreVertical } from 'lucide-svelte';
-	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 	import { loadUsers, addUser, editUser, deleteUser } from '$lib/api/user.js';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { pageTitle } from '$lib/store.js';
@@ -11,7 +9,7 @@
 	pageTitle.set(title);
 
 	export let data;
-	let { users, page, pageSize, total, totalActive } = data;
+	let { users, page, pageSize, total, totalActiveUser } = data;
 	let selectedActionId = null;
 	let showDelete = false;
 	let search = '';
@@ -21,13 +19,16 @@
 		selectedActionId = selectedActionId === id ? null : id;
 	}
 
-	console.log(users);
+	// viết thêm 1 api khác để chuyển
 
+	// async function gotoPage(p) {
+	// 	const res = await fetch(`/user/?page=${p}`);
+	// 	const result = await res.json();
+	// 	products = result.products;
+	// 	page = p;
+	// }
 	function goToPage(p) {
-		// if (p >= 1 && p <= totalPages) {
-		// 	page = p;
-		// }
-		goto(`/user?page=${p}`);
+		if (p >= 1 && p <= totalPages) page = p;
 	}
 
 	let userActive = 1;

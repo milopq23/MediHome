@@ -31,9 +31,10 @@ export async function load({ fetch, url }) {
 	// const totalActiveUser = await resTotal.json();
 
 	const [user, total] = await Promise.all([fetchUser(), fetchTotalUserActive()]);
+
 	return {
 		users: user.data ?? [],
-		page: user.page ?? page,
+		selectedPage: user.page ?? page, // thêm dòng này
 		pageSize: user.page_Size ?? pageSize,
 		total: user.total ?? 0,
 		totalActive: total
