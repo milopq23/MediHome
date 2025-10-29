@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 	"medi-home-be/pkg/util"
@@ -36,7 +37,33 @@ func (s *userService) TotalActive() (int64, error) {
 }
 
 func (s *userService) GetAll(page, pageSize int) (model.Pagination, error) {
-	return s.repo.FindAll(page, pageSize)
+
+	pagination, err := s.repo.FindAll(page, pageSize)
+	if err != nil {
+		return model.Pagination{}, err
+	}
+
+	users, ok := pagination.Data.([]model.User)
+	if !ok {
+		return model.Pagination{}, fmt.Errorf("invalid data type in pagination.Data")
+	}
+
+
+	// mapping model -> dto
+	var result []dto.UserListDTO
+	for _, u := range users {
+		result = append(result, dto.UserListDTO{
+			UserID:     uint(u.UserID),
+			Name:       u.Name,
+			Email:      u.Email,
+			Phone:      u.Phone,
+			Gender:     u.Gender,
+			IsVerified: u.IsVerified,
+		})
+	}
+	pagination.Data = result
+
+	return pagination, nil
 }
 
 func (s *userService) GetByID(id uint) (model.User, error) {

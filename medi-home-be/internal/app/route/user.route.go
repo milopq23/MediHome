@@ -24,7 +24,7 @@ func UserRoutes(r *gin.RouterGroup) {
 		user.PATCH("/profile/", userAuth, userHandler.Patch)
 		user.POST("/logout", userAuth, userHandler.LogOut)
 	}
-	userAdmin := r.Group("/user")
+	userAdmin := r.Group("/admin/user")
 	{
 
 		userAdmin.GET("/", userHandler.GetAll)

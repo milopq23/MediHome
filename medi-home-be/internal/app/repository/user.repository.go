@@ -10,12 +10,16 @@ import (
 )
 
 type UserRepository interface {
+	//ADMIN
 	TotalActive() (int64, error)
 	FindAll(page, pageSize int) (model.Pagination, error)
 	FindByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
 	Delete(id uint) error
+	FindUsers(search string) ([]model.User, error)
+
+	//USER
 	FindByEmail(email string) (model.User, error)
 	Register(name string, email string, phone string, password string, gender string) (model.User, error)
 }
@@ -47,6 +51,12 @@ func (r *userRepository) TotalActive() (int64, error) {
 	return totalActive, nil
 }
 
+func (r *userRepository) GetALl() ([]model.User, error) {
+	var users []model.User
+	err := config.DB.Find(&users).Error
+	return users, err
+}
+
 func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
 	var users []model.User
 	var total int64
@@ -66,19 +76,7 @@ func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
 	if err != nil {
 		return model.Pagination{}, err
 	}
-	var userResponses []UserResponse
-	for _, u := range users {
-		userResponses = append(userResponses, UserResponse{
-			UserID:     uint(u.UserID),
-			Name:       u.Name,
-			Email:      u.Email,
-			Phone:      u.Phone,
-			Gender:     u.Gender,
-			IsVerified: u.IsVerified,
-		})
-	}
-
-	pagination.Data = userResponses
+	pagination.Data = users
 
 	return *pagination, nil
 }
@@ -114,6 +112,16 @@ func (r *userRepository) Patch(id uint, updates map[string]interface{}) (model.U
 
 func (r *userRepository) Delete(id uint) error {
 	return config.DB.Delete(&model.User{}, id).Error
+}
+
+func (r *userRepository) FindUsers(search string) ([]model.User, error) {
+	var users []model.User
+	err := config.DB.
+		Where("name LIKE ? OR phone LIKE ?", "%"+search+"%", "%"+search+"%").
+		Find(&users).
+		Error
+
+	return users, err
 }
 
 func (r *userRepository) FindByEmail(email string) (model.User, error) {
