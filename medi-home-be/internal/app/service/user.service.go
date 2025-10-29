@@ -38,16 +38,15 @@ func (s *userService) TotalActive() (int64, error) {
 
 func (s *userService) GetAll(page, pageSize int) (model.Pagination, error) {
 
-	pagination, err := s.repo.FindAll(page, pageSize)
+	pagination, err := s.repo.GetAll(page, pageSize)
 	if err != nil {
 		return model.Pagination{}, err
 	}
 
 	users, ok := pagination.Data.([]model.User)
 	if !ok {
-		return model.Pagination{}, fmt.Errorf("invalid data type in pagination.Data")
+		return model.Pagination{}, fmt.Errorf("failed load pagination data")
 	}
-
 
 	// mapping model -> dto
 	var result []dto.UserListDTO
@@ -78,13 +77,13 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 	user, err := s.repo.FindByID(id)
 	if err != nil {
 		return model.User{}, err
-	}
+	}	
 	allowedFields := map[string]bool{
 		"name":        true,
 		"email":       true,
 		"phone":       true,
 		"avatar":      true,
-		"password":    true,
+		"pass	word":    true,
 		"gender":      true,
 		"is_verified": true,
 	}

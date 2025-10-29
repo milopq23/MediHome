@@ -12,7 +12,7 @@ import (
 type UserRepository interface {
 	//ADMIN
 	TotalActive() (int64, error)
-	FindAll(page, pageSize int) (model.Pagination, error)
+	GetAll(page, pageSize int) (model.Pagination, error)
 	FindByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
@@ -51,13 +51,8 @@ func (r *userRepository) TotalActive() (int64, error) {
 	return totalActive, nil
 }
 
-func (r *userRepository) GetALl() ([]model.User, error) {
-	var users []model.User
-	err := config.DB.Find(&users).Error
-	return users, err
-}
 
-func (r *userRepository) FindAll(page, pageSize int) (model.Pagination, error) {
+func (r *userRepository) GetAll(page, pageSize int) (model.Pagination, error) {
 	var users []model.User
 	var total int64
 
