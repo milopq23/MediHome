@@ -33,4 +33,13 @@
 			userAdmin.PATCH("/:id", userHandler.Patch)
 			userAdmin.DELETE("/:id", userHandler.Delete)
 		}
+
+		cartRepo := repository.NewCartRepository()
+		cartService := service.NewCartService(cartRepo)
+		cartHandler := handler.NewCartHandler(cartService)
+
+		cart := r.Group("/cart")
+		{
+			cart.GET("/:id",cartHandler.GetCartUser)
+		}
 	}

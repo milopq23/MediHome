@@ -175,3 +175,4 @@ func (r *medicineRepository) DetailMedicineWithPrice(id int64) (model.DetailMedi
 	log.Print(medicine)
 	return medicine, nil
 }
+
