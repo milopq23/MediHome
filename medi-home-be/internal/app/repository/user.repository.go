@@ -51,7 +51,6 @@ func (r *userRepository) TotalActive() (int64, error) {
 	return totalActive, nil
 }
 
-
 func (r *userRepository) GetAll(page, pageSize int) (model.Pagination, error) {
 	var users []model.User
 	var total int64

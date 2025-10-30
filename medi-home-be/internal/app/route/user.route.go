@@ -1,37 +1,36 @@
-package route
+	package route
 
-import (
-	"medi-home-be/internal/app/handler"
-	"medi-home-be/internal/app/repository"
-	"medi-home-be/internal/app/service"
-	"medi-home-be/pkg/middleware"
+	import (
+		"medi-home-be/internal/app/handler"
+		"medi-home-be/internal/app/repository"
+		"medi-home-be/internal/app/service"
 
-	"github.com/gin-gonic/gin"
-)
+		"github.com/gin-gonic/gin"
+	)
 
-func UserRoutes(r *gin.RouterGroup) {
-	userRepo := repository.NewUserRepository()
-	userService := service.NewUserService(userRepo)
-	userHandler := handler.NewUserHandler(userService)
+	func UserRoutes(r *gin.RouterGroup) {
+		userRepo := repository.NewUserRepository()
+		userService := service.NewUserService(userRepo)
+		userHandler := handler.NewUserHandler(userService)
 
-	userAuth := middleware.AuthorizeMiddleware(middleware.User)
+		// userAuth := middleware.AuthorizeMiddleware(middleware.User)
 
-	user := r.Group("/")
-	{
-		user.POST("/login", userHandler.Login)
-		user.POST("/register", userHandler.Register)
-		user.GET("/profile/", userAuth, userHandler.Profile)
-		user.PATCH("/profile/", userAuth, userHandler.Patch)
-		user.POST("/logout", userAuth, userHandler.LogOut)
+		user := r.Group("/")
+		{
+			user.POST("/login", userHandler.Login)
+			user.POST("/register", userHandler.Register)
+			user.GET("/profile/", userHandler.Profile)
+			user.PATCH("/profile/", userHandler.Patch)
+			user.POST("/logout", userHandler.LogOut)
+		}
+		userAdmin := r.Group("/admin/user")
+		{
+
+			userAdmin.GET("/", userHandler.GetAll)
+			userAdmin.GET("/total", userHandler.TotalActive)
+			userAdmin.GET("/:id", userHandler.GetByID)
+			userAdmin.POST("/", userHandler.Create)
+			userAdmin.PATCH("/:id", userHandler.Patch)
+			userAdmin.DELETE("/:id", userHandler.Delete)
+		}
 	}
-	userAdmin := r.Group("/admin/user")
-	{
-
-		userAdmin.GET("/", userHandler.GetAll)
-		userAdmin.GET("/total", userHandler.TotalActive)
-		userAdmin.GET("/:id", userAuth, userHandler.GetByID)
-		userAdmin.POST("/", userHandler.Create)
-		userAdmin.PATCH("/:id", userAuth, userHandler.Patch)
-		userAdmin.DELETE("/:id", userHandler.Delete)
-	}
-}

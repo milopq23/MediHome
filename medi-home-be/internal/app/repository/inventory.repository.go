@@ -6,10 +6,13 @@ import (
 )
 
 type InventoryRepository interface {
+	// ADMIN
 	FindAll() ([]model.Inventory, error)
 	Create(inventory model.Inventory) (model.Inventory, error)
 	Patch(id int64, updates map[string]interface{}) (model.Inventory, error)
 	Delete(id int64) error
+
+	
 }
 
 type inventoryRepository struct{}
