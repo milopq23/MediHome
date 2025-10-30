@@ -12,7 +12,7 @@ type InventoryRepository interface {
 	Patch(id int64, updates map[string]interface{}) (model.Inventory, error)
 	Delete(id int64) error
 
-	
+
 }
 
 type inventoryRepository struct{}
@@ -46,3 +46,16 @@ func (r *inventoryRepository) Delete(id int64) error {
 	err := config.DB.Delete(&model.Inventory{}, id).Error
 	return err
 }
+
+func (r *inventoryRepository) FindByID(id int64) (model.Inventory, error) {
+	var inventory model.Inventory
+	err := config.DB.First(&inventory, id).Error
+	return inventory, err
+}
+
+func (r *inventoryRepository) SelectInventory(id int64) (model.Inventory, error) {
+	var inventory model.Inventory
+	err := config.DB.Where("inventory_id = ?", id).Find(&inventory).Error
+	return inventory, err
+}
+

@@ -26,6 +26,9 @@ type UserDetailMedicineDTO struct {
 	Name             string `json:"name"`
 	Thumbnail        string `json:"thumbnail"`
 	Image            string `json:"image"`
+	PriceForStrip    int64  `json:"price_for_strip"`
+	PriceForBox      int64  `json:"price_for_box"`
+	// Inventory        int64  `json:"stock"`
 	Prescription     bool   `json:"prescription"`
 	Usage            string `json:"usage"`
 	Package          string `json:"package"`

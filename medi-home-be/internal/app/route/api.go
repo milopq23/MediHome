@@ -8,7 +8,7 @@ func APIRoute(r *gin.Engine) {
 	api := r.Group("/api")
 	UserRoutes(api)
 	MedicineRoute(api)
-
+	InventoryRoute(api)
 	ShippingRoute(api)
 	DosageFormRoute(api)
 	UploadRoute(api)

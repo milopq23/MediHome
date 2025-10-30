@@ -17,6 +17,7 @@ type MedicineService interface {
 	//User
 	ListMedicine(page, pageSize int) (model.Pagination, error)
 	DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
+	DetailMedicinePrice(id int64) (model.DetailMedicineVM, error)
 }
 
 type medicineService struct {
@@ -53,4 +54,9 @@ func (s *medicineService) ListMedicine(page, pageSize int) (model.Pagination, er
 
 func (s *medicineService) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
 	return s.repo.DetailMedicine(id)
+}
+
+
+func (s *medicineService) DetailMedicinePrice(id int64) (model.DetailMedicineVM, error) {
+	return s.repo.DetailMedicineWithPrice(id)
 }
