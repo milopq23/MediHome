@@ -10,6 +10,6 @@ type MedicineCate struct {
 	Children []MedicineCate `gorm:"foreignKey:ParentID;references:MedicineCateID" json:"children,omitempty"`
 }
 
-func (MedicineCate) TableName() string {
+func (*MedicineCate) TableName() string {
 	return "medicinecates"
 }

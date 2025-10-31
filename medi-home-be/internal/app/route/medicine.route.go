@@ -10,7 +10,8 @@ import (
 
 func MedicineRoute(r *gin.RouterGroup) {
 	medicineRepo := repository.NewMedicineRepository()
-	medicineService := service.NewMedicineService(medicineRepo)
+	cartRepo := repository.NewCartRepository()
+	medicineService := service.NewMedicineService(medicineRepo,cartRepo)
 	medicineHandler := handler.NewMedicineHandler(medicineService)
 	adminMedicine := r.Group("/admin/medicine")
 	{

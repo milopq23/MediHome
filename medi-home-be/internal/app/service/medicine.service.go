@@ -21,11 +21,12 @@ type MedicineService interface {
 }
 
 type medicineService struct {
-	repo repository.MedicineRepository
+	repo     repository.MedicineRepository
+	cartRepo repository.CartRepository
 }
 
-func NewMedicineService(repo repository.MedicineRepository) MedicineService {
-	return &medicineService{repo}
+func NewMedicineService(repo repository.MedicineRepository, cartRepo repository.CartRepository) MedicineService {
+	return &medicineService{repo: repo, cartRepo: cartRepo}
 }
 
 func (s *medicineService) GetAll(page, pageSize int) (model.Pagination, error) {
@@ -56,7 +57,34 @@ func (s *medicineService) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, e
 	return s.repo.DetailMedicine(id)
 }
 
-
 func (s *medicineService) DetailMedicinePrice(id int64) (model.DetailMedicineVM, error) {
 	return s.repo.DetailMedicineWithPrice(id)
 }
+
+// func (s *medicineService) AddProductToCart(medicine_id int64) (model.CartItemDetail, error) {
+// 	medicine, err := s.repo.FindByID(medicine_id)
+// 	if err != nil {
+// 		return model.CartItemDetail{}, fmt.Errorf("cannot find medicine with ID %d: %w", medicine_id, err)
+// 	}
+
+// 	// Kiểm tra số lượng tồn kho
+// 	// if medicine.Stock <= 0 {
+// 	// 	return model.CartItemDetail{}, fmt.Errorf("medicine '%s' is out of stock", medicine.Name)
+// 	// }
+
+// 	// Tạo thông tin sản phẩm trong giỏ
+// 	item := model.CartItemDetail{
+// 		MedicineID: medicine_id,
+// 		Name:       medicine.Name,
+// 		Quantity:   1,
+// 		// PriceStrip: medicine.Price,
+// 		// PriceBox:   medicine.Price * 1,
+// 	}
+
+// 	// // Lưu vào giỏ hàng (nếu có repository riêng cho cart)
+// 	// if err := s.cartRepo.AddItem(item); err != nil {
+// 	// 	return model.CartItemDetail{}, fmt.Errorf("failed to add item to cart: %w", err)
+// 	// }
+
+// 	return item, nil
+// }

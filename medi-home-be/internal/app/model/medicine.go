@@ -28,7 +28,7 @@ type Medicine struct {
 	CreatedAt        time.Time `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt        time.Time `gorm:"column:updated_at;autoUpdateTime"`
 
-	MedicineCate *MedicineCate `gorm:"foreignKey:MedicineCateID;references:MedicineCateID" json:"medicine_cate,omitempty"`
+	MedicineCate []MedicineCate `gorm:"foreignKey:MedicineCateID;references:MedicineCateID" json:"medicine_cate,omitempty"`
 	DosageForm   *DosageForm   `gorm:"foreignKey:DosageFormID;references:DosageFormID" json:"dosage_form,omitempty"`
 }
 
@@ -60,3 +60,5 @@ type DetailMedicineVM struct {
 	Manufacturer     string  `json:"manufacturer" gorm:"column:manufacturer"`
 	Note             string  `json:"note" gorm:"column:note"`
 }
+
+

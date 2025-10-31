@@ -45,6 +45,7 @@ func (r *adminRepository) FindAll(page,pageSize int) (model.Pagination,error){
 		Order("admin_id ASC").
 		Find(&admin).Error
 
+		// b2 
 	if err != nil {
 		return model.Pagination{}, err
 	}
