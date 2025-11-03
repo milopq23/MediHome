@@ -1,6 +1,7 @@
 <script>
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
+	import { goto } from '$app/navigation';
 
 	import { Plus } from 'lucide-svelte';
 	let medicine = {};
@@ -29,11 +30,19 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(medicine)
 			});
-			const result = await res.json();
-			console.log('Thêm thuốc:', result);
+			await res.json();
 		} catch (error) {
 			console.error('Lỗi khi thêm thuốc:', error);
-			responseMessage.set('Lỗi khi thêm thuốc!');
+		}
+	}
+
+	async function viewMedicine() {
+		try {
+			await addMedicine();
+			toasts.add({ message: 'Thêm thành công', type: 'success' });
+			goto(`/medicine`);
+		} catch (error) {
+			toasts.add({ message: 'Thêm thất bại', type: 'success' });
 		}
 	}
 </script>
@@ -44,7 +53,7 @@
 			<h1 class="text-5xl font-extrabold">{title}</h1>
 		</div>
 
-		<form on:submit|preventDefault={addMedicine}>
+		<form on:submit|preventDefault={viewMedicine}>
 			<div class="mb-6 grid gap-6 md:grid-cols-3">
 				<div class="col-span-1">
 					<label for="code" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"

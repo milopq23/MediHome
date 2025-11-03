@@ -20,19 +20,47 @@
 	let showDelete = false;
 	let medicines = data.medicines;
 
+
+
+	//navigation
 	function viewDetailMedicine(id) {
 		toasts.add({ message: 'Lưu thành công', type: 'success' });
 		goto(`/medicine/${id}`);
 	}
 
-	function create(){
+	function create() {
 		goto(`/medicine/create`);
 	}
 
-	function confirmDelete(id) {
-		console.log('funciton', id);
+
+	
+	async function deleteMedicine(id) {
+		try {
+			const res = await fetch(`medicine/`, {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ id })
+			});
+
+			if (!res.ok) throw new Error(`Failed to delete medicine: ${res.status}`);
+
+			const result = await res.json();
+			return result;
+		} catch (error) {
+			console.error('Lỗi delete medicine:', error);
+			return json({ error: error.message }, { status: 500 });
+		}
+	}
+
+	async function confirmDelete(id) {
+		try {
+			console.log(id);
+			await deleteMedicine(id);
+			toasts.add({ message: 'Xóa thành công', type: 'success' });
+		} catch (error) {
+			toasts.add({ message: 'Xóa thất bại', type: 'error' });
+		}
 		showDelete = false;
-		deleteMedicine(id);
 	}
 
 	function openAction(id) {
@@ -46,7 +74,7 @@
 
 <div class="px-4 py-6 sm:px-6 lg:px-8">
 	<div class="rounded-md bg-white p-4 shadow-sm">
-		<TitlePage titleName="Danh sách thuốc" {create}/>
+		<TitlePage titleName="Danh sách thuốc" {create} />
 
 		<!-- Search bar -->
 		<div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">

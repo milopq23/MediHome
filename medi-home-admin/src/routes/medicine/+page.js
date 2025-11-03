@@ -2,7 +2,7 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 
 export async function load({ fetch, url }) {
 	const page = Number(url.searchParams.get('page')) || 1;
-	const pageSize = Number(url.searchParams.get('pageSize')) || 1;
+	const pageSize = Number(url.searchParams.get('pageSize')) || 10;
 
 	try {
 		const res = await fetch(`${API_URL}/api/admin/medicine/?page=${page}&page_size=${pageSize}`);
