@@ -1,6 +1,7 @@
 <script>
     import {Plus} from 'lucide-svelte';
     export let titleName = ''
+	export let create;
 </script>
 
 <div>
@@ -12,7 +13,7 @@
 		<div class="flex justify-center p-3">
 			<button
 				class="btn-create flex items-center rounded gap-2 bg-blue-600 transition hover:bg-blue-700"
-				on:click={openForm('create')}
+				on:click={create}
 			>
 				<Plus class="h-5 w-5" />
 				<span class="text-lg sm:text-xl">Thêm</span>

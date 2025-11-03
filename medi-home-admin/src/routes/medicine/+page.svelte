@@ -25,6 +25,10 @@
 		goto(`/medicine/${id}`);
 	}
 
+	function create(){
+		goto(`/medicine/create`);
+	}
+
 	function confirmDelete(id) {
 		console.log('funciton', id);
 		showDelete = false;
@@ -42,7 +46,7 @@
 
 <div class="px-4 py-6 sm:px-6 lg:px-8">
 	<div class="rounded-md bg-white p-4 shadow-sm">
-		<TitlePage titleName="Danh sách thuốc" />
+		<TitlePage titleName="Danh sách thuốc" {create}/>
 
 		<!-- Search bar -->
 		<div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">

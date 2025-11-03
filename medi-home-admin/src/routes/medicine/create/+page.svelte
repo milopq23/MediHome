@@ -1,41 +1,41 @@
 <script>
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
+
 	import { Plus } from 'lucide-svelte';
-	let title = 'Chi tiết thuốc';
+	let medicine = {};
+	let title = 'Tạo thuốc';
+	pageTitle.set(title);
 
 	export let data;
-	let { medicine, medicineCate, selectedParent, selectedChild, dosageForm } = data;
+	const allCategories = data.medicineCate;
+	// const childcate = allCategories.children;
+	let selectedParent = '';
+	let selectedChild = '';
+
+	const parents = allCategories.filter((p) => p.parent_id === null);
+
+	$: children = selectedParent
+		? allCategories.find((p) => p.medicinecate_id == selectedParent)?.children || []
+		: [];
 
 	let previewUrl = '';
 	let previewUrls = [];
 
-	let categories = medicineCate;
-
-	$: childCategories = selectedParent
-		? medicineCate.find((c) => c.medicinecate_id == selectedParent)?.children || []
-		: [];
-
-	// async function onFileChange(event) {
-	// 	file = event.target.files[0];
-	// 	if (file) {
-	// 		// Tạo URL tạm thời để preview
-	// 		previewUrl = URL.createObjectURL(file);
-	// 	} else {
-	// 		previewUrl = '';
-	// 	}
-	// }
-
-	// function onFileChange(event) {
-	// 	const files = event.target.files;
-	// 	for (const file of files) {
-	// 		const reader = new FileReader();
-	// 		reader.onload = (e) => {
-	// 			previewUrls = [...previewUrls, e.target.result]; // thêm URL mới vào mảng
-	// 		};
-	// 		reader.readAsDataURL(file);
-	// 	}
-	// }
+	async function addMedicine() {
+		try {
+			const res = await fetch('/medicine/create', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(medicine)
+			});
+			const result = await res.json();
+			console.log('Thêm thuốc:', result);
+		} catch (error) {
+			console.error('Lỗi khi thêm thuốc:', error);
+			responseMessage.set('Lỗi khi thêm thuốc!');
+		}
+	}
 </script>
 
 <div class="flex items-center justify-center">
@@ -44,7 +44,7 @@
 			<h1 class="text-5xl font-extrabold">{title}</h1>
 		</div>
 
-		<form>
+		<form on:submit|preventDefault={addMedicine}>
 			<div class="mb-6 grid gap-6 md:grid-cols-3">
 				<div class="col-span-1">
 					<label for="code" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
@@ -58,6 +58,7 @@
 						required
 					/>
 				</div>
+
 				<div class="md:col-span-2">
 					<label
 						for="medicine_name"
@@ -78,40 +79,36 @@
 					<select
 						id="category"
 						bind:value={selectedParent}
+						on:change={() => console.log(selectedParent)}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 						required
 					>
-						<option value="" disabled selected>Chọn danh mục</option>
-						{#each categories as parent}
-							<option value={parent.medicinecate_id}>{parent.name}</option>
+						<option value="" disabled>Chọn danh mục</option>
+						{#each parents as p}
+							<option value={p.medicinecate_id}>{p.name}</option>
 						{/each}
 					</select>
 				</div>
+
 				<div class="">
 					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Danh mục con</label
 					>
 					<select
 						id="childCategory"
-						bind:value={selectedChild}
+						bind:value={medicine.medicinecate_id}
+						on:change={() => console.log(medicine.medicinecate_id)}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
 						required
 						disabled={!selectedParent}
 					>
-						<option value="" disabled selected>Chọn danh mục</option>
-						{#if childCategories}
-							{#each childCategories as child}
-								<option value={child.medicinecate_id}>{child.name}</option>
+						<option value="" disabled>Chọn danh mục</option>
+						{#if children.length > 0}
+							{#each children as c}
+								<option value={c.medicinecate_id}>{c.name}</option>
 							{/each}
 						{/if}
 					</select>
-					{#if childCategories.length > 0}
-						<ul class="mt-2">
-							{#each selectedParent.children as child}
-								<li>{child.name}</li>
-							{/each}
-						</ul>
-					{/if}
 				</div>
 				<div class="">
 					<label
@@ -119,21 +116,23 @@
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Dạng bào chế</label
 					>
 					<select
-						id="dosage"
 						bind:value={medicine.dosageform_id}
+						on:change={() => console.log(data.dosageform)}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
 						required
 					>
-						<option class="" value="" disabled selected>Chọn danh mục</option>
+						<option class="" value="" disabled>Chọn dạng bào chế</option>
 
-						{#each dosageForm as dosage}
+						{#each data.dosageForm as dosage}
 							<option class="" value={dosage.dosageform_id}>{dosage.name}</option>
 						{/each}
 					</select>
 				</div>
 
 				<div class="">
-					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					<label
+						for="unitstrip"
+						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đơn vị(viên/vỉ)</label
 					>
 					<input
@@ -145,7 +144,7 @@
 					/>
 				</div>
 				<div class="">
-					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					<label for="unitbox" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đơn vị(vỉ/hộp)</label
 					>
 					<input
@@ -158,11 +157,11 @@
 				</div>
 
 				<div class="">
-					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+					<label for="package" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đóng gói</label
 					>
 					<input
-						type="url"
+						type="text"
 						bind:value={medicine.package}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 						placeholder="Hộp 10 vỉ x 10 viên"
@@ -171,8 +170,9 @@
 				</div>
 
 				<div class="">
-					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Thuốc kê đơn</label
+					<label
+						for="prescription"
+						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Thuốc kê đơn</label
 					>
 					<select
 						bind:value={medicine.prescription}
@@ -186,8 +186,9 @@
 				</div>
 
 				<div class="">
-					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-						>Nhà sản xuất</label
+					<label
+						for="manufacturer"
+						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nhà sản xuất</label
 					>
 					<input
 						bind:value={medicine.manufacturer}
@@ -243,7 +244,7 @@
 				</label>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="usage" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Cách dùng</label
 				>
 				<textarea
@@ -255,7 +256,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="indication" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Chỉ định</label
 				>
 				<textarea
@@ -267,7 +268,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="adverse" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Tác dụng phụ</label
 				>
 				<textarea
@@ -279,8 +280,9 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-					>Chống chỉ định</label
+				<label
+					for="contraindication"
+					class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Chống chỉ định</label
 				>
 				<textarea
 					type="text"
@@ -291,7 +293,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="precaution" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Thận trọng</label
 				>
 				<textarea
@@ -303,7 +305,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="ability" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Ảnh hưởng của thuốc lên khả năng lái xe và vận hành máy móc</label
 				>
 				<textarea
@@ -315,7 +317,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="pregnancy" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Phụ nữ có thai hoặc đang cho con bú</label
 				>
 				<textarea
@@ -327,7 +329,9 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label
+					for="druginteraction"
+					class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Tương tác thuốc
 				</label>
 				<textarea
@@ -339,7 +343,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="storage" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Bảo quản</label
 				>
 				<textarea
@@ -351,7 +355,7 @@
 				></textarea>
 			</div>
 			<div class="mb-6">
-				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+				<label for="note" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Lưu ý</label
 				>
 				<textarea
@@ -362,7 +366,7 @@
 					required
 				></textarea>
 			</div>
-			<div class="mb-6 flex items-start">
+			<!-- <div class="mb-6 flex items-start">
 				<div class="flex h-5 items-center">
 					<input
 						id="remember"
@@ -377,7 +381,7 @@
 						>terms and conditions</a
 					>.</label
 				>
-			</div>
+			</div> -->
 			<button
 				type="submit"
 				class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

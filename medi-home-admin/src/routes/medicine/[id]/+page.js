@@ -25,8 +25,7 @@ export async function load({ params, fetch }) {
 			const res = await fetch(`${API_URL}/api/admin/dosage/`);
 			const dosageForm = await res.json();
 			return dosageForm;
-		}
-		catch (error) {
+		} catch (error) {
 			console.log('Lỗi load dosage form:', error);
 		}
 	};

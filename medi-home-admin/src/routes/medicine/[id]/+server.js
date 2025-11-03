@@ -15,30 +15,6 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 // 	}
 // }
 
-// POST: tạo thuốc mới
-const getMedicine = () =>{
-	return Promise()
-}
-export async function POST({ request }) {
-	try {
-		
-
-		const medicine = await request.json();
-		const res = await fetch(`${API_URL}/api/admin/medicine`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(medicine)
-		});
-
-		if (!res.ok) throw new Error(`Failed to add medicine: ${res.status}`);
-
-		const result = await res.json();
-		return json(result, { status: 201 });
-	} catch (error) {
-		console.error('Lỗi add medicine:', error);
-		return json({ error: error.message }, { status: 500 });
-	}
-}
 
 // PATCH: cập nhật thuốc
 export async function PATCH({ request }) {
