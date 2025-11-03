@@ -3,7 +3,8 @@
 	import { UserPlus, Pencil, Trash2, Eye, MoreVertical } from 'lucide-svelte';
 	import { loadUsers, addUser, editUser, deleteUser } from '$lib/api/user.js';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import { pageTitle } from '$lib/store.js';
+	import { pageTitle } from '$lib/stores/store.js';
+	import { goto } from '$app/navigation';
 
 	let title = 'Danh sách người dùng';
 	pageTitle.set(title);
@@ -49,52 +50,8 @@
 
 	let formMode = 'create';
 
-	// $: formTitle =
-	// 	formMode === 'create'
-	// 		? 'Tạo người dùng'
-	// 		: formMode === 'edit'
-	// 			? 'Chỉnh sửa người dùng'
-	// 			: 'Chi tiết người dùng';
-
-	// async function loadUserPage(currentPage = 1) {
-	// 	try {
-	// 		const result = await loadUsers(currentPage, pageSize);
-	// 		users = result.users;
-	// 		page = result.page;
-	// 		pageSize = result.pageSize;
-	// 		total = result.total;
-	// 		totalPages = Math.ceil(total / pageSize);
-
-	// 		userActive = result.activeUser;
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-
-	async function submitForm(event) {
-		event.preventDefault();
-		try {
-			if (formMode === 'create') {
-				const result = await addUser(user);
-				console.log('Tạo thành công:', result);
-			} else if (formMode === 'edit') {
-				const result = await editUser(user.user_id, user);
-				console.log('Cập nhật thành công:', result);
-			}
-			toggleForm();
-		} catch (error) {
-			console.error(error);
-		}
-	}
-
-	async function confirmUserDelete(id) {
-		try {
-			await deleteUser(id);
-			showConfirmDelete = false;
-			await loadUserPage();
-		} catch (err) {
-			console.error('Xoá thất bại:', err);
-		}
+	function viewDetailUser(id) {
+		goto(`/user/${id}`);
 	}
 
 	// onMount(() => {
@@ -188,7 +145,7 @@
 							>
 							<td class="p-2 lg:table-cell">
 								<div class="flex items-center gap-2 text-gray-600">
-									<button class="hidden cursor-pointer lg:table-cell" title="Xem"
+									<button class="hidden cursor-pointer lg:table-cell" title="Xem" on:click={()=>viewDetailUser(user.user_id)}
 										><Eye class="h-4 w-4" /></button
 									>
 									<button class="hidden cursor-pointer lg:table-cell" title="Sửa"

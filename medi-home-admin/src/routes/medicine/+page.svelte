@@ -3,7 +3,8 @@
 	import { goto } from '$app/navigation';
 	import TitlePage from '$lib/components/TitlePage.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import { pageTitle } from '$lib/store.js';
+	import { pageTitle } from '$lib/stores/store.js';
+	import { toasts } from '$lib/stores/toastMessage.js';
 
 	export let data;
 
@@ -19,7 +20,8 @@
 	let showDelete = false;
 	let medicines = data.medicines;
 
-	function viewMedicine(id){
+	function viewDetailMedicine(id) {
+		toasts.add({ message: 'Lưu thành công', type: 'success' });
 		goto(`/medicine/${id}`);
 	}
 
@@ -83,7 +85,10 @@
 							<td class="hidden p-2 lg:table-cell">{medicine.prescription ? 'Có' : 'Không'}</td>
 							<td class="p-2">
 								<div class="flex items-center gap-2 text-gray-600">
-									<button class="hidden cursor-pointer md:table-cell" title="Xem" on:click={()=>viewMedicine(medicine.medicine_id)}
+									<button
+										class="hidden cursor-pointer md:table-cell"
+										title="Xem"
+										on:click={() => viewDetailMedicine(medicine.medicine_id)}
 										><Eye class="h-4 w-4" /></button
 									>
 									<button class="hidden cursor-pointer md:table-cell" title="Sửa"

@@ -1,5 +1,6 @@
 <script>
-	import { pageTitle } from '$lib/store.js';
+	import { pageTitle } from '$lib/stores/store.js';
+	import { toasts } from '$lib/stores/toastMessage.js';
 	import { Plus } from 'lucide-svelte';
 	let title = 'Chi tiết thuốc';
 
@@ -29,6 +30,7 @@
 			responseMessage.set('Lỗi khi thêm thuốc!');
 		}
 	}
+
 	// async function onFileChange(event) {
 	// 	file = event.target.files[0];
 	// 	if (file) {

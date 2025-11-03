@@ -16,6 +16,9 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 // }
 
 // POST: tạo thuốc mới
+const getMedicine = () =>{
+	return Promise()
+}
 export async function POST({ request }) {
 	try {
 		

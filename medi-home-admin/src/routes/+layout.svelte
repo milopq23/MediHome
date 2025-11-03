@@ -1,7 +1,8 @@
 <script>
 	import '../app.css';
 	let sidebarOpen = false;
-	import { pageTitle } from '$lib/store.js';
+	import { pageTitle } from '$lib/stores/store.js';
+	import ToastMessage from '$lib/components/ToastMessage.svelte';
 </script>
 
 <div class="relative flex h-screen overflow-hidden">
@@ -46,11 +47,9 @@
 
 			<h1 class="text-2xl font-extrabold">{$pageTitle}</h1>
 		</header>
-		<!-- <div class="hidden md:items-center md:justify-center bg-white px-6 py-4 md:flex">
-			<h1 class="text-5xl font-extrabold">{$pageTitle}</h1>
-		</div> -->
 
 		<main class="relative flex-1 overflow-auto p-2 md:p-6">
+			<ToastMessage />
 			<slot />
 
 			{#if sidebarOpen}
