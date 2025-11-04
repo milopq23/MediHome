@@ -13,7 +13,7 @@ func VoucherRoutes(r *gin.RouterGroup) {
 	voucherService := service.NewVoucherService(voucherRepo)
 	voucherHandler := handler.NewVoucherHandler(voucherService)
 
-	voucher := r.Group("/voucher")
+	voucher := r.Group("admin/voucher")
 	{
 		voucher.POST("/", voucherHandler.CreateVoucher)
 		voucher.GET("/:code", voucherHandler.GetVoucherByCode)

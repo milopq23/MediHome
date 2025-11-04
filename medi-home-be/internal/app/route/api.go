@@ -11,6 +11,7 @@ func APIRoute(r *gin.Engine) {
 	InventoryRoute(api)
 	ShippingRoute(api)
 	DosageFormRoute(api)
+	VoucherRoutes(api)
 	UploadRoute(api)
 	AdminRoutes(api)
 }

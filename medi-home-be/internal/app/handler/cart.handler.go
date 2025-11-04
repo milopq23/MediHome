@@ -66,11 +66,10 @@ func (h *CartHandler) AddCart(c *gin.Context) {
 		return
 	}
 
-	item, err := h.service.AddMedicineToCart(cart.CartID, req.MedicineID)
-	if err != nil {
+	if _, err := h.service.AddMedicineToCart(cart.CartID, req.MedicineID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"Thêm thành công": item})
+	c.JSON(http.StatusOK, gin.H{"message": "Thêm thành công"})
 }

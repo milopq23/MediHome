@@ -12,13 +12,12 @@ func ShippingRoute(r *gin.RouterGroup) {
 	shippingRepo := repository.NewShippingRepository()
 	shippingService := service.NewShippingService(shippingRepo)
 	shippingHandler := handler.NewShippingHandler(shippingService)
-	shipping := r.Group("/shipping")
+	shipping := r.Group("/admin/shipping")
 	{
 		shipping.GET("/", shippingHandler.GetAll)
-		// shipping.GET("/:id", shippingHandler.GetByID)
-		// shipping.POST("/", shippingHandler.Create)
-		// shipping.PUT("/:id", shippingHandler.Patch)
-		// shipping.PATCH("/:id", shippingHandler.Patch)
+		shipping.GET("/:id", shippingHandler.GetByID)
+		shipping.POST("/", shippingHandler.Create)
+		shipping.PATCH("/:id", shippingHandler.Patch)
 		shipping.DELETE("/:id", shippingHandler.Delete)
 	}
 }

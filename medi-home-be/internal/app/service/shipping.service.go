@@ -9,8 +9,7 @@ type ShippingService interface {
 	GetAll() ([]model.Shipping, error)
 	GetByID(id int64) (model.Shipping, error)
 	Create(shipping model.Shipping) (model.Shipping, error)
-	Update(shipping model.Shipping) (model.Shipping, error)
-	Patch(shipping model.Shipping) (model.Shipping, error)
+	Patch(id int64, data map[string]interface{}) (model.Shipping, error)
 	Delete(id int64) error
 }
 
@@ -34,12 +33,26 @@ func (s *shippingService) Create(shipping model.Shipping) (model.Shipping, error
 	return s.repo.Create(shipping)
 }
 
-func (s *shippingService) Update(shipping model.Shipping) (model.Shipping, error) {
-	return s.repo.Update(shipping)
-}
+func (s *shippingService) Patch(id int64, data map[string]interface{}) (model.Shipping, error) {
+	ship, err := s.repo.FindByID(id)
+	if err != nil {
+		return model.Shipping{}, err
+	}
 
-func (s *shippingService) Patch(shipping model.Shipping) (model.Shipping, error) {
-	return s.repo.Patch(shipping)
+	allowedFields := map[string]bool{
+		"name":  true,
+		"price": true,
+	}
+
+	updates := make(map[string]interface{})
+
+	for k, v := range data {
+		if allowedFields[k] {
+			updates[k] = v
+		}
+	}
+
+	return s.repo.Patch(int64(ship.ShippingID), updates)
 }
 
 func (s *shippingService) Delete(id int64) error {

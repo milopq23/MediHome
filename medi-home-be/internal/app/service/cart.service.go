@@ -75,6 +75,5 @@ func (s *cartService) AddMedicineToCart(cartID, medicineID int64) (model.CartIte
 		MedicineID: medicineID,
 		Quantity:   1,
 	}
-
 	return s.repo.AddCartItem(item)
 }

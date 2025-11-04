@@ -9,8 +9,7 @@ type ShippingRepository interface {
 	FindAll() ([]model.Shipping,error)
 	FindByID(id int64) (model.Shipping, error)
 	Create(shipping model.Shipping) (model.Shipping, error)
-	Update(shipping model.Shipping) (model.Shipping, error)
-	Patch(shipping model.Shipping) (model.Shipping, error)
+	Patch(id int64, updates map[string]interface{}) (model.Shipping, error)
 	Delete(id int64) error
 }
 
@@ -42,9 +41,20 @@ func (r *shippingRepository) Update(shipping model.Shipping) (model.Shipping, er
 	return shipping, err
 }
 
-func (r *shippingRepository) Patch(shipping model.Shipping) (model.Shipping, error) {
-	err := config.DB.Save(&shipping).Error
-	return shipping, err
+func (r *shippingRepository) Patch(id int64, updates map[string]interface{}) (model.Shipping, error) {
+	err := config.DB.Model(&model.Shipping{}).Where("shipping_id=?",id).Updates(updates).Error
+	if err != nil{
+		return model.Shipping{},err
+	}
+
+	var updated model.Shipping
+
+	err = config.DB.Where("shipping_id=?",id).First(&updated).Error
+	if err != nil{
+		return model.Shipping{},err
+	}
+
+	return updated, err
 }
 
 func (r *shippingRepository) Delete(id int64) error {
