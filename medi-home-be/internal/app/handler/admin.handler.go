@@ -29,12 +29,12 @@ func (h *AdminHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, pagination)
 }
 
-func (h *AdminHandler) TotalAdmin(c *gin.Context){
+func (h *AdminHandler) TotalAdmin(c *gin.Context) {
 	role := c.Query("role")
 	if role == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Thiếu role"})
 		return
-	}	
+	}
 	admin, err := h.service.TotalAdmin(role)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Total admin not found"})

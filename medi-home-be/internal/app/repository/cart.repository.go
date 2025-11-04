@@ -34,9 +34,9 @@ func (r *cartRepository) GetCartUser(user_id int64) (model.Cart, error) {
 	return cart, err
 }
 
-func (r *cartRepository) CreateCart(cart_id model.CartItem) (model.CartItem, error) {
-	err := config.DB.Create(&cart_id).Error
-	return cart_id, err
+func (r *cartRepository) CreateCart(cart model.CartItem) (model.CartItem, error) {
+	err := config.DB.Create(&cart).Error
+	return cart, err
 }
 
 func (r *cartRepository) GetCartItems(cart_id int64) ([]CartItemDetail, error) {

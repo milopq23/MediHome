@@ -18,7 +18,7 @@ type shippingService struct {
 }
 
 func NewShippingService(repo repository.ShippingRepository) ShippingService {
-	return &shippingService{}
+	return &shippingService{repo}
 }
 
 func (s *shippingService) GetAll() ([]model.Shipping, error) {

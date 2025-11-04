@@ -43,4 +43,12 @@ func UserRoutes(r *gin.RouterGroup) {
 		cart.GET("/:id", cartHandler.GetCartUser)
 		cart.POST("/:id", cartHandler.AddCart)
 	}
+
+	addressRepo := repository.NewAddressRepository()
+	addressService := service.NewAddressService(addressRepo)
+	addressHandler := handler.NewAddressHandler(addressService)
+	address := r.Group("/address")
+	{
+		address.POST("/:id", addressHandler.AddAddress)
+	}
 }
