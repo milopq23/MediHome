@@ -20,9 +20,9 @@ func (r *orderRepository) GetOrder() (model.Order, error) {
 	return order, err
 }
 
-func (r *orderRepository) CreateOrder(order model.Order) (model.Order,error){
+func (r *orderRepository) CreateOrder(order model.Order) (model.Order, error) {
 	err := config.DB.Create(&order).Error
-	return order,err
+	return order, err
 }
 
 

@@ -65,8 +65,12 @@ func (h *CartHandler) AddCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	if _, err := h.service.AddMedicineToCart(cart.CartID, req.MedicineID); err != nil {
+	req = dto.AddCartRequestDTO{
+		CartID:     cart.CartID,
+		MedicineID: req.MedicineID,
+		SelectType: req.SelectType,
+	}
+	if _, err := h.service.AddMedicineToCart(req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

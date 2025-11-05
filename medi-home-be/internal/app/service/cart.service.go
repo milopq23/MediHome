@@ -2,6 +2,7 @@ package service
 
 import (
 	"log"
+	"math"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
@@ -10,7 +11,8 @@ import (
 type CartService interface {
 	GetCartByUser(user_id int64) ([]dto.CartItemDetailDTO, error)
 	GetCart(user_id int64) (model.Cart, error)
-	AddMedicineToCart(cartID, medicineID int64) (model.CartItem, error)
+	// AddMedicineToCart(cartID, medicineID int64) (model.CartItem, error)
+	AddMedicineToCart(cartItem dto.AddCartRequestDTO) (model.CartItem, error)
 }
 
 type cartService struct {
@@ -53,27 +55,61 @@ func (s *cartService) GetCart(user_id int64) (model.Cart, error) {
 	return s.repo.GetCartUser(user_id)
 }
 
-// func (s *cartService) GetCartByUser(user_id int64) (model.CartItem, error) {
-// 	// Lấy cart của user
-// 	cart, err := s.repo.GetCartUser(user_id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+// func (s *cartService) AddMedicineToCart(cartID, medicineID int64) (model.CartItem, error) {
+// 	type := s.SelectType()
 
-//     item := model.CartItem{
+//		item := model.CartItem{
+//			CartID:     cartID,
+//			MedicineID: medicineID,
+//			Quantity:   1,
+//		}
+//		return s.repo.AddCartItem(item)
+//	}
+func (s *cartService) AddMedicineToCart(cartItem dto.AddCartRequestDTO) (model.CartItem, error) {
+	select_type, err := s.SelectType(cartItem.SelectType, cartItem.MedicineID)
+	if err != nil {
+		return model.CartItem{}, err
+	}
 
-//         CartID : cart.CartID,
-//         MedicineID: dto.MedicneID,
-//         Quantity: 1,
-//     }
-//     return item,nil
-// }
-
-func (s *cartService) AddMedicineToCart(cartID, medicineID int64) (model.CartItem, error) {
 	item := model.CartItem{
-		CartID:     cartID,
-		MedicineID: medicineID,
+		CartID:     cartItem.CartID,
+		MedicineID: cartItem.MedicineID,
 		Quantity:   1,
+		SelectType: cartItem.SelectType,
+		Price:      select_type.Price,
 	}
 	return s.repo.AddCartItem(item)
+}
+
+func (s *cartService) SelectType(select_type string, medicine_id int64) (*dto.SelectTypeMedicineDTO, error) {
+	medicine, err := s.repo.FindMedicine(medicine_id)
+	if err != nil {
+		return nil, err
+	}
+	batch, err := s.repo.FindBatchSelling(medicine_id)
+	if err != nil {
+		return nil, err
+	}
+	// =>inventory và medicine
+	inventory, err := s.repo.FindInventory(batch.InventoryID)
+	if err != nil {
+		return nil, err
+	}
+	// price
+
+	var price float64
+	if select_type == "Box" {
+		price = inventory.ImportPrice * (1 + inventory.MarkUp/100)
+	} else {
+		price = (inventory.ImportPrice * (1 + inventory.MarkUp/100)) / float64(medicine.UnitPerBox)
+	}
+
+	// 5. Trả về DTO
+	selected := &dto.SelectTypeMedicineDTO{
+		MedicineID: medicine_id,
+		SelectType: select_type,
+		Price:      math.Round(price*100) / 100, // làm tròn 2 chữ số
+	}
+
+	return selected, nil
 }

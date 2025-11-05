@@ -9,6 +9,12 @@ type CartRepository interface {
 	GetCartUser(user_id int64) (model.Cart, error)
 	GetCartItems(cart_id int64) ([]CartItemDetail, error)
 	AddCartItem(item model.CartItem) (model.CartItem, error)
+
+
+	
+	FindInventory(inventory_id int64) (model.Inventory, error)
+	FindBatchSelling(medicine_id int64) (model.BatchSelling, error)
+	FindMedicine(medicine_id int64) (model.Medicine, error)
 }
 
 type cartRepository struct{}
@@ -43,8 +49,8 @@ func (r *cartRepository) GetCartItems(cart_id int64) ([]CartItemDetail, error) {
 	var items []CartItemDetail
 	query := `
         SELECT m.medicine_id, m.name, m.thumbnail, ci.quantity, 
-        ROUND(i.import_price * (1 + i.mark_up/100)) AS price_strip,
-        ROUND((i.import_price * (1 + i.mark_up/100)) * m.unit_per_box) AS price_box
+        ROUND((i.import_price * (1 + i.mark_up/100))/m.unit_per_strip) AS price_strip,
+        ROUND(i.import_price * (1 + i.mark_up/100)) AS price_box
         FROM cartitems ci
         JOIN medicines m ON ci.medicine_id = m.medicine_id
         JOIN batchsellings bs ON bs.medicine_id = ci.medicine_id
@@ -61,3 +67,23 @@ func (r *cartRepository) AddCartItem(item model.CartItem) (model.CartItem, error
 	}
 	return item, nil
 }
+
+func (r *cartRepository) FindInventory(inventory_id int64) (model.Inventory, error) {
+	var inventory model.Inventory
+	err := config.DB.Where("inventory_id = ?", inventory_id).Find(&inventory).Error
+	return inventory, err
+}
+
+func (r *cartRepository) FindBatchSelling(medicine_id int64) (model.BatchSelling, error) {
+	var batch model.BatchSelling
+	err := config.DB.Where("medicine_id = ?", medicine_id).Find(&batch).Error
+	return batch, err
+}
+
+func (r *cartRepository) FindMedicine(medicine_id int64) (model.Medicine, error) {
+	var medicine model.Medicine
+	err := config.DB.Where("medicine_id = ?", medicine_id).Find(&medicine).Error
+	return medicine, err
+}
+
+
