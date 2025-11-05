@@ -1,7 +1,6 @@
 package service
 
 import (
-	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/repository"
 )
 
@@ -62,23 +61,23 @@ func NewOrderService(
 // func (s *orderService) CheckOut(order dto.OrderDTO) (dto.OrderDTO, error) {
 
 // }
-func (s *orderService) GetCart(user_id int64) ([]dto.OrderDetailItemDTO, error) {
-	cart, err := s.cartRepo.GetCartUser(user_id)
-	if err != nil {
-		return nil, err
-	}
-	items, err := s.cartRepo.GetCartItems(cart.CartID)
-	if err != nil {
-		return nil, err
-	}
-	var orderDetailDTO []dto.OrderDetailItemDTO
-	for _, item := range items {
-		orderDetailDTO = append(orderDetailDTO, dto.OrderDetailItemDTO{
-			Name:     item.Name,
-			Quantity: int64(item.Quantity),
-			Price:    item.PriceBox,
-		})
-	}
-	return orderDetailDTO, nil
+// func (s *orderService) GetCart(user_id int64) ([]dto.OrderDetailItemDTO, error) {
+// 	cart, err := s.cartRepo.GetCartUser(user_id)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	items, err := s.cartRepo.GetCartItems(cart.CartID)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	var orderDetailDTO []dto.OrderDetailItemDTO
+// 	for _, item := range items {
+// 		orderDetailDTO = append(orderDetailDTO, dto.OrderDetailItemDTO{
+// 			Name:     item.Name,
+// 			Quantity: int64(item.Quantity),
+// 			Price:    item.PriceBox,
+// 		})
+// 	}
+// 	return orderDetailDTO, nil
 
-}
+// }

@@ -15,7 +15,7 @@ type CartItem struct {
 	MedicineID int64   `json:"medicine_id" gorm:"column:medicine_id"`
 	Quantity   int64   `json:"quantity" gorm:"column:quantity"`
 	SelectType string  `json:"select_type" gorm:"column:select_type"`
-	Price      float64 `json:"price" gorm:"column:"price""`
+	Price      float64 `json:"price" gorm:"column:price"`
 }
 
 func (CartItem) TableName() string {

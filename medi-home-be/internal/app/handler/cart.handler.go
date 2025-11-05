@@ -52,7 +52,7 @@ func (h *CartHandler) GetCartUser(c *gin.Context) {
 // }
 
 func (h *CartHandler) AddCart(c *gin.Context) {
-	var req dto.AddCartRequestDTO
+	var req dto.CartRequestDTO
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	cart, err := h.service.GetCart(int64(id))
@@ -65,12 +65,43 @@ func (h *CartHandler) AddCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	req = dto.AddCartRequestDTO{
+
+	req = dto.CartRequestDTO{
 		CartID:     cart.CartID,
 		MedicineID: req.MedicineID,
+		Quantity:   req.Quantity,
 		SelectType: req.SelectType,
 	}
 	if _, err := h.service.AddMedicineToCart(req); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Thêm thành công"})
+}
+
+func (h *CartHandler) UpdateCart(c *gin.Context) {
+	var req dto.CartRequestDTO
+	id, _ := strconv.Atoi(c.Param("id"))
+	cart, err := h.service.GetCart(int64(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "cart not found"})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	req = dto.CartRequestDTO{
+		CartID:     cart.CartID,
+		CartItemID: req.CartItemID,
+		// MedicineID: req.MedicineID,
+		Quantity:   req.Quantity,
+		SelectType: req.SelectType,
+	}
+	if _, err := h.service.UpdateCart(req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
