@@ -1,83 +1,101 @@
 package service
 
 import (
+	"math"
+	"medi-home-be/internal/app/dto"
+	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/repository"
 )
 
 type OrderService interface {
+	CheckOut(req dto.OrderRequestDTO) (model.Order, error)
 }
 
 type orderService struct {
-	orderRepo    repository.OrderRepository
-	userRepo     repository.UserRepository
-	cartRepo     repository.CartRepository
-	voucherRepo  repository.VoucherRepository
-	shippingRepo repository.ShippingRepository
+	repoOrder repository.OrderRepository
+	repoCart  repository.CartRepository
 }
 
 func NewOrderService(
-	orderRepo repository.OrderRepository,
-	userRepo repository.UserRepository,
-	cartRepo repository.CartRepository,
-	voucherRepo repository.VoucherRepository,
-	shippingRepo repository.ShippingRepository,
+	repoOrder repository.OrderRepository,
+	repoCart repository.CartRepository,
+
 ) OrderService {
-	return &orderService{
-		orderRepo:    orderRepo,
-		userRepo:     userRepo,
-		cartRepo:     cartRepo,
-		voucherRepo:  voucherRepo,
-		shippingRepo: shippingRepo,
-	}
+	return &orderService{repoOrder: repoOrder, repoCart: repoCart}
 }
 
-//get user
-//get voucher_id
-//get shipping_id
-//get cart push cart vào order
+func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
+	totalAmount, err := s.TotalPriceInCart(req.UserID)
+	if err != nil {
+		return model.Order{}, err
+	}
 
-// func (s *orderService) AddOrder(order dto.OrderDTO) (dto.OrderDTO, error) {
-// 	cart, err := s.cartRepo.GetCartUser(order.OrderID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	voucher, err := s.voucherRepo.GetVoucherByCode(order.VoucherCode)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	shipping, err := s.shippingRepo.FindByID(order.ShippingID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	order := model.Order{
+		UserID: req.UserID,
+		// AddressID: 3,
+		VoucherID:     1,
+		ShippingID:    req.ShippingID,
+		OrderStatus:   "Chờ xác nhận",
+		PaymentMethod: req.PaymentMethod,
+		PaymentStatus: "Chưa thanh toán",
+		TotalAmount:   int64(totalAmount),
+		FinalAmount:   int64(totalAmount),
+	}
+	return s.repoOrder.CreateOrder(order)
+}
 
-// 	orderItem := dto.OrderDTO{
-// 		UserID: cart.UserID,
-// 		VoucherCode: voucher.Code,
-// 	}
+func (s *orderService) TotalPriceInCart(user_id int64) (float64, error) {
+	user, err := s.repoCart.GetCartUser(user_id)
+	if err != nil {
+		return 0, err
+	}
 
-// }
+	cartItems, err := s.repoCart.GetCartItem(user.CartID)
+	if err != nil {
+		return 0, err
+	}
 
-// nhận iduser từ cookie lấy được cart
-// func (s *orderService) CheckOut(order dto.OrderDTO) (dto.OrderDTO, error) {
+	var totalPrice float64
+	for _, item := range cartItems {
+		selectType, err := s.SelectType(item.SelectType, item.MedicineID)
+		if err != nil {
+			return 0, err
+		}
+		totalPrice += selectType.Price * float64(item.Quantity)
+	}
+	return totalPrice, err
+}
 
-// }
-// func (s *orderService) GetCart(user_id int64) ([]dto.OrderDetailItemDTO, error) {
-// 	cart, err := s.cartRepo.GetCartUser(user_id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	items, err := s.cartRepo.GetCartItems(cart.CartID)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	var orderDetailDTO []dto.OrderDetailItemDTO
-// 	for _, item := range items {
-// 		orderDetailDTO = append(orderDetailDTO, dto.OrderDetailItemDTO{
-// 			Name:     item.Name,
-// 			Quantity: int64(item.Quantity),
-// 			Price:    item.PriceBox,
-// 		})
-// 	}
-// 	return orderDetailDTO, nil
+func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.SelectTypeMedicineDTO, error) {
+	//lấy unit_per_box
+	medicine, err := s.repoCart.FindMedicine(medicine_id)
+	if err != nil {
+		return dto.SelectTypeMedicineDTO{}, err
+	}
+	//lấy lô của thuốc hiện bán
+	batch, err := s.repoCart.FindBatchSelling(medicine_id)
+	if err != nil {
+		return dto.SelectTypeMedicineDTO{}, err
+	}
+	//lấy giá đã tính markup
+	inventory, err := s.repoCart.FindInventory(batch.InventoryID)
+	if err != nil {
+		return dto.SelectTypeMedicineDTO{}, err
+	}
+	//phân loại giá theo box hoặc strip
+	var price float64
+	if select_type == "Box" {
+		price = inventory.ImportPrice * (1 + inventory.MarkUp/100)
+	} else {
+		price = (inventory.ImportPrice * (1 + inventory.MarkUp/100)) / float64(medicine.UnitPerBox)
+	}
 
-// }
+	// 5. Trả về DTO
+	selected := dto.SelectTypeMedicineDTO{
+		MedicineID: medicine_id,
+		SelectType: select_type,
+		Price:      math.Round(price*100) / 100,
+	}
+
+	return selected, nil
+}

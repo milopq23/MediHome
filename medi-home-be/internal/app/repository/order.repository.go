@@ -6,6 +6,7 @@ import (
 )
 
 type OrderRepository interface {
+	CreateOrder(order model.Order) (model.Order, error)
 }
 
 type orderRepository struct{}
@@ -25,4 +26,5 @@ func (r *orderRepository) CreateOrder(order model.Order) (model.Order, error) {
 	return order, err
 }
 
+// func(r *orderRepository)
 

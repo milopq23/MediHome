@@ -37,12 +37,19 @@ func UserRoutes(r *gin.RouterGroup) {
 	cartRepo := repository.NewCartRepository()
 	cartService := service.NewCartService(cartRepo)
 	cartHandler := handler.NewCartHandler(cartService)
-
 	cart := r.Group("/cart")
 	{
 		cart.GET("/:id", cartHandler.GetCartUser)
 		cart.POST("/:id", cartHandler.AddCart)
 		cart.PATCH("/:id",cartHandler.UpdateCart)
+	}
+
+	orderRepo := repository.NewOrderRepository()
+	orderService := service.NewOrderService(orderRepo,cartRepo)
+	orderHandler := handler.NewOrderHandler(orderService)
+	order := r.Group("/order")
+	{
+		order.POST("/checkout/:id",orderHandler.CheckOut)
 	}
 
 	addressRepo := repository.NewAddressRepository()

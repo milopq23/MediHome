@@ -13,14 +13,20 @@ type OrderDTO struct {
 }
 
 type OrderRequestDTO struct {
-	// UserID        int64  `json:"user_id"`
+	UserID        int64  `json:"user_id"`
 	VoucherCode   string `json:"voucher_code"`
 	ShippingID    int64  `json:"shipping_id"`
 	PaymentMethod string `json:"payment_method"`
+	
 }
 
 type OrderDetailItemDTO struct {
 	Name     string  `json:"name"`
 	Quantity int64   `json:"quantity"`
 	Price    float64 `json:"price"`
+}
+
+
+type TotalOrderDTO struct {
+
 }
