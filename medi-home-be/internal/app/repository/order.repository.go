@@ -7,6 +7,7 @@ import (
 
 type OrderRepository interface {
 	CreateOrder(order model.Order) (model.Order, error)
+	CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error)
 }
 
 type orderRepository struct{}
@@ -28,3 +29,7 @@ func (r *orderRepository) CreateOrder(order model.Order) (model.Order, error) {
 
 // func(r *orderRepository)
 
+func (r *orderRepository) CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error) {
+	err := config.DB.Create(&orderdetail).Error
+	return orderdetail, err
+}

@@ -29,7 +29,8 @@ type CartRequestDTO struct {
 }
 
 type SelectTypeMedicineDTO struct {
-	MedicineID int64   `json:"medicine_id"`
-	SelectType string  `json:"select_type"`
-	Price      float64 `json:"price"`
+	MedicineID  int64   `json:"medicine_id"`
+	InventoryID int64   `json:"inventory_id"`
+	SelectType  string  `json:"select_type"`
+	Price       float64 `json:"price"`
 }
