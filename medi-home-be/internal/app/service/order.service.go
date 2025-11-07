@@ -12,31 +12,21 @@ type OrderService interface {
 }
 
 type orderService struct {
-	repoOrder repository.OrderRepository
-	repoCart  repository.CartRepository
+	repoOrder    repository.OrderRepository
+	repoCart     repository.CartRepository
+	repoShipping repository.ShippingRepository
 }
 
 func NewOrderService(
 	repoOrder repository.OrderRepository,
 	repoCart repository.CartRepository,
+	repoShipping repository.ShippingRepository,
 
 ) OrderService {
-	return &orderService{repoOrder: repoOrder, repoCart: repoCart}
+	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping}
 }
 
 func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
-	// totalAmount, err := s.TotalPriceInCart(req.UserID)
-	// if err != nil {
-	// 	return model.Order{}, err
-	// }
-
-	// cartItems, err := s.repoCart.GetCartItem(user.CartID)
-	// if err != nil {
-	// 	return 0, err
-	// }
-	// if err != nil {
-	// 	return 0, err
-	// }
 	user, err := s.repoCart.GetCartUser(req.UserID)
 	if err != nil {
 		return model.Order{}, err
@@ -53,9 +43,14 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 		if err != nil {
 			return model.Order{}, err
 		}
-
 		totalPrice += selectType.Price * float64(item.Quantity)
 	}
+
+	//giá shipping
+	shippingPrice := s.ShippingPrice(req.ShippingID)
+
+	//giá sau khi giảm
+	final_amount := totalPrice - shippingPrice
 
 	order := model.Order{
 		UserID: req.UserID,
@@ -65,28 +60,13 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 		OrderStatus:   "Chờ xác nhận",
 		PaymentMethod: req.PaymentMethod,
 		PaymentStatus: "Chưa thanh toán",
-		TotalAmount:   int64(totalPrice),
-		FinalAmount:   int64(totalPrice),
+		TotalAmount:   totalPrice,
+		FinalAmount:   final_amount,
 	}
 	ordered, err := s.repoOrder.CreateOrder(order)
 	if err != nil {
 		return model.Order{}, err
 	}
-
-	// for _, item := range cartItems {
-	// 	orderDetail := model.OrderDetail{
-	// 		OrderID:     ordered.OrderID,
-	// 		InventoryID: selectType.InventoryID,
-	// 		MedicineID:  item.MedicineID,
-	// 		Quantity:    item.Quantity,
-	// 		UnitPrice:   item.Price,
-	// 		SelectType:  item.SelectType,
-	// 	}
-	// 	orderdetail, err := s.repoOrder.CreateOrderDetail(orderDetail)
-	// 	if err != nil {
-	// 		return model.Order{}, err
-	// 	}
-	// }
 
 	for _, item := range cartItems {
 		selectType, err := s.SelectType(item.SelectType, item.MedicineID)
@@ -111,27 +91,12 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 	return ordered, nil
 }
 
-func (s *orderService) TotalPriceInCart(user_id int64) (float64, error) {
-	user, err := s.repoCart.GetCartUser(user_id)
+func (s *orderService) ShippingPrice(shipping_id int64) float64 {
+	shipping, err := s.repoShipping.FindByID(shipping_id)
 	if err != nil {
-		return 0, err
+		return 0
 	}
-
-	cartItems, err := s.repoCart.GetCartItem(user.CartID)
-	if err != nil {
-		return 0, err
-	}
-
-	var totalPrice float64
-	for _, item := range cartItems {
-		selectType, err := s.SelectType(item.SelectType, item.MedicineID)
-		if err != nil {
-			return 0, err
-		}
-		totalPrice += selectType.Price * float64(item.Quantity)
-	}
-
-	return totalPrice, err
+	return shipping.Price
 }
 
 func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.SelectTypeMedicineDTO, error) {
@@ -168,3 +133,26 @@ func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.Se
 
 	return selected, nil
 }
+
+// func (s *orderService) TotalPriceInCart(user_id int64) (float64, error) {
+// 	user, err := s.repoCart.GetCartUser(user_id)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+
+// 	cartItems, err := s.repoCart.GetCartItem(user.CartID)
+// 	if err != nil {
+// 		return 0, err
+// 	}
+
+// 	var totalPrice float64
+// 	for _, item := range cartItems {
+// 		selectType, err := s.SelectType(item.SelectType, item.MedicineID)
+// 		if err != nil {
+// 			return 0, err
+// 		}
+// 		totalPrice += selectType.Price * float64(item.Quantity)
+// 	}
+
+// 	return totalPrice, err
+// }

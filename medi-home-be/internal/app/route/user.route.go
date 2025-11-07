@@ -44,8 +44,10 @@ func UserRoutes(r *gin.RouterGroup) {
 		cart.PATCH("/:id",cartHandler.UpdateCart)
 	}
 
+	shippingRepo := repository.NewShippingRepository()
+
 	orderRepo := repository.NewOrderRepository()
-	orderService := service.NewOrderService(orderRepo,cartRepo)
+	orderService := service.NewOrderService(orderRepo,cartRepo,shippingRepo)
 	orderHandler := handler.NewOrderHandler(orderService)
 	order := r.Group("/order")
 	{
