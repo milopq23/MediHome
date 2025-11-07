@@ -14,7 +14,8 @@ func VoucherRoutes(r *gin.RouterGroup) {
 	voucherHandler := handler.NewVoucherHandler(voucherService)
 
 	voucher := r.Group("admin/voucher")
-	{
+	{	
+		voucher.GET("/",voucherHandler.GetAllVoucher)
 		voucher.POST("/", voucherHandler.CreateVoucher)
 		voucher.GET("/:code", voucherHandler.GetVoucherByCode)
 		voucher.PATCH("/", voucherHandler.PatchVoucher)

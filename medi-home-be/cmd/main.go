@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"medi-home-be/config"
+	"medi-home-be/internal/app/repository"
 	"medi-home-be/internal/app/route"
+	"medi-home-be/pkg/util"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -25,6 +27,10 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	voucherRepo := repository.NewVoucherRepository()
+	util.StartVoucherCron(voucherRepo)
+	
 
 	route.APIRoute(r)
 

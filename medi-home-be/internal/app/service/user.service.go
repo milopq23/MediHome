@@ -77,13 +77,13 @@ func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, e
 	user, err := s.repo.FindByID(id)
 	if err != nil {
 		return model.User{}, err
-	}	
+	}
 	allowedFields := map[string]bool{
 		"name":        true,
 		"email":       true,
 		"phone":       true,
 		"avatar":      true,
-		"pass	word":    true,
+		"pass	word":   true,
 		"gender":      true,
 		"is_verified": true,
 	}

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log"
 	"math"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
@@ -15,15 +16,17 @@ type orderService struct {
 	repoOrder    repository.OrderRepository
 	repoCart     repository.CartRepository
 	repoShipping repository.ShippingRepository
+	repoVoucher repository.VoucherRepository
 }
 
 func NewOrderService(
 	repoOrder repository.OrderRepository,
 	repoCart repository.CartRepository,
 	repoShipping repository.ShippingRepository,
+	repoVoucher repository.VoucherRepository,
 
 ) OrderService {
-	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping}
+	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping, repoVoucher: repoVoucher}
 }
 
 func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
@@ -49,8 +52,16 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 	//giá shipping
 	shippingPrice := s.ShippingPrice(req.ShippingID)
 
+	discount,err := s.repoVoucher.ClassifyVoucher(req.VoucherCode,totalPrice)
+	if err != nil {
+		return model.Order{}, err
+	}
+
+	log.Print("discount ",discount)
+
+
 	//giá sau khi giảm
-	final_amount := totalPrice - shippingPrice
+	final_amount := totalPrice - shippingPrice - discount
 
 	order := model.Order{
 		UserID: req.UserID,

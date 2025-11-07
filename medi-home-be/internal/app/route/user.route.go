@@ -45,9 +45,10 @@ func UserRoutes(r *gin.RouterGroup) {
 	}
 
 	shippingRepo := repository.NewShippingRepository()
+	voucherRepo := repository.NewVoucherRepository()
 
 	orderRepo := repository.NewOrderRepository()
-	orderService := service.NewOrderService(orderRepo,cartRepo,shippingRepo)
+	orderService := service.NewOrderService(orderRepo,cartRepo,shippingRepo,voucherRepo)
 	orderHandler := handler.NewOrderHandler(orderService)
 	order := r.Group("/order")
 	{

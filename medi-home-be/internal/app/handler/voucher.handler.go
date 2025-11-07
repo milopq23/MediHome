@@ -17,6 +17,15 @@ func NewVoucherHandler(service service.VoucherService) *VoucherHandler {
 	return &VoucherHandler{service}
 }
 
+func (h *VoucherHandler) GetAllVoucher(c *gin.Context){
+	voucher, err := h.service.GetAllVoucher()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, voucher)
+}
+
 func (h *VoucherHandler) CreateVoucher(c *gin.Context) {
 	var voucher model.Voucher
 	if err := c.ShouldBindJSON(&voucher); err != nil {
@@ -63,3 +72,5 @@ func (h *VoucherHandler) DeleteVoucher(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "User deleted"})
 }
+
+
