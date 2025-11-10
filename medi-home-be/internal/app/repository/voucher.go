@@ -29,7 +29,7 @@ type VoucherValidate struct {
 	VoucherID   int64  `json:"voucher_id"`
 	Code        string `json:"code"`
 	Name        string `json:"name"`
-	TypeVoucher string `json:""type`
+	TypeVoucher string `json:"type"`
 }
 
 func (r *voucherRepository) GetAllVoucher() ([]model.Voucher, error) {
@@ -89,13 +89,13 @@ func (r *voucherRepository) ClassifyVoucher(code string, total float64) (float64
 	switch voucher.DiscountType {
 	case "Phần trăm":
 		// ví dụ tính phần trăm giảm
-		log.Println("%",total)
-		
+		log.Println("%", total)
+
 		discount = total * (voucher.DiscountValue / 100)
 		if discount > voucher.MaxDiscountValue {
 			discount = voucher.MaxDiscountValue
 		}
-		log.Println("%",discount)
+		log.Println("%", discount)
 	case "Cố định":
 		discount = voucher.MaxDiscountValue
 	default:

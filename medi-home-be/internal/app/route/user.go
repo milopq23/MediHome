@@ -35,33 +35,33 @@ func UserRoutes(r *gin.RouterGroup) {
 		userAdmin.DELETE("/:id", userHandler.Delete)
 	}
 
-	cartRepo := repository.NewCartRepository()
-	cartService := service.NewCartService(cartRepo)
-	cartHandler := handler.NewCartHandler(cartService)
-	cart := r.Group("/cart")
-	{
-		cart.GET("/:id", cartHandler.GetCartUser)
-		cart.POST("/:id", cartHandler.AddCart)
-		cart.PATCH("/:id", cartHandler.UpdateCart)
-		cart.DELETE("/:id", cartHandler.DeleteItemCart)
-	}
+	// cartRepo := repository.NewCartRepository()
+	// cartService := service.NewCartService(cartRepo)
+	// cartHandler := handler.NewCartHandler(cartService)
+	// cart := r.Group("/cart")
+	// {
+	// 	cart.GET("/:id", cartHandler.GetCartUser)
+	// 	cart.POST("/:id", cartHandler.AddCart)
+	// 	cart.PATCH("/:id", cartHandler.UpdateCart)
+	// 	cart.DELETE("/:id", cartHandler.DeleteItemCart)
+	// }
 
-	shippingRepo := repository.NewShippingRepository()
-	voucherRepo := repository.NewVoucherRepository()
+	// shippingRepo := repository.NewShippingRepository()
+	// voucherRepo := repository.NewVoucherRepository()
 
-	orderRepo := repository.NewOrderRepository()
-	orderService := service.NewOrderService(orderRepo, cartRepo, shippingRepo, voucherRepo)
-	orderHandler := handler.NewOrderHandler(orderService)
-	order := r.Group("/order")
-	{
-		order.POST("/checkout/:id", orderHandler.CheckOut)
-	}
+	// orderRepo := repository.NewOrderRepository()
+	// orderService := service.NewOrderService(orderRepo, cartRepo, shippingRepo, voucherRepo)
+	// orderHandler := handler.NewOrderHandler(orderService)
+	// order := r.Group("/order")
+	// {
+	// 	order.POST("/checkout/:id", orderHandler.CheckOut)
+	// }
 
-	addressRepo := repository.NewAddressRepository()
-	addressService := service.NewAddressService(addressRepo)
-	addressHandler := handler.NewAddressHandler(addressService)
-	address := r.Group("/address")
-	{
-		address.POST("/:id", addressHandler.AddAddress)
-	}
+	// addressRepo := repository.NewAddressRepository()
+	// addressService := service.NewAddressService(addressRepo)
+	// addressHandler := handler.NewAddressHandler(addressService)
+	// address := r.Group("/address")
+	// {
+	// 	address.POST("/:id", addressHandler.AddAddress)
+	// }
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CartRoute(r *gin.Engine) {
+func CartRoute(r *gin.RouterGroup) {
 	cartRepo := repository.NewCartRepository()
 	cartService := service.NewCartService(cartRepo)
 	cartHandler := handler.NewCartHandler(cartService)
