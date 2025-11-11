@@ -13,6 +13,7 @@ type OrderService interface {
 	GetAllOrder() ([]dto.AllOrderResponse, error)
 	GetStatusOrder(status string) ([]dto.AllOrderResponse, error)
 	GetDetailOrder(order_id int64) (dto.OrderResponse, error)
+	GetAllUserOrder(user_id int64) ([]dto.AllOrderResponse, error)
 }
 
 type orderService struct {
@@ -150,7 +151,7 @@ func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.Se
 
 // lấy tất cả đơn hàng
 func (s *orderService) GetAllOrder() ([]dto.AllOrderResponse, error) {
-	order, err := s.repoOrder.GetAllOrder()
+	order, err := s.repoOrder.GetViewAllOrder()
 	if err != nil {
 		return []dto.AllOrderResponse{}, err
 	}
@@ -192,9 +193,34 @@ func (s *orderService) GetStatusOrder(status string) ([]dto.AllOrderResponse, er
 	return response, err
 }
 
+
+//lấy đơn hàng của user
+func (s *orderService) GetAllUserOrder(user_id int64) ([]dto.AllOrderResponse, error) {
+	order, err := s.repoOrder.GetViewAllOrderUser(user_id)
+	if err != nil {
+		return []dto.AllOrderResponse{}, err
+	}
+	var response []dto.AllOrderResponse
+	for _, o := range order {
+		response = append(response, dto.AllOrderResponse{
+			OrderID:       o.OrderID,
+			Date:          o.Date,
+			FullName:      o.FullName,
+			OrderItem:     o.OrderItem,
+			OrderStatus:   o.OrderStatus,
+			PaymentMethod: o.PaymentMethod,
+			PaymentStatus: o.PaymentStatus,
+			FinalAmount:   o.FinalAmount,
+		})
+	}
+	return response, err
+}
+
+
+
 // duyệt đơn hàng
 // func (s *orderService) ApproveStatus(order_id int64) (model.Order,error){
-// 	order := orde
+// 	order,err := s.repoOrder.UpdateStatus	
 // }
 
 // chi tiết đơn hàng
@@ -216,8 +242,8 @@ func (s *orderService) GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 			Quantity:     res.Quantity,
 		})
 	}
-	var order_response dto.OrderResponse
-	order_response = dto.OrderResponse{
+
+	order_response := dto.OrderResponse{
 		OrderID:       order_info.OrderID,
 		FullName:      order_info.FullName,
 		Phone:         order_info.Phone,
@@ -232,5 +258,4 @@ func (s *orderService) GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 		OrderDetail:   item_response,
 	}
 	return order_response, err
-
 }

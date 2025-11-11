@@ -9,10 +9,14 @@ import (
 type OrderRepository interface {
 	CreateOrder(order model.Order) (model.Order, error)
 	CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error)
-	GetAllOrder() ([]OrderList, error)
+	GetViewAllOrder() ([]OrderList, error)
+
 	GetViewOrder(order_id int64) (Order, error)
 	GetStatusTypeOrder(status string) ([]OrderList, error)
 	GetViewOrderDetail(order_id int64) ([]OrderDetail, error)
+
+	GetViewAllOrderUser(user_id int64) ([]OrderList, error)
+	GetViewOrderStatusByUser(user_id int64, status string) ([]OrderDetail, error)
 }
 
 type orderRepository struct{}
@@ -44,22 +48,17 @@ func (r *orderRepository) CreateOrderDetail(orderdetail model.OrderDetail) (mode
 }
 
 type OrderList struct {
-	OrderID  int64     `json:"order_id"`
-	Date     time.Time `json:"date"`
-	FullName string    `json:"full_name"`
-	// Phone         string  `json:"phone"`
-	// Address       string  `json:"address"`
-	// VoucherCode   string  `json:"voucher_code"`
-	// ShippingName  string  `json:"shipping_name"`
-	OrderItem     int64  `json:"order_item"`
-	OrderStatus   string `json:"order_status"`
-	PaymentMethod string `json:"payment_method"`
-	PaymentStatus string `json:"payment_status"`
-	// TotalAmount   float64 `json:"total_amount"`
-	FinalAmount float64 `json:"final_amount"`
+	OrderID       int64     `json:"order_id"`
+	Date          time.Time `json:"date"`
+	FullName      string    `json:"full_name"`
+	OrderItem     int64     `json:"order_item"`
+	OrderStatus   string    `json:"order_status"`
+	PaymentMethod string    `json:"payment_method"`
+	PaymentStatus string    `json:"payment_status"`
+	FinalAmount   float64   `json:"final_amount"`
 }
 
-func (r *orderRepository) GetAllOrder() ([]OrderList, error) {
+func (r *orderRepository) GetViewAllOrder() ([]OrderList, error) {
 	var order []OrderList
 	query := `
 			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
@@ -85,16 +84,57 @@ func (r *orderRepository) GetStatusTypeOrder(status string) ([]OrderList, error)
 			o.order_status,o.payment_method,o.payment_status,o.final_amount
 			from orders o
 			join addresses a on a.address_id = o.address_id
-			left joim vouchers v on v.voucher_id = o.voucher_id
+			left join vouchers v on v.voucher_id = o.voucher_id
 			join shippings s on s.shipping_id = o.shipping_id
 			join orderdetails od on od.order_id = o.order_id
+			where o.order_status = ? 
 			group by 
 				o.order_id,o.created_at,a.full_name,o.order_status,
-				o.payment_method,o.payment_status,o.total_amount,o.final_amount
-			where o.order_id = ?
+				o.payment_method,o.payment_status,o.total_amount,o.final_amount,
 			order by o.order_id desc
 		`
 	err := config.DB.Raw(query, status).Scan(&order).Error
+	return order, err
+}
+
+func (r *orderRepository) GetViewAllOrderUser(user_id int64) ([]OrderList, error) {
+	var order []OrderList
+	query := `
+			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
+			o.order_status,o.payment_method,o.payment_status,o.final_amount
+			from orders o
+			join addresses a on a.address_id = o.address_id
+			left join vouchers v on v.voucher_id = o.voucher_id
+			join shippings s on s.shipping_id = o.shipping_id
+			join orderdetails od on od.order_id = o.order_id
+			where o.user_id = ?
+			group by 
+				o.order_id,o.created_at,a.full_name,o.order_status,
+				o.payment_method,o.payment_status,o.total_amount,o.final_amount
+			order by o.order_id desc
+			
+		`
+	err := config.DB.Raw(query, user_id).Scan(&order).Error
+	return order, err
+}
+
+func (r *orderRepository) GetViewOrderStatusByUser(user_id int64, status string) ([]OrderDetail, error) {
+	var order []OrderDetail
+	query := `
+			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
+			o.order_status,o.payment_method,o.payment_status,o.final_amount
+			from orders o
+			join addresses a on a.address_id = o.address_id
+			left join vouchers v on v.voucher_id = o.voucher_id
+			join shippings s on s.shipping_id = o.shipping_id
+			join orderdetails od on od.order_id = o.order_id
+			where o.order_stauts = ? and o.order_id = ?
+			group by 
+				o.order_id,o.created_at,a.full_name,o.order_status,
+				o.payment_method,o.payment_status,o.total_amount,o.final_amount
+			order by o.order_id desc
+		`
+	err := config.DB.Raw(query, status, user_id).Scan(&order).Error
 	return order, err
 }
 
@@ -147,6 +187,8 @@ func (r *orderRepository) GetViewOrder(order_id int64) (Order, error) {
 	err := config.DB.Raw(query, order_id).Scan(&order).Error
 	return order, err
 }
+
+// func (r *orderRepository)
 
 func (r *orderRepository) UpdateStatus(order model.Order) (model.Order, error) {
 	err := config.DB.Save(&order).Error
