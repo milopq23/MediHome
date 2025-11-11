@@ -53,3 +53,35 @@ func (h *OrderHandler) GetAllOrder(c *gin.Context) {
 	})
 
 }
+
+func (h *OrderHandler) GetOrders(c *gin.Context) {
+	status := c.Query("status")
+
+	if status == "" {
+		//lấy tất cả đơn hàng
+		orders, err := h.service.GetAllOrder()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Lấy tất cả đơn hàng thành công",
+			"data":    orders,
+		})
+		return
+	}
+
+	//truyền status vào để lấy loại 
+	orders, err := h.service.GetStatusOrder(status)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": `Danh sách đơn hàng theo ` + status,
+		"data":    orders,
+	})
+
+}

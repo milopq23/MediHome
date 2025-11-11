@@ -26,6 +26,7 @@ type OrderDetailItemDTO struct {
 }
 
 type OrderResponse struct {
+	OrderID       int64   `json:"order_id"`
 	FullName      string  `json:"full_name"`
 	Phone         string  `json:"phone"`
 	Address       string  `json:"address"`

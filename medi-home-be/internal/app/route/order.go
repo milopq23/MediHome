@@ -19,7 +19,9 @@ func OrderRoute(r *gin.RouterGroup) {
 
 	order := r.Group("/order")
 	{
-		order.GET("/", orderHandler.GetAllOrder)
+		//lấy tất cả và lọc theo loại
+		order.GET("/", orderHandler.GetOrders)
+		// order.GET("/",orderHandler.GetStatusOrder)
 		order.POST("/checkout/:id", orderHandler.CheckOut)
 	}
 }

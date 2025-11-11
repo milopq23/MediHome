@@ -9,6 +9,7 @@ type OrderRepository interface {
 	CreateOrder(order model.Order) (model.Order, error)
 	CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error)
 	GetAllOrder() ([]OrderList, error)
+	GetStatusTypeOrder(status string) ([]OrderList, error)
 }
 
 type orderRepository struct{}
@@ -34,6 +35,7 @@ func (r *orderRepository) CreateOrderDetail(orderdetail model.OrderDetail) (mode
 }
 
 type OrderList struct {
+	OrderID       int64   `json:"order_id"`
 	FullName      string  `json:"full_name"`
 	Phone         string  `json:"phone"`
 	Address       string  `json:"address"`
@@ -49,12 +51,31 @@ type OrderList struct {
 func (r *orderRepository) GetAllOrder() ([]OrderList, error) {
 	var order []OrderList
 	query := `
-		select a.full_name, a.phone, a.address, v.code as voucher_code, s.name as shipping_name,
+		select o.order_id, a.full_name, a.phone, a.address, v.code as voucher_code, s.name as shipping_name,
 		o.order_status, o.payment_method, o.payment_status,o.total_amount, o.final_amount
 		from orders o
 		join addresses a on a.address_id = o.address_id
 		join vouchers v on v.voucher_id = o.voucher_id
-		join shippings s on s.shipping_id = o.shipping_id`
+		join shippings s on s.shipping_id = o.shipping_id
+		order by o.order_id desc`
 	err := config.DB.Raw(query).Scan(&order).Error
 	return order, err
 }
+
+func (r *orderRepository) GetStatusTypeOrder(status string) ([]OrderList, error) {
+	var order []OrderList
+	query := `
+		select o.order_id, a.full_name, a.phone, a.address, v.code as voucher_code, s.name as shipping_name,
+		o.order_status, o.payment_method, o.payment_status,o.total_amount, o.final_amount
+		from orders o
+		join addresses a on a.address_id = o.address_id
+		join vouchers v on v.voucher_id = o.voucher_id
+		join shippings s on s.shipping_id = o.shipping_id
+		where o.order_status = ?
+		order by o.order_id asc`
+	err := config.DB.Raw(query, status).Scan(&order).Error
+	return order, err
+}
+
+
+// func (r *orderRepository) ApproveStatus()
