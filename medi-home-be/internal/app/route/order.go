@@ -19,6 +19,7 @@ func OrderRoute(r *gin.RouterGroup) {
 
 	order := r.Group("/order")
 	{
+		order.GET("/", orderHandler.GetAllOrder)
 		order.POST("/checkout/:id", orderHandler.CheckOut)
 	}
 }

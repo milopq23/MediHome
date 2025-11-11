@@ -17,7 +17,6 @@ type OrderRequestDTO struct {
 	VoucherCode   string `json:"voucher_code"`
 	ShippingID    int64  `json:"shipping_id"`
 	PaymentMethod string `json:"payment_method"`
-	
 }
 
 type OrderDetailItemDTO struct {
@@ -26,7 +25,15 @@ type OrderDetailItemDTO struct {
 	Price    float64 `json:"price"`
 }
 
-
-type TotalOrderDTO struct {
-
+type OrderResponse struct {
+	FullName      string  `json:"full_name"`
+	Phone         string  `json:"phone"`
+	Address       string  `json:"address"`
+	VoucherCode   string  `json:"voucher_code"`
+	ShippingName  string  `json:"shipping_name"`
+	OrderStatus   string  `json:"order_status"`
+	PaymentMethod string  `json:"payment_method"`
+	PaymentStatus string  `json:"payment_status"`
+	TotalAmount   float64 `json:"total_amount"`
+	FinalAmount   float64 `json:"final_amount"`
 }

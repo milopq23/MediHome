@@ -8,6 +8,7 @@ import (
 type OrderRepository interface {
 	CreateOrder(order model.Order) (model.Order, error)
 	CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error)
+	GetAllOrder() ([]OrderList, error)
 }
 
 type orderRepository struct{}
@@ -27,9 +28,33 @@ func (r *orderRepository) CreateOrder(order model.Order) (model.Order, error) {
 	return order, err
 }
 
-// func(r *orderRepository)
-
 func (r *orderRepository) CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error) {
 	err := config.DB.Create(&orderdetail).Error
 	return orderdetail, err
+}
+
+type OrderList struct {
+	FullName      string  `json:"full_name"`
+	Phone         string  `json:"phone"`
+	Address       string  `json:"address"`
+	VoucherCode   string  `json:"voucher_code"`
+	ShippingName  string  `json:"shipping_name"`
+	OrderStatus   string  `json:"order_status"`
+	PaymentMethod string  `json:"payment_method"`
+	PaymentStatus string  `json:"payment_status"`
+	TotalAmount   float64 `json:"total_amount"`
+	FinalAmount   float64 `json:"final_amount"`
+}
+
+func (r *orderRepository) GetAllOrder() ([]OrderList, error) {
+	var order []OrderList
+	query := `
+		select a.full_name, a.phone, a.address, v.code as voucher_code, s.name as shipping_name,
+		o.order_status, o.payment_method, o.payment_status,o.total_amount, o.final_amount
+		from orders o
+		join addresses a on a.address_id = o.address_id
+		join vouchers v on v.voucher_id = o.voucher_id
+		join shippings s on s.shipping_id = o.shipping_id`
+	err := config.DB.Raw(query).Scan(&order).Error
+	return order, err
 }

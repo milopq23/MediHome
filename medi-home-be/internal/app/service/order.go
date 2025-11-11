@@ -10,13 +10,14 @@ import (
 
 type OrderService interface {
 	CheckOut(req dto.OrderRequestDTO) (model.Order, error)
+	GetAllOrder() ([]dto.OrderResponse, error)
 }
 
 type orderService struct {
 	repoOrder    repository.OrderRepository
 	repoCart     repository.CartRepository
 	repoShipping repository.ShippingRepository
-	repoVoucher repository.VoucherRepository
+	repoVoucher  repository.VoucherRepository
 }
 
 func NewOrderService(
@@ -29,6 +30,7 @@ func NewOrderService(
 	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping, repoVoucher: repoVoucher}
 }
 
+// thanh toán
 func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 	user, err := s.repoCart.GetCartUser(req.UserID)
 	if err != nil {
@@ -52,13 +54,12 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 	//giá shipping
 	shippingPrice := s.ShippingPrice(req.ShippingID)
 
-	discount,err := s.repoVoucher.ClassifyVoucher(req.VoucherCode,totalPrice)
+	discount, err := s.repoVoucher.ClassifyVoucher(req.VoucherCode, totalPrice)
 	if err != nil {
 		return model.Order{}, err
 	}
 
-	log.Print("discount ",discount)
-
+	log.Print("discount ", discount)
 
 	//giá sau khi giảm
 	final_amount := totalPrice - shippingPrice - discount
@@ -145,25 +146,31 @@ func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.Se
 	return selected, nil
 }
 
-// func (s *orderService) TotalPriceInCart(user_id int64) (float64, error) {
-// 	user, err := s.repoCart.GetCartUser(user_id)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+// lấy tất cả đơn hàng
+func (s *orderService) GetAllOrder() ([]dto.OrderResponse, error) {
+	order, err := s.repoOrder.GetAllOrder()
+	if err != nil {
+		return []dto.OrderResponse{}, err
+	}
+	var response []dto.OrderResponse
+	for _, o := range order {
+		response = append(response, dto.OrderResponse{
+			FullName:      o.FullName,
+			Phone:         o.Phone,
+			Address:       o.Address,
+			VoucherCode:   o.VoucherCode,
+			ShippingName:  o.ShippingName,
+			OrderStatus:   o.OrderStatus,
+			PaymentMethod: o.PaymentMethod,
+			PaymentStatus: o.PaymentStatus,
+			TotalAmount:   o.TotalAmount,
+			FinalAmount:   o.FinalAmount,
+		})
+	}
+	return response, err
+}
 
-// 	cartItems, err := s.repoCart.GetCartItem(user.CartID)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+// lọc đơn hàng theo loại
 
-// 	var totalPrice float64
-// 	for _, item := range cartItems {
-// 		selectType, err := s.SelectType(item.SelectType, item.MedicineID)
-// 		if err != nil {
-// 			return 0, err
-// 		}
-// 		totalPrice += selectType.Price * float64(item.Quantity)
-// 	}
-
-// 	return totalPrice, err
-// }
+// duyệt đơn hàng
+// chi tiết đơn hàng

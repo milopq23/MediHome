@@ -38,6 +38,18 @@ func (h *OrderHandler) CheckOut(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Failed checkout"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Thêm thành công", "data": order})
+	c.JSON(http.StatusOK, gin.H{"message": "Thanh toán thành công", "data": order})
+}
+
+func (h *OrderHandler) GetAllOrder(c *gin.Context) {
+	orders, err := h.service.GetAllOrder()
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Failed to get orders"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Lấy tất cả đơn hàng",
+		"data":    orders,
+	})
 
 }

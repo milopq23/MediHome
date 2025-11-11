@@ -15,7 +15,7 @@ import (
 
 type UserService interface {
 	TotalActive() (int64, error)
-	GetAll(page, pageSize int) (model.Pagination, error)
+	GetAll(page, pageSize int) (dto.UserPaginationResponseDTO, error)
 	GetByID(id uint) (model.User, error)
 	Create(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
@@ -36,16 +36,21 @@ func (s *userService) TotalActive() (int64, error) {
 	return s.repo.TotalActive()
 }
 
-func (s *userService) GetAll(page, pageSize int) (model.Pagination, error) {
+func (s *userService) GetAll(page, pageSize int) (dto.UserPaginationResponseDTO, error) {
 
 	pagination, err := s.repo.GetAll(page, pageSize)
 	if err != nil {
-		return model.Pagination{}, err
+		return dto.UserPaginationResponseDTO{}, err
 	}
 
 	users, ok := pagination.Data.([]model.User)
 	if !ok {
-		return model.Pagination{}, fmt.Errorf("failed load pagination data")
+		return dto.UserPaginationResponseDTO{}, fmt.Errorf("failed load pagination data")
+	}
+
+	total_active, err := s.repo.TotalActive()
+	if err != nil {
+		return dto.UserPaginationResponseDTO{}, err
 	}
 
 	// mapping model -> dto
@@ -60,9 +65,16 @@ func (s *userService) GetAll(page, pageSize int) (model.Pagination, error) {
 			IsVerified: u.IsVerified,
 		})
 	}
-	pagination.Data = result
 
-	return pagination, nil
+	user := dto.UserPaginationResponseDTO{
+		Page:            pagination.Page,
+		PageSize:        pagination.PageSize,
+		Total:           pagination.Total,
+		Data:            result,
+		TotalUserActive: total_active,
+	}
+
+	return user, nil
 }
 
 func (s *userService) GetByID(id uint) (model.User, error) {
