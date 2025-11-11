@@ -10,8 +10,9 @@ import (
 
 type OrderService interface {
 	CheckOut(req dto.OrderRequestDTO) (model.Order, error)
-	GetAllOrder() ([]dto.OrderResponse, error)
-	GetStatusOrder(status string) ([]dto.OrderResponse, error)
+	GetAllOrder() ([]dto.AllOrderResponse, error)
+	GetStatusOrder(status string) ([]dto.AllOrderResponse, error)
+	GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 }
 
 type orderService struct {
@@ -148,24 +149,21 @@ func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.Se
 }
 
 // lấy tất cả đơn hàng
-func (s *orderService) GetAllOrder() ([]dto.OrderResponse, error) {
+func (s *orderService) GetAllOrder() ([]dto.AllOrderResponse, error) {
 	order, err := s.repoOrder.GetAllOrder()
 	if err != nil {
-		return []dto.OrderResponse{}, err
+		return []dto.AllOrderResponse{}, err
 	}
-	var response []dto.OrderResponse
+	var response []dto.AllOrderResponse
 	for _, o := range order {
-		response = append(response, dto.OrderResponse{
+		response = append(response, dto.AllOrderResponse{
 			OrderID:       o.OrderID,
+			Date:          o.Date,
 			FullName:      o.FullName,
-			Phone:         o.Phone,
-			Address:       o.Address,
-			VoucherCode:   o.VoucherCode,
-			ShippingName:  o.ShippingName,
+			OrderItem:     o.OrderItem,
 			OrderStatus:   o.OrderStatus,
 			PaymentMethod: o.PaymentMethod,
 			PaymentStatus: o.PaymentStatus,
-			TotalAmount:   o.TotalAmount,
 			FinalAmount:   o.FinalAmount,
 		})
 	}
@@ -173,24 +171,21 @@ func (s *orderService) GetAllOrder() ([]dto.OrderResponse, error) {
 }
 
 // lọc đơn hàng theo loại
-func (s *orderService) GetStatusOrder(status string) ([]dto.OrderResponse, error) {
+func (s *orderService) GetStatusOrder(status string) ([]dto.AllOrderResponse, error) {
 	order, err := s.repoOrder.GetStatusTypeOrder(status)
 	if err != nil {
-		return []dto.OrderResponse{}, err
+		return []dto.AllOrderResponse{}, err
 	}
-	var response []dto.OrderResponse
+	var response []dto.AllOrderResponse
 	for _, o := range order {
-		response = append(response, dto.OrderResponse{
+		response = append(response, dto.AllOrderResponse{
 			OrderID:       o.OrderID,
+			Date:          o.Date,
 			FullName:      o.FullName,
-			Phone:         o.Phone,
-			Address:       o.Address,
-			VoucherCode:   o.VoucherCode,
-			ShippingName:  o.ShippingName,
+			OrderItem:     o.OrderItem,
 			OrderStatus:   o.OrderStatus,
 			PaymentMethod: o.PaymentMethod,
 			PaymentStatus: o.PaymentStatus,
-			TotalAmount:   o.TotalAmount,
 			FinalAmount:   o.FinalAmount,
 		})
 	}
@@ -198,5 +193,44 @@ func (s *orderService) GetStatusOrder(status string) ([]dto.OrderResponse, error
 }
 
 // duyệt đơn hàng
+// func (s *orderService) ApproveStatus(order_id int64) (model.Order,error){
+// 	order := orde
+// }
 
 // chi tiết đơn hàng
+func (s *orderService) GetDetailOrder(order_id int64) (dto.OrderResponse, error) {
+	detail_items, err := s.repoOrder.GetViewOrderDetail(order_id)
+	if err != nil {
+		return dto.OrderResponse{}, err
+	}
+	order_info, err := s.repoOrder.GetViewOrder(order_id)
+	if err != nil {
+		return dto.OrderResponse{}, err
+	}
+	var item_response []dto.OrderDetailResponse
+	for _, res := range detail_items {
+		item_response = append(item_response, dto.OrderDetailResponse{
+			MedicineName: res.MedicineName,
+			UnitPrice:    res.UnitPrice,
+			Type:         res.Type,
+			Quantity:     res.Quantity,
+		})
+	}
+	var order_response dto.OrderResponse
+	order_response = dto.OrderResponse{
+		OrderID:       order_info.OrderID,
+		FullName:      order_info.FullName,
+		Phone:         order_info.Phone,
+		Address:       order_info.Address,
+		VoucherCode:   order_info.VoucherCode,
+		ShippingName:  order_info.ShippingName,
+		OrderStatus:   order_info.OrderStatus,
+		PaymentMethod: order_info.PaymentMethod,
+		PaymentStatus: order_info.PaymentStatus,
+		TotalAmount:   order_info.TotalAmount,
+		FinalAmount:   order_info.FinalAmount,
+		OrderDetail:   item_response,
+	}
+	return order_response, err
+
+}
