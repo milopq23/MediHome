@@ -98,11 +98,9 @@ func (h *OrderHandler) GetDetailOrder(c *gin.Context) {
 	})
 }
 
-
 func (h *OrderHandler) GetUserOrders(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	status := c.Query("status")
-	log.Print(id)
 
 	if status == "" {
 		//lấy tất cả đơn hàng
@@ -118,17 +116,15 @@ func (h *OrderHandler) GetUserOrders(c *gin.Context) {
 		})
 		return
 	}
-
 	//truyền status vào để lấy loại
-	orders, err := h.service.GetStatusOrder(status)
+	orders, err := h.service.GetStatusUserOrder(int64(id), status)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
+	
 	c.JSON(http.StatusOK, gin.H{
 		"message": `Danh sách đơn hàng theo ` + status,
 		"data":    orders,
 	})
 }
-

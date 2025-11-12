@@ -14,6 +14,7 @@ type OrderService interface {
 	GetStatusOrder(status string) ([]dto.AllOrderResponse, error)
 	GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 	GetAllUserOrder(user_id int64) ([]dto.AllOrderResponse, error)
+	GetStatusUserOrder(user_id int64, status string) ([]dto.AllOrderResponse, error)
 }
 
 type orderService struct {
@@ -193,8 +194,7 @@ func (s *orderService) GetStatusOrder(status string) ([]dto.AllOrderResponse, er
 	return response, err
 }
 
-
-//lấy đơn hàng của user
+// lấy đơn hàng của user
 func (s *orderService) GetAllUserOrder(user_id int64) ([]dto.AllOrderResponse, error) {
 	order, err := s.repoOrder.GetViewAllOrderUser(user_id)
 	if err != nil {
@@ -216,11 +216,32 @@ func (s *orderService) GetAllUserOrder(user_id int64) ([]dto.AllOrderResponse, e
 	return response, err
 }
 
-
+func (s *orderService) GetStatusUserOrder(user_id int64, status string) ([]dto.AllOrderResponse, error) {
+	order, err := s.repoOrder.GetViewOrderStatusByUser(user_id, status)
+	if err != nil {
+		return []dto.AllOrderResponse{}, err
+	}
+	// log.Print(order)
+	var response []dto.AllOrderResponse
+	for _, o := range order {
+		response = append(response, dto.AllOrderResponse{
+			OrderID:       o.OrderID,
+			Date:          o.Date,
+			FullName:      o.FullName,
+			OrderItem:     o.OrderItem,
+			OrderStatus:   o.OrderStatus,
+			PaymentMethod: o.PaymentMethod,
+			PaymentStatus: o.PaymentStatus,
+			FinalAmount:   o.FinalAmount,
+		})
+	}
+	// log.Print("res",response)
+	return response, err
+}
 
 // duyệt đơn hàng
 // func (s *orderService) ApproveStatus(order_id int64) (model.Order,error){
-// 	order,err := s.repoOrder.UpdateStatus	
+// 	order,err := s.repoOrder.UpdateStatus
 // }
 
 // chi tiết đơn hàng

@@ -16,7 +16,7 @@ type OrderRepository interface {
 	GetViewOrderDetail(order_id int64) ([]OrderDetail, error)
 
 	GetViewAllOrderUser(user_id int64) ([]OrderList, error)
-	GetViewOrderStatusByUser(user_id int64, status string) ([]OrderDetail, error)
+	GetViewOrderStatusByUser(user_id int64, status string) ([]OrderList, error)
 }
 
 type orderRepository struct{}
@@ -118,23 +118,23 @@ func (r *orderRepository) GetViewAllOrderUser(user_id int64) ([]OrderList, error
 	return order, err
 }
 
-func (r *orderRepository) GetViewOrderStatusByUser(user_id int64, status string) ([]OrderDetail, error) {
-	var order []OrderDetail
+func (r *orderRepository) GetViewOrderStatusByUser(user_id int64, status string) ([]OrderList, error) {
+	var order []OrderList
 	query := `
 			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
 			o.order_status,o.payment_method,o.payment_status,o.final_amount
 			from orders o
 			join addresses a on a.address_id = o.address_id
-			left join vouchers v on v.voucher_id = o.voucher_id
 			join shippings s on s.shipping_id = o.shipping_id
 			join orderdetails od on od.order_id = o.order_id
-			where o.order_stauts = ? and o.order_id = ?
+			where o.order_status = ? and o.user_id = ?
 			group by 
 				o.order_id,o.created_at,a.full_name,o.order_status,
 				o.payment_method,o.payment_status,o.total_amount,o.final_amount
 			order by o.order_id desc
 		`
 	err := config.DB.Raw(query, status, user_id).Scan(&order).Error
+	// log.Print("repo",order)
 	return order, err
 }
 
