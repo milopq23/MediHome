@@ -22,6 +22,7 @@ type orderService struct {
 	repoShipping  repository.ShippingRepository
 	repoVoucher   repository.VoucherRepository
 	repoInventory repository.InventoryRepository
+	repoLog       repository.StockTransactionRepository
 }
 
 func NewOrderService(
@@ -30,9 +31,17 @@ func NewOrderService(
 	repoShipping repository.ShippingRepository,
 	repoVoucher repository.VoucherRepository,
 	repoInventory repository.InventoryRepository,
+	repoLog repository.StockTransactionRepository,
 
 ) OrderService {
-	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping, repoVoucher: repoVoucher, repoInventory: repoInventory}
+	return &orderService{
+		repoOrder:     repoOrder,
+		repoCart:      repoCart,
+		repoShipping:  repoShipping,
+		repoVoucher:   repoVoucher,
+		repoInventory: repoInventory,
+		repoLog:       repoLog,
+	}
 }
 
 // thanh toán
@@ -104,6 +113,11 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 			return model.Order{}, err
 		}
 
+		_, err = s.LogTransactionOut(selectType.InventoryID, item.Quantity)
+		if err != nil {
+			return model.Order{}, err
+		}
+
 		_, err = s.repoOrder.CreateOrderDetail(orderDetail)
 		if err != nil {
 			return model.Order{}, err
@@ -111,10 +125,6 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 	}
 
 	return ordered, nil
-}
-
-func (s *orderService) LogTransaction() {
-
 }
 
 func (s *orderService) ShippingPrice(shipping_id int64) float64 {
@@ -289,4 +299,18 @@ func (s *orderService) GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 		OrderDetail:   item_response,
 	}
 	return order_response, err
+}
+
+func (s *orderService) LogTransactionOut(inventory_id, quantity int64) (model.StockTransaction, error) {
+	log := model.StockTransaction{
+		InventoryID:     inventory_id,
+		TransactionType: "OUT",
+		Quantity:        quantity,
+		Note:            "Bán hàng",
+	}
+	_, err := s.repoLog.CreateLogTransaction(log)
+	if err != nil {
+		return model.StockTransaction{}, err
+	}
+	return log, err
 }

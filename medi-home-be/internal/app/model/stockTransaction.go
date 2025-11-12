@@ -9,8 +9,8 @@ type StockTransaction struct {
 	Quantity           int64     `gorm:"column:quantity" json:"quantity"`
 	TransactionDate    time.Time `gorm:"column:transaction_date; type:date; autoCreateTime"`
 	Note               string    `gorm:"column:note" json:"note"`
-	CreatedAt          time.Time `gorm:"column:created_at;autoCreateTime"`
-	UpdatedAt          time.Time `gorm:"column:updated_at;autoUpdateTime"`
+	// CreatedAt          time.Time `gorm:"column:created_at;autoCreateTime"`
+	// UpdatedAt          time.Time `gorm:"column:updated_at;autoUpdateTime"`
 
 	Inventory *Inventory `gorm:"foreignKey:InventoryID;references:InventoryID" json:"inventory,omitempty"`
 }

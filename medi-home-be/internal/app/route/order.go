@@ -13,9 +13,10 @@ func OrderRoute(r *gin.RouterGroup) {
 	shippingRepo := repository.NewShippingRepository()
 	voucherRepo := repository.NewVoucherRepository()
 	inventoryRepo := repository.NewInventoryRepository()
+	logTransaction := repository.NewStockTransactionRepository()
 
 	orderRepo := repository.NewOrderRepository()
-	orderService := service.NewOrderService(orderRepo, cartRepo, shippingRepo, voucherRepo,inventoryRepo)
+	orderService := service.NewOrderService(orderRepo, cartRepo, shippingRepo, voucherRepo, inventoryRepo, logTransaction)
 	orderHandler := handler.NewOrderHandler(orderService)
 
 	order := r.Group("/order")
@@ -23,7 +24,7 @@ func OrderRoute(r *gin.RouterGroup) {
 		//lấy tất cả và lọc theo loại
 		order.GET("/", orderHandler.GetOrders)
 		order.GET("/:id", orderHandler.GetDetailOrder)
-		order.GET("/user/:id",orderHandler.GetUserOrders)
+		order.GET("/user/:id", orderHandler.GetUserOrders)
 		order.POST("/checkout/:id", orderHandler.CheckOut)
 	}
 	// userOrder := r.Group("/order")

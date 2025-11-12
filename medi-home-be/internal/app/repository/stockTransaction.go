@@ -6,6 +6,7 @@ import (
 )
 
 type StockTransactionRepository interface {
+	CreateLogTransaction(log model.StockTransaction) (model.StockTransaction, error)
 }
 
 type stockTransactionRepository struct{}
@@ -17,12 +18,13 @@ func NewStockTransactionRepository() StockTransactionRepository {
 // func (r *stockTransactionRepository) GetViewLogTransaction() ([]model.StockTransaction,error){
 // 	var log model.StockTransaction
 // 	query := `
-	
+
 // 	`
 // }
 
 func (r *stockTransactionRepository) CreateLogTransaction(log model.StockTransaction) (model.StockTransaction, error) {
-	err := config.DB.Create(&log).Error
-	return log, err
+	if err := config.DB.Create(&log).Error; err != nil {
+		return model.StockTransaction{}, err
+	}
+	return log, nil
 }
-
