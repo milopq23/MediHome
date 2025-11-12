@@ -12,9 +12,10 @@ func OrderRoute(r *gin.RouterGroup) {
 	cartRepo := repository.NewCartRepository()
 	shippingRepo := repository.NewShippingRepository()
 	voucherRepo := repository.NewVoucherRepository()
+	inventoryRepo := repository.NewInventoryRepository()
 
 	orderRepo := repository.NewOrderRepository()
-	orderService := service.NewOrderService(orderRepo, cartRepo, shippingRepo, voucherRepo)
+	orderService := service.NewOrderService(orderRepo, cartRepo, shippingRepo, voucherRepo,inventoryRepo)
 	orderHandler := handler.NewOrderHandler(orderService)
 
 	order := r.Group("/order")

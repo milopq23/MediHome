@@ -1,6 +1,9 @@
 package repository
 
-import "medi-home-be/config"
+import (
+	"medi-home-be/config"
+	"medi-home-be/internal/app/model"
+)
 
 type BatchSellingRepository interface {
 }
@@ -33,3 +36,14 @@ func (r *batchSellingRepository) CurrentBatch() ([]BatchSelling, error) {
 	err := config.DB.Raw(query).Scan(&curentBatch).Error
 	return curentBatch, err
 }
+
+func (r *batchSellingRepository) CreateBatch(batch model.BatchSelling) (model.BatchSelling, error) {
+	err := config.DB.Create(&batch).Error
+	return batch, err
+}
+
+// func (r )
+
+// func (r *batchSellingRepository) UpdateBatch()  ([]model.BatchSelling,error) {
+
+// }

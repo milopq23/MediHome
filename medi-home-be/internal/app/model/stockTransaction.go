@@ -14,3 +14,7 @@ type StockTransaction struct {
 
 	Inventory *Inventory `gorm:"foreignKey:InventoryID;references:InventoryID" json:"inventory,omitempty"`
 }
+
+func (StockTransaction) TableName() string{
+	return "stocktransaction"
+} 

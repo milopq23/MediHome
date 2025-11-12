@@ -1,7 +1,6 @@
 package service
 
 import (
-	"log"
 	"math"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
@@ -18,10 +17,11 @@ type OrderService interface {
 }
 
 type orderService struct {
-	repoOrder    repository.OrderRepository
-	repoCart     repository.CartRepository
-	repoShipping repository.ShippingRepository
-	repoVoucher  repository.VoucherRepository
+	repoOrder     repository.OrderRepository
+	repoCart      repository.CartRepository
+	repoShipping  repository.ShippingRepository
+	repoVoucher   repository.VoucherRepository
+	repoInventory repository.InventoryRepository
 }
 
 func NewOrderService(
@@ -29,9 +29,10 @@ func NewOrderService(
 	repoCart repository.CartRepository,
 	repoShipping repository.ShippingRepository,
 	repoVoucher repository.VoucherRepository,
+	repoInventory repository.InventoryRepository,
 
 ) OrderService {
-	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping, repoVoucher: repoVoucher}
+	return &orderService{repoOrder: repoOrder, repoCart: repoCart, repoShipping: repoShipping, repoVoucher: repoVoucher, repoInventory: repoInventory}
 }
 
 // thanh toán
@@ -63,8 +64,6 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 		return model.Order{}, err
 	}
 
-	log.Print("discount ", discount)
-
 	//giá sau khi giảm
 	final_amount := totalPrice - shippingPrice - discount
 
@@ -79,6 +78,7 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 		TotalAmount:   totalPrice,
 		FinalAmount:   final_amount,
 	}
+
 	ordered, err := s.repoOrder.CreateOrder(order)
 	if err != nil {
 		return model.Order{}, err
@@ -99,12 +99,22 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 			SelectType:  item.SelectType,
 		}
 
+		err = s.repoInventory.DecreaseQuantity(selectType.InventoryID, item.Quantity)
+		if err != nil {
+			return model.Order{}, err
+		}
+
 		_, err = s.repoOrder.CreateOrderDetail(orderDetail)
 		if err != nil {
 			return model.Order{}, err
 		}
 	}
+
 	return ordered, nil
+}
+
+func (s *orderService) LogTransaction() {
+
 }
 
 func (s *orderService) ShippingPrice(shipping_id int64) float64 {
