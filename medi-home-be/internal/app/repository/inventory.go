@@ -66,14 +66,27 @@ func (r *inventoryRepository) DecreaseQuantity(inventory_id, quantity int64) err
 	}
 
 	if inventory.Quantity < quantity {
+		if err := r.UpdateStatus(inventory_id, "Hết hàng"); err != nil {
+			return err
+		}
 		return fmt.Errorf("not enough stock: have %d, need %d", inventory.Quantity, quantity)
 	}
 
 	inventory.Quantity -= quantity
+
+	if inventory.Quantity == 0 {
+		inventory.Status = "Hết hàng"
+	}
 
 	if err := config.DB.Save(&inventory).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (r *inventoryRepository) UpdateStatus(inventoryID int64, status string) error {
+	return config.DB.Model(&model.Inventory{}).
+		Where("inventory_id = ?", inventoryID).
+		Update("status", status).Error
 }

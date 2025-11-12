@@ -10,6 +10,7 @@ type Inventory struct {
 	MarkUp         float64   `gorm:"column:mark_up; not null" json:"markup"`
 	ExpirationDate time.Time `gorm:"column:expiration_date; type:date" json:"expiration_date"`
 	Quantity       int64     `gorm:"column:quantity" json:"quantity"`
+	Status         string    `gorm:"column:status" json:"status"`
 	CreatedAt      time.Time `gorm:"column:created_at;  autoCreateTime"`
 	UpdatedAt      time.Time `gorm:"column:updated_at;autoUpdateTime"`
 
