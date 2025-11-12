@@ -99,7 +99,7 @@ func (r *voucherRepository) ClassifyVoucher(code string, total float64) (float64
 	case "Cố định":
 		discount = voucher.MaxDiscountValue
 	default:
-		log.Println("sai")
+		// log.Println("sai")
 		return 0, err
 	}
 

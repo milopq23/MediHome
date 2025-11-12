@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log"
 	"math"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
@@ -68,18 +69,28 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 	//giá shipping
 	shippingPrice := s.ShippingPrice(req.ShippingID)
 
-	discount, err := s.repoVoucher.ClassifyVoucher(req.VoucherCode, totalPrice)
-	if err != nil {
-		return model.Order{}, err
-	}
+	//giảm giá
+	var discount float64
+	
+	var voucher model.Voucher
+	if req.VoucherCode != "" {
+		discount, err = s.repoVoucher.ClassifyVoucher(req.VoucherCode, totalPrice)
+		if err != nil {
+			return model.Order{}, err
+		}
 
+		voucher, err = s.repoVoucher.GetVoucherByCode(req.VoucherCode)
+		if err != nil {
+			return model.Order{}, err
+		}
+	}
 	//giá sau khi giảm
 	final_amount := totalPrice - shippingPrice - discount
 
 	order := model.Order{
-		UserID: req.UserID,
-		// AddressID: 3,
-		VoucherID:     1,
+		UserID:        req.UserID,
+		AddressID:     3,
+		VoucherID:     voucher.VoucherID,
 		ShippingID:    req.ShippingID,
 		OrderStatus:   "Chờ xác nhận",
 		PaymentMethod: req.PaymentMethod,
@@ -87,15 +98,16 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 		TotalAmount:   totalPrice,
 		FinalAmount:   final_amount,
 	}
-
 	ordered, err := s.repoOrder.CreateOrder(order)
 	if err != nil {
+		log.Printf("Lỗi không tạo order: %v", err)
 		return model.Order{}, err
 	}
 
 	for _, item := range cartItems {
 		selectType, err := s.SelectType(item.SelectType, item.MedicineID)
 		if err != nil {
+			log.Printf("Lỗi không lấy được giá tiền: %v", err)
 			return model.Order{}, err
 		}
 
@@ -110,16 +122,20 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 
 		err = s.repoInventory.DecreaseQuantity(selectType.InventoryID, item.Quantity)
 		if err != nil {
+			log.Printf("Lỗi giảm số lượng inventory: %v", err)
 			return model.Order{}, err
 		}
 
 		_, err = s.LogTransactionOut(selectType.InventoryID, item.Quantity)
 		if err != nil {
+			log.Printf("Lỗi ghi log transaction: %v", err)
 			return model.Order{}, err
 		}
+		log.Print()
 
 		_, err = s.repoOrder.CreateOrderDetail(orderDetail)
 		if err != nil {
+			log.Printf("Lỗi tạo order detail: %v", err)
 			return model.Order{}, err
 		}
 	}
@@ -130,6 +146,7 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 func (s *orderService) ShippingPrice(shipping_id int64) float64 {
 	shipping, err := s.repoShipping.FindByID(shipping_id)
 	if err != nil {
+		log.Printf("Lỗi không lấy giá shipping: %v", err)
 		return 0
 	}
 	return shipping.Price
@@ -139,16 +156,19 @@ func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.Se
 	//lấy unit_per_box
 	medicine, err := s.repoCart.FindMedicine(medicine_id)
 	if err != nil {
+		log.Printf("Lỗi tìm thuốc: %v", err)
 		return dto.SelectTypeMedicineDTO{}, err
 	}
 	//lấy lô của thuốc hiện bán
 	batch, err := s.repoCart.FindBatchSelling(medicine_id)
 	if err != nil {
+		log.Printf("Lỗi tìm lô hiện bán: %v", err)
 		return dto.SelectTypeMedicineDTO{}, err
 	}
 	//lấy giá đã tính markup
 	inventory, err := s.repoCart.FindInventory(batch.InventoryID)
 	if err != nil {
+		log.Printf("Lỗi tìm hàng tồn: %v", err)
 		return dto.SelectTypeMedicineDTO{}, err
 	}
 	//phân loại giá theo box hoặc strip
@@ -174,6 +194,7 @@ func (s *orderService) SelectType(select_type string, medicine_id int64) (dto.Se
 func (s *orderService) GetAllOrder() ([]dto.AllOrderResponse, error) {
 	order, err := s.repoOrder.GetViewAllOrder()
 	if err != nil {
+		log.Printf("Lỗi không view được  đơn hàng: %v", err)
 		return []dto.AllOrderResponse{}, err
 	}
 	var response []dto.AllOrderResponse
@@ -196,6 +217,7 @@ func (s *orderService) GetAllOrder() ([]dto.AllOrderResponse, error) {
 func (s *orderService) GetStatusOrder(status string) ([]dto.AllOrderResponse, error) {
 	order, err := s.repoOrder.GetStatusTypeOrder(status)
 	if err != nil {
+		log.Printf("Lỗi không view được đơn hàng theo loại: %v", err)
 		return []dto.AllOrderResponse{}, err
 	}
 	var response []dto.AllOrderResponse

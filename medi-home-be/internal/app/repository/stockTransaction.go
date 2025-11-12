@@ -15,12 +15,6 @@ func NewStockTransactionRepository() StockTransactionRepository {
 	return &stockTransactionRepository{}
 }
 
-// func (r *stockTransactionRepository) GetViewLogTransaction() ([]model.StockTransaction,error){
-// 	var log model.StockTransaction
-// 	query := `
-
-// 	`
-// }
 
 func (r *stockTransactionRepository) CreateLogTransaction(log model.StockTransaction) (model.StockTransaction, error) {
 	if err := config.DB.Create(&log).Error; err != nil {
