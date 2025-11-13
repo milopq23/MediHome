@@ -10,7 +10,7 @@
 	async function saveChanges() {
 		const res = await fetch('/auth/profile/', {
 			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json',  },
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ name: user.name, phone: user.phone })
 		});
 
@@ -76,20 +76,6 @@
 			total: '450,000 ₫',
 			status: 'processing',
 			items: 1
-		},
-		{
-			id: 'ORD-005',
-			date: '2024-10-05',
-			total: '550,000 ₫',
-			status: 'completed',
-			items: 2
-		},
-		{
-			id: 'ORD-006',
-			date: '2024-09-28',
-			total: '1,800,000 ₫',
-			status: 'completed',
-			items: 4
 		}
 	]);
 
@@ -212,6 +198,29 @@
 					{#if isEditing}
 						<div class="border-t border-[var(--color-border)] pt-4">
 							<h3 class="mb-4 text-sm font-semibold text-[var(--color-text)]">Đổi Mật Khẩu</h3>
+							<div class="mb-4">
+								<label
+									for="password"
+									class="mb-2 block text-sm font-medium text-[var(--color-text)]"
+								>
+									Mật Khẩu hiện tại
+								</label>
+								<div class="relative">
+									<input
+										type={showPassword ? 'text' : 'password'}
+										id="password"
+										placeholder="**********"
+										class="w-full rounded-lg border border-[var(--color-border)] px-4 py-2 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
+									/>
+									<button
+										type="button"
+										onclick={() => (showPassword = !showPassword)}
+										class="absolute top-1/2 right-3 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+									>
+										{showPassword ? '👁️' : '👁️‍🗨️'}
+									</button>
+								</div>
+							</div>
 
 							<!-- Password -->
 							<div class="mb-4">
@@ -225,7 +234,7 @@
 									<input
 										type={showPassword ? 'text' : 'password'}
 										id="password"
-										bind:value={user.password}
+										placeholder="**********"
 										class="w-full rounded-lg border border-[var(--color-border)] px-4 py-2 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
 									/>
 									<button
@@ -249,9 +258,16 @@
 								<input
 									type={showPassword ? 'text' : 'password'}
 									id="confirmPassword"
-									bind:value={user.confirmPassword}
+									placeholder="**********"
 									class="w-full rounded-lg border border-[var(--color-border)] px-4 py-2 focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
 								/>
+								<button
+									type="button"
+									onclick={() => (showPassword = !showPassword)}
+									class="absolute top-1/2 right-3 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+								>
+									{showPassword ? '👁️' : '👁️‍🗨️'}
+								</button>
 							</div>
 						</div>
 					{/if}
@@ -387,7 +403,7 @@
 			</div>
 		{/if} -->
 
-		<!-- Footer -->
+		<!-- Footer -->	
 		<!-- <div class="flex items-center justify-between border-t border-[var(--color-border)] px-6 py-4">
 			<p class="text-sm text-[var(--color-text-muted)]">
 				Hiển thị {filteredOrders.length} trong {orders.length} đơn hàng
