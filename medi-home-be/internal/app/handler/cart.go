@@ -119,21 +119,15 @@ func (h *CartHandler) AddCart(c *gin.Context) {
 
 func (h *CartHandler) UpdateCart(c *gin.Context) {
 	var req dto.CartRequestDTO
-	id, _ := strconv.Atoi(c.Param("id"))
-	cart, err := h.service.GetCart(int64(id))
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "cart not found"})
-		return
-	}
-
+	cartitem_id, _ := strconv.Atoi(c.Param("id"))
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	req = dto.CartRequestDTO{
-		CartID:     cart.CartID,
-		CartItemID: req.CartItemID,
+		// CartID:     cart.CartID,
+		CartItemID: int64(cartitem_id),
 		// MedicineID: req.MedicineID,
 		Quantity:   req.Quantity,
 		SelectType: req.SelectType,

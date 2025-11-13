@@ -20,7 +20,7 @@ func OrderRoute(r *gin.RouterGroup) {
 	orderHandler := handler.NewOrderHandler(orderService)
 
 	order := r.Group("/order")
-	{
+	{                               
 		//lấy tất cả và lọc theo loại
 		order.GET("/", orderHandler.GetOrders)
 		order.GET("/:id", orderHandler.GetDetailOrder)

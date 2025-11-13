@@ -26,7 +26,7 @@ func NewCartService(repo repository.CartRepository) CartService {
 
 type UpdateCart struct {
 	CartItemID int64  `json:"cartitem_id"`
-	CartID     int64  `json:"cart_id"`
+	// CartID     int64  `json:"cart_id"`
 	MedicineID int64  `json:"medicine_id"`
 	Quantity   int64  `json:"quantity"`
 	SelectType string `json:"select_type"`
