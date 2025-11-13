@@ -7,12 +7,15 @@ import (
 )
 
 type CartRepository interface {
+	//VIEW
 	GetCartItemDetail(cart_id int64) ([]CartItemDetail, error)
 	GetCartUser(user_id int64) (model.Cart, error)
 	GetCartItem(cart_id int64) ([]model.CartItem, error)
+	GetItem(cartitem_id int64) (model.CartItem, error)
+
+	//CRUD
 	AddCartItem(item model.CartItem) (model.CartItem, error)
 	UpdateCartItem(item model.CartItem) error
-	GetItem(cartitem_id int64) (model.CartItem, error)
 	DeleteItem(cartitem_id int64) error
 
 	FindInventory(inventory_id int64) (model.Inventory, error)
@@ -26,14 +29,16 @@ func NewCartRepository() CartRepository {
 	return &cartRepository{}
 }
 
-// đầu tiên lấy từ model cart truyền user vào ra được cart
-// sau đó từ cart lấy đc cart item truyền cart id vào để lấy đc list cart item
+//VIEW
+
+// trả về cart_id từ user_id
 func (r *cartRepository) GetCartUser(user_id int64) (model.Cart, error) {
 	var cart model.Cart
 	err := config.DB.Where("user_id = ?", user_id).Find(&cart).Error
 	return cart, err
 }
 
+// trả về cart_item theo cart_id
 func (r *cartRepository) GetCartItem(cart_id int64) ([]model.CartItem, error) {
 	var items []model.CartItem
 	err := config.DB.Where("cart_id = ?", cart_id).Find(&items).Error
@@ -44,22 +49,6 @@ func (r *cartRepository) GetItem(cartitem_id int64) (model.CartItem, error) {
 	var item model.CartItem
 	err := config.DB.Where("cartitem_id = ?", cartitem_id).Find(&item).Error
 	return item, err
-}
-
-func (r *cartRepository) CreateCart(cart model.CartItem) (model.CartItem, error) {
-	err := config.DB.Create(&cart).Error
-	return cart, err
-}
-
-func (r *cartRepository) UpdateCartItem(item model.CartItem) error {
-	// Cập nhật quantity và price (hoặc các field khác nếu cần)
-	return config.DB.Model(&model.CartItem{}).
-		Where("cartitem_id = ?", item.CartItemID).
-		Updates(map[string]interface{}{
-			"quantity":    item.Quantity,
-			"price":       item.Price,
-			"select_type": item.SelectType,
-		}).Error
 }
 
 type CartItemDetail struct {
@@ -88,11 +77,29 @@ func (r *cartRepository) GetCartItemDetail(cart_id int64) ([]CartItemDetail, err
 	return items, err
 }
 
+//CRUD
+
+func (r *cartRepository) CreateCart(cart model.CartItem) (model.CartItem, error) {
+	err := config.DB.Create(&cart).Error
+	return cart, err
+}
+
 func (r *cartRepository) AddCartItem(item model.CartItem) (model.CartItem, error) {
 	if err := config.DB.Create(&item).Error; err != nil {
 		return model.CartItem{}, err
 	}
 	return item, nil
+}
+
+func (r *cartRepository) UpdateCartItem(item model.CartItem) error {
+	// Cập nhật quantity và price (hoặc các field khác nếu cần)
+	return config.DB.Model(&model.CartItem{}).
+		Where("cartitem_id = ?", item.CartItemID).
+		Updates(map[string]interface{}{
+			"quantity":    item.Quantity,
+			"price":       item.Price,
+			"select_type": item.SelectType,
+		}).Error
 }
 
 func (r *cartRepository) DeleteItem(cartitem_id int64) error {
@@ -101,10 +108,6 @@ func (r *cartRepository) DeleteItem(cartitem_id int64) error {
 	}
 	return nil
 }
-
-// func (r *cartRepository) DeleteCart() (){
-// 	if err := config.DB.Delete()
-// }
 
 func (r *cartRepository) FindInventory(inventory_id int64) (model.Inventory, error) {
 	var inventory model.Inventory

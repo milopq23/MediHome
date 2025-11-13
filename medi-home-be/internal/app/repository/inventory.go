@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
+
+	"gorm.io/gorm"
 )
 
 type InventoryRepository interface {
 	// ADMIN
 	FindAll() ([]model.Inventory, error)
 	Create(inventory model.Inventory) (model.Inventory, error)
-	DecreaseQuantity(inventory_id, quantity int64) error
+	DecreaseQuantity(tx *gorm.DB, inventory_id, quantity int64) error
 	// Patch(id int64, updates map[string]interface{}) (model.Inventory, error)
 	Delete(id int64) error
 }
@@ -59,7 +61,10 @@ func (r *inventoryRepository) SelectInventory(id int64) (model.Inventory, error)
 	return inventory, err
 }
 
-func (r *inventoryRepository) DecreaseQuantity(inventory_id, quantity int64) error {
+func (r *inventoryRepository) DecreaseQuantity(tx *gorm.DB, inventory_id, quantity int64) error {
+	if tx == nil {
+		tx = config.DB
+	}
 	var inventory model.Inventory
 	if err := config.DB.Where("inventory_id = ?", inventory_id).First(&inventory).Error; err != nil {
 		return err
@@ -78,7 +83,7 @@ func (r *inventoryRepository) DecreaseQuantity(inventory_id, quantity int64) err
 		inventory.Status = "Hết hàng"
 	}
 
-	if err := config.DB.Save(&inventory).Error; err != nil {
+	if err := tx.Save(&inventory).Error; err != nil {
 		return err
 	}
 

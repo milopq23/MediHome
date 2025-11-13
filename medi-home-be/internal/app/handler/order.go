@@ -18,29 +18,6 @@ func NewOrderHandler(service service.OrderService) *OrderHandler {
 	return &OrderHandler{service}
 }
 
-func (h *OrderHandler) CheckOut(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	var orderRequest dto.OrderRequestDTO
-	if err := c.ShouldBindJSON(&orderRequest); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	log.Print(orderRequest)
-
-	orderRequest = dto.OrderRequestDTO{
-		UserID:        int64(id),
-		VoucherCode:   orderRequest.VoucherCode,
-		ShippingID:    orderRequest.ShippingID,
-		PaymentMethod: orderRequest.PaymentMethod,
-	}
-	order, err := h.service.CheckOut(orderRequest)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Failed checkout"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "Thanh toán thành công", "data": order})
-}
-
 func (h *OrderHandler) GetAllOrder(c *gin.Context) {
 	orders, err := h.service.GetAllOrder()
 	if err != nil {
@@ -122,9 +99,55 @@ func (h *OrderHandler) GetUserOrders(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": `Danh sách đơn hàng theo ` + status,
 		"data":    orders,
 	})
+}
+
+func (h *OrderHandler) ApproveStatus(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var req struct {
+		Status string `json:"status"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid JSON body"})
+		return
+	}
+	log.Print("id", id)
+	log.Print("status", req.Status)
+
+	order, err := h.service.ApproveStatus(int64(id), req.Status)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": `Duyệt đơn hàng thành công ` + req.Status,
+		"data":    order,
+	})
+}
+
+func (h *OrderHandler) CheckOut(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var orderRequest dto.OrderRequestDTO
+	if err := c.ShouldBindJSON(&orderRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	orderRequest = dto.OrderRequestDTO{
+		UserID:        int64(id),
+		VoucherCode:   orderRequest.VoucherCode,
+		ShippingID:    orderRequest.ShippingID,
+		PaymentMethod: orderRequest.PaymentMethod,
+	}
+	order, err := h.service.CheckOut(orderRequest)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Failed checkout", "data": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Thanh toán thành công", "data": order})
 }

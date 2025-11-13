@@ -25,6 +25,7 @@ func OrderRoute(r *gin.RouterGroup) {
 		order.GET("/", orderHandler.GetOrders)
 		order.GET("/:id", orderHandler.GetDetailOrder)
 		order.GET("/user/:id", orderHandler.GetUserOrders)
+		order.PATCH("/approve/:id", orderHandler.ApproveStatus)
 		order.POST("/checkout/:id", orderHandler.CheckOut)
 	}
 	// userOrder := r.Group("/order")

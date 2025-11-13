@@ -1,22 +1,30 @@
 package repository
 
 import (
+	"log"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type OrderRepository interface {
-	CreateOrder(order model.Order) (model.Order, error)
-	CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error)
+	//View for admin
 	GetViewAllOrder() ([]OrderList, error)
-
 	GetViewOrder(order_id int64) (Order, error)
-	GetStatusTypeOrder(status string) ([]OrderList, error)
+	GetViewOrderStatus(status string) ([]OrderList, error)
 	GetViewOrderDetail(order_id int64) ([]OrderDetail, error)
+	GetOrderID(order_id int64) (model.Order, error)
 
+	//View for user
 	GetViewAllOrderUser(user_id int64) ([]OrderList, error)
 	GetViewOrderStatusByUser(user_id int64, status string) ([]OrderList, error)
+
+	//CRUD
+	CreateOrder(tx *gorm.DB, order model.Order) (model.Order, error)
+	CreateOrderDetail(tx *gorm.DB, orderdetail model.OrderDetail) (model.OrderDetail, error)
+	UpdateStatus(order_id int64, status string) (model.Order, error)
 }
 
 type orderRepository struct{}
@@ -25,28 +33,7 @@ func NewOrderRepository() OrderRepository {
 	return &orderRepository{}
 }
 
-func (r *orderRepository) GetOrder() (model.Order, error) {
-	var order model.Order
-	err := config.DB.Model(&order).Error
-	return order, err
-}
-
-// func (r *orderRepository) GetDetailOrder(order_id int64) (model.Order, error) {
-// 	var order model.Order
-// 	err := config.DB.Find(&order, order_id).Error
-// 	return order, err
-// }
-
-func (r *orderRepository) CreateOrder(order model.Order) (model.Order, error) {
-	err := config.DB.Create(&order).Error
-	return order, err
-}
-
-func (r *orderRepository) CreateOrderDetail(orderdetail model.OrderDetail) (model.OrderDetail, error) {
-	err := config.DB.Create(&orderdetail).Error
-	return orderdetail, err
-}
-
+// View
 type OrderList struct {
 	OrderID       int64     `json:"order_id"`
 	Date          time.Time `json:"date"`
@@ -77,7 +64,7 @@ func (r *orderRepository) GetViewAllOrder() ([]OrderList, error) {
 	return order, err
 }
 
-func (r *orderRepository) GetStatusTypeOrder(status string) ([]OrderList, error) {
+func (r *orderRepository) GetViewOrderStatus(status string) ([]OrderList, error) {
 	var order []OrderList
 	query := `
 			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
@@ -188,9 +175,61 @@ func (r *orderRepository) GetViewOrder(order_id int64) (Order, error) {
 	return order, err
 }
 
+func (r *orderRepository) GetOrderID(order_id int64) (model.Order, error) {
+	var order model.Order
+	err := config.DB.Where("order_id = ?", order_id).First(&order).Error
+	if err != nil {
+		return order, err
+	}
+	log.Print("order", order)
+	return order, nil
+}
+
+// CRUD
+func (r *orderRepository) CreateOrder(tx *gorm.DB, order model.Order) (model.Order, error) {
+	// useSelf := false
+	// if tx == nil {
+	// 	tx = config.DB.Begin()
+	// 	useSelf = true
+	// }
+
+	// err := tx.Create(&order).Error
+	// if err != nil {
+	// 	if useSelf {
+	// 		tx.Rollback()
+
+	// 	}
+	// 	return order, err
+	// }
+	if tx == nil {
+		tx = config.DB
+	}
+	err := tx.Create(&order).Error
+	return order, err
+}
+
+func (r *orderRepository) CreateOrderDetail(tx *gorm.DB, orderdetail model.OrderDetail) (model.OrderDetail, error) {
+	if tx == nil {
+		tx = config.DB
+	}
+	err := tx.Create(&orderdetail).Error
+	return orderdetail, err
+}
+
 // func (r *orderRepository)
 
-func (r *orderRepository) UpdateStatus(order model.Order) (model.Order, error) {
-	err := config.DB.Save(&order).Error
+func (r *orderRepository) UpdateStatus(order_id int64, status string) (model.Order, error) {
+	var order model.Order
+	err := config.DB.Model(&order).
+		Where("order_id = ?", order_id).
+		Update("order_status", status).
+		Error
+
+	if err != nil {
+		return order, err
+	}
+
+	err = config.DB.Where("order_id = ?", order_id).First(&order).Error
+
 	return order, err
 }
