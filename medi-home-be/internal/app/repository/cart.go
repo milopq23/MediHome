@@ -18,6 +18,7 @@ type CartRepository interface {
 	UpdateCartItem(item model.CartItem) error
 	DeleteItem(cartitem_id int64) error
 
+	
 	FindInventory(inventory_id int64) (model.Inventory, error)
 	FindBatchSelling(medicine_id int64) (model.BatchSelling, error)
 	FindMedicine(medicine_id int64) (model.Medicine, error)
@@ -58,13 +59,17 @@ type CartItemDetail struct {
 	Quantity   int     `json:"quantity"`
 	SelectType string  `json:"select_type"`
 	Price      float64 `json:"price"`
+	PriceStrip float64 `json:"price_strip"`
+	PriceBox   float64 `json:"price_box"`
 	Total      float64 `json:"total"`
 }
 
 func (r *cartRepository) GetCartItemDetail(cart_id int64) ([]CartItemDetail, error) {
 	var items []CartItemDetail
 	query := `
-        select ci.cartitem_id, m.name, m.thumbnail, ci.quantity, ci.select_type, ci.price,
+        select ci.cartitem_id, m.name, m.thumbnail, ci.quantity, ci.select_type, ci.price, 
+		round((i.import_price * (1 + i.mark_up/100))/m.unit_per_box) as price_strip,
+		round((i.import_price * (1 + i.mark_up/100))) as price_box,
 		round(ci.quantity*ci.price) as total
 		from cartitems ci
 		join medicines m on m.medicine_id = ci.medicine_id

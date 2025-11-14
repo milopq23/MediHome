@@ -12,7 +12,7 @@ func ShippingRoute(r *gin.RouterGroup) {
 	shippingRepo := repository.NewShippingRepository()
 	shippingService := service.NewShippingService(shippingRepo)
 	shippingHandler := handler.NewShippingHandler(shippingService)
-	shipping := r.Group("/admin/shipping")
+	shipping := r.Group("/shipping")
 	{
 		shipping.GET("/", shippingHandler.GetAll)
 		shipping.GET("/:id", shippingHandler.GetByID)

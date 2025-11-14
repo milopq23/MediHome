@@ -10,6 +10,8 @@ import (
 
 type VoucherRepository interface {
 	GetAllVoucher() ([]model.Voucher, error)
+	FindActiveVoucher(total float64) ([]model.Voucher, error)
+
 	CreateVoucher(voucher model.Voucher) (model.Voucher, error)
 	GetVoucherByCode(code string) (model.Voucher, error)
 	PatchVoucher(voucher model.Voucher) (model.Voucher, error)
@@ -106,9 +108,10 @@ func (r *voucherRepository) ClassifyVoucher(code string, total float64) (float64
 	return discount, err
 }
 
-func (r *voucherRepository) FindActiveVoucher() ([]model.Voucher, error) {
+func (r *voucherRepository) FindActiveVoucher(total float64) ([]model.Voucher, error) {
 	var voucher []model.Voucher
-	err := config.DB.Where("is_active = true").Find(&voucher).Error
+	err := config.DB.Where("is_active = true and min_order_value >= ?", total).
+		Order("max_discount_value desc").Find(&voucher).Error
 	if err != nil {
 		return []model.Voucher{}, err
 	}

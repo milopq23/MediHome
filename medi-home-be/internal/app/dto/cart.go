@@ -8,6 +8,11 @@ type CartItemDetailDTO struct {
 	PriceBox   float64 `json:"price_box"`
 }
 
+type CartResponseDTO struct {
+	CartItems   []CartItemResponseDTO `json:"cartitems"`
+	TotalAmount float64               `json:"totalamount"`
+}
+
 type CartItemResponseDTO struct {
 	CartItemID int64   `json:"cartitem_id"`
 	Name       string  `json:"name"`
@@ -15,12 +20,9 @@ type CartItemResponseDTO struct {
 	Quantity   int     `json:"quantity"`
 	SelectType string  `json:"select_type"`
 	Price      float64 `json:"price"`
+	PriceBox   float64 `json:"price_box"`
+	PriceStrip float64 `json:"price_strip"`
 	Total      float64 `json:"total"`
-}
-
-type CartResponseDTO struct {
-	CartItems   []CartItemResponseDTO `json:"cartitems"`
-	TotalAmount float64               `json:"totalamount"`
 }
 
 type CartRequestDTO struct {
@@ -32,8 +34,10 @@ type CartRequestDTO struct {
 }
 
 type SelectTypeMedicineDTO struct {
-	MedicineID  int64   `json:"medicine_id"`
-	InventoryID int64   `json:"inventory_id"`
-	SelectType  string  `json:"select_type"`
-	Price       float64 `json:"price"`
+	MedicineID  int64  `json:"medicine_id"`
+	InventoryID int64  `json:"inventory_id"`
+	SelectType  string `json:"select_type"`
+	// PriceBox    float64 `json:"price_box"`
+	// PriceStrip  float64 `json:"price_strip"`
+	Price float64 `json:"price"`
 }

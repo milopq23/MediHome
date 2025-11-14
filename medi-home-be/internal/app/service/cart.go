@@ -25,7 +25,7 @@ func NewCartService(repo repository.CartRepository) CartService {
 }
 
 type UpdateCart struct {
-	CartItemID int64  `json:"cartitem_id"`
+	CartItemID int64 `json:"cartitem_id"`
 	// CartID     int64  `json:"cart_id"`
 	MedicineID int64  `json:"medicine_id"`
 	Quantity   int64  `json:"quantity"`
@@ -57,6 +57,8 @@ func (s *cartService) GetCartByUser(user_id int64) ([]dto.CartItemResponseDTO, e
 			Thumbnail:  item.Thumbnail,
 			Quantity:   item.Quantity,
 			SelectType: item.SelectType,
+			PriceStrip: item.PriceStrip,
+			PriceBox:   item.PriceBox,
 			Price:      item.Price,
 			Total:      item.Total,
 		})
@@ -137,6 +139,7 @@ func (s *cartService) SelectType(select_type string, medicine_id int64) (dto.Sel
 	if err != nil {
 		return dto.SelectTypeMedicineDTO{}, err
 	}
+
 	//phân loại giá theo box hoặc strip
 	var price float64
 	if select_type == "Box" {
@@ -148,7 +151,7 @@ func (s *cartService) SelectType(select_type string, medicine_id int64) (dto.Sel
 	// 5. Trả về DTO
 	selected := dto.SelectTypeMedicineDTO{
 		MedicineID: medicine_id,
-		SelectType: select_type,
+		SelectType: select_type,	
 		Price:      math.Round(price*100) / 100,
 	}
 

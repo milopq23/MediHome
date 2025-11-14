@@ -48,20 +48,17 @@ func (h *CartHandler) GetCartUser(c *gin.Context) {
 		return
 	}
 
-	// Lấy các item trong cart từ service
 	cartItems, err := h.service.GetCartByUser(int64(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
 		return
 	}
 
-	// Tính tổng
 	var total float64
 	for _, item := range cartItems {
 		total += float64(item.Quantity) * item.Price
 	}
 
-	// Tạo response theo DTO
 	response := dto.CartResponseDTO{
 		CartItems:   cartItems,
 		TotalAmount: total,
@@ -137,5 +134,5 @@ func (h *CartHandler) UpdateCart(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Thêm thành công"})
+	c.JSON(http.StatusOK, gin.H{"message": "Update Cart"})
 }
