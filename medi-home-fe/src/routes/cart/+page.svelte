@@ -4,6 +4,7 @@
 		DeleteCartItem,
 		GetCartUser,
 		GetShipping,
+		GetVoucher,
 		UpdateQuantityOrTypeCart
 	} from '$lib/api/cart';
 	import { updated } from '$app/state';
@@ -49,6 +50,10 @@
 
 	async function getShipping(shipping_id) {
 		shipping = await GetShipping(shipping_id);
+	}
+
+	async function getVoucher(total){
+		const voucher = await GetVoucher(tota)
 	}
 
 	async function updateQuantityOrType(cartitem_id, newQuantity, newType) {
@@ -245,47 +250,40 @@
 				</div>
 			</div>
 		</div>
-		<div class="w-1/4 px-5">
-			<h1 class="mb-4 text-xl font-semibold">Tổng tiền</h1>
-			<button
-				class="mb-3 flex w-full items-center justify-between rounded-lg bg-blue-50 px-3 py-2 text-blue-600"
-			>
-				<span>Áp dụng ưu đãi để được giảm giá</span>
-				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M19 9l-7 7-7-7"
-					/>
-				</svg>
-			</button>
+		<div class="w-1/4 space-y-4 rounded-lg bg-white p-6 px-5 shadow-md">
+			<!-- Tiêu đề -->
+			<h2 class="border-b pb-2 text-xl font-semibold text-gray-800">Tổng tiền</h2>
 
-			<!-- Bảng giá -->
-			<div class="space-y-2">
+			<!-- Voucher input -->
+			<div class="flex flex-col gap-1">
+				<span class="text-sm font-medium text-gray-700">Voucher</span>
+				<input
+					type="text"
+					name="price"
+					placeholder="Code"
+					class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none sm:text-sm"
+				/>
+			</div>
+
+			<!-- Bảng giá chi tiết -->
+			<div class="mt-2 space-y-2">
 				<div class="flex justify-between">
-					<span class="font-semibold">Tổng tiền</span>
-					<span class="font-medium">{formatVND(cart.totalamount)}</span>
+					<span class="text-gray-600">Tổng tiền</span>
+					<span class="font-medium text-gray-800">{formatVND(cart.totalamount)}</span>
 				</div>
 
 				<div class="flex justify-between">
-					<div class="flex items-center gap-1">
-						<span>Giảm giá voucher</span>
-						<span
-							class="flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-gray-200 text-[10px] text-gray-500"
-							>i</span
-						>
-					</div>
-					<span>0đ</span>
-				</div>
-
-				<div class="flex justify-between text-green-600">
-					<span>Tiết kiệm được</span>
-					<span>29.800đ</span>
+					<span class="text-gray-600">Giảm giá voucher</span>
+					<span class="font-medium text-green-600">0đ</span>
 				</div>
 
 				<div class="flex justify-between">
-					<span>Phí vận chuyển</span>
+					<span class="text-gray-600">Tiết kiệm được</span>
+					<span class="font-medium text-green-600">29.800đ</span>
+				</div>
+
+				<div class="flex justify-between">
+					<span class="text-gray-600">Phí vận chuyển</span>
 					<span class="font-medium text-blue-600"
 						>{shipping?.price ? formatVND(shipping.price) : '0đ'}</span
 					>
@@ -293,21 +291,17 @@
 			</div>
 
 			<!-- Thành tiền -->
-			<div class="mt-4 border-t pt-3">
-				<div class="flex justify-between">
-					<span class="text-xl font-bold">Thành tiền</span>
-					<div class="flex justify-between">
-						<div class="text-xl font-bold text-blue-500">{formatVND(total)}</div>
-					</div>
-				</div>
-
-				<!-- Nút -->
-				<button
-					class="mt-3 w-full rounded-full bg-blue-600 py-3 text-center text-sm font-medium text-white transition hover:bg-blue-700"
-				>
-					Hoàn tất
-				</button>
+			<div class="mt-4 flex items-center justify-between border-t pt-3">
+				<span class="text-lg font-bold text-gray-800">Thành tiền</span>
+				<span class="text-2xl font-extrabold text-blue-600">{formatVND(total)}</span>
 			</div>
+
+			<!-- Nút hoàn tất -->
+			<button
+				class="mt-4 w-full rounded-full bg-blue-600 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+			>
+				Hoàn tất
+			</button>
 		</div>
 	</div>
 </div>

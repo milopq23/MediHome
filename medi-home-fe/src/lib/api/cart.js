@@ -47,8 +47,19 @@ export async function GetShipping(shipping_id) {
 	try {
 		const res = await fetch(`${API_URL}/api/shipping/${shipping_id}`);
 		const shipping = await res.json();
-		console.log(shipping)
+		console.log(shipping);
 		return shipping;
+	} catch (error) {
+		console.log('Failed GET Shipping' + error);
+	}
+}
+
+export async function GetVoucher(total) {
+	try {
+		const res = await fetch(`${API_URL}/api/voucher/?total=${total}`);
+		const voucher = await res.json();
+		console.log(voucher);
+		return voucher;
 	} catch (error) {
 		console.log('Failed GET Shipping' + error);
 	}
