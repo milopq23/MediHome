@@ -42,3 +42,14 @@ export async function DeleteCartItem(cartitem_id) {
 		console.log('Failed Delete Cart Item' + error);
 	}
 }
+
+export async function GetShipping(shipping_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/shipping/${shipping_id}`);
+		const shipping = await res.json();
+		console.log(shipping)
+		return shipping;
+	} catch (error) {
+		console.log('Failed GET Shipping' + error);
+	}
+}

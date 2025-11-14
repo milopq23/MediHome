@@ -1,8 +1,18 @@
 <script>
-
 </script>
+
+<div>
+	<!-- order -->
+	<div>
+		
+	</div>
+	<!-- order summary -->
+	<div>
+
+	</div>
+</div>
 <div class="bg-white px-4 py-6 sm:px-8">
-	<div class="mx-auto max-w-screen-xl max-md:max-w-xl">
+	<div class="mx-auto max-md:max-w-xl">
 		<div class="mb-16 flex items-start">
 			<div class="w-full">
 				<div class="flex w-full items-center">
@@ -139,9 +149,7 @@
 										</label>
 									</div>
 								</div>
-								<p class="mt-4 text-sm font-medium text-slate-500">
-									Tiền mặt
-								</p>
+								<p class="mt-4 text-sm font-medium text-slate-500">Tiền mặt</p>
 							</div>
 							<div class="max-w-sm rounded-md border border-gray-300 bg-gray-100 p-4">
 								<div>
