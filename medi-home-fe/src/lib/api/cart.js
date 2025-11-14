@@ -4,11 +4,7 @@ export async function GetCartUser(user_id) {
 	try {
 		const cartRes = await fetch(`${API_URL}/api/cart/${user_id}`);
 		const cart = await cartRes.json();
-		console.log('res', cartRes);
-		console.log('cart', cart);
-		return {
-			cart
-		};
+		return cart;
 	} catch (error) {
 		console.log('Failed GET Cart' + error);
 	}
@@ -17,7 +13,7 @@ export async function GetCartUser(user_id) {
 export async function UpdateQuantityOrTypeCart(cartitem_id, updateItem) {
 	try {
 		const cartItemRes = await fetch(`${API_URL}/api/cart/${cartitem_id}`, {
-			method: 'PATCH', // Hoặc PATCH tùy API của bạn
+			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -28,5 +24,21 @@ export async function UpdateQuantityOrTypeCart(cartitem_id, updateItem) {
 		return cartItem;
 	} catch (error) {
 		console.log('Failed Update Cart' + error);
+	}
+}
+
+export async function DeleteCartItem(cartitem_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/cart/${cartitem_id}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		const cartitem = await res.json();
+		console.log(cartitem);
+		return cartitem;
+	} catch (error) {
+		console.log('Failed Delete Cart Item' + error);
 	}
 }

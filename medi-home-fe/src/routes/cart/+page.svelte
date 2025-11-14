@@ -1,33 +1,34 @@
 <script>
 	import { onMount } from 'svelte';
-	import { GetCartUser, UpdateQuantityOrTypeCart } from '$lib/api/cart';
+	import { DeleteCartItem, GetCartUser, UpdateQuantityOrTypeCart } from '$lib/api/cart';
 	import { updated } from '$app/state';
+	import { Trash2 } from 'lucide-svelte';
 
 	let cart = {
 		cartitems: [],
 		totalamount: 0
 	};
 
+	function getPrice(item) {
+		return item.select_type === 'Box' ? item.price_box : item.price_strip;
+	}
+
+	function calculateTotal() {
+		cart.totalamount = cart.cartitems.reduce(
+			(acc, item) => acc + getPrice(item) * item.quantity,
+			0
+		);
+		console.log(cart.totalamount);
+		cart = { ...cart };
+	}
+
 	async function getCart(user_id) {
 		const data = await GetCartUser(user_id);
-		if (data && data.cart) {
-			cart = data.cart;
-			console.log('Giỏ hàng:', cart);
+		if (data) {
+			cart = data;
 		}
 	}
 
-	// async function updateQuantityOrType(cartitem_id, newQuantity, newType) {
-	// 	const updatedData = {
-	// 		quantity: newQuantity,
-	// 		select_type: newType
-	// 	};
-
-	// 	const updatedItem = await UpdateQuantityOrTypeCart(cartitem_id, updatedData);
-	// 	if (updatedItem) {
-	// 		cartItem = updatedItem; // Cập nhật state ở Svelte
-	// 		console.log('Updated cart item:', cartItem);
-	// 	}
-	// }
 	async function updateQuantityOrType(cartitem_id, newQuantity, newType) {
 		const updatedData = {
 			quantity: Number(newQuantity),
@@ -36,13 +37,20 @@
 
 		const updatedItem = await UpdateQuantityOrTypeCart(cartitem_id, updatedData);
 		if (updatedItem) {
-			// Cập nhật trực tiếp cart.cartitems
 			cart.cartitems = cart.cartitems.map((item) =>
 				item.cartitem_id === cartitem_id ? { ...item, ...updatedItem } : item
 			);
-			// Cập nhật tổng tiền nếu cần
-			cart.totalamount = cart.cartitems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 		}
+		calculateTotal();
+	}
+
+	async function deleteCartItem(cartitem_id) {
+		// const data = await DeleteCartItem(cartitem_id);
+		await DeleteCartItem(cartitem_id);
+
+		cart.cartitems = cart.cartitems.filter((item) => item.cartitem_id !== cartitem_id);
+
+		calculateTotal();
 	}
 
 	onMount(() => {
@@ -79,7 +87,7 @@
 							<span class="font-medium text-gray-800">{item.name}</span>
 						</td>
 
-						<td class="px-4 py-3 text-center text-gray-700">{item.price} VND</td>
+						<td class="px-4 py-3 text-center text-gray-700">{getPrice(item)} VND</td>
 
 						<td class="px-4 py-3 text-center">
 							<select
@@ -104,32 +112,16 @@
 							/>
 						</td>
 
-						<td class="px-4 py-3 text-center text-gray-700">{item.price * item.quantity} VND</td>
+						<td class="px-4 py-3 text-center text-gray-700">{getPrice(item) * item.quantity} VND</td
+						>
 
 						<td class="px-4 py-3 text-center">
 							<button
 								class="rounded p-1 text-gray-500 transition hover:bg-red-100 hover:text-red-600"
 								title="Xóa sản phẩm"
+								on:click={() => deleteCartItem(item.cartitem_id)}
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
-									class="size-5"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21a48.108 48.108 0 00-3.478-.397m-12 .562
-										c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5
-										0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964
-										51.964 0 00-3.32 0c-1.18.037-2.09
-										1.022-2.09 2.201v.916m7.5 0a48.667
-										48.667 0 00-7.5 0"
-									/>
-								</svg>
+								<Trash2 />
 							</button>
 						</td>
 					</tr>
