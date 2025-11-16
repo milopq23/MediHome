@@ -1,38 +1,34 @@
-<!-- src/routes/products/+page.svelte -->
 <script>
 	import ProductCard from '$lib/components/ProductCard.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-svelte';
-	import { apiListMedicine } from '$lib/api/medicine.js';
+	import { ListMedicine } from '$lib/api/medicine.js';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	let totalPages = 1;
-	let pageSize = 1;
+	let pageSize = 10;
 	let total = 0;
 	let page = 1;
 	let medicines = [];
 
-	async function listMedicinePage(currentPage = 1) {
-		try {
-			const result = await apiListMedicine(currentPage, pageSize);
-			medicines = result.medicines;
-			page = result.page;
-			pageSize = result.pageSize;
-			total = result.total;
-			totalPages = Math.ceil(total / pageSize);
-		} catch (error) {
-			console.log('medicine', error);
-		}
+	async function listMedicine(currentPage = 1) {
+		const result = await ListMedicine(currentPage, pageSize);
+		medicines = result.medicines;
+		page = result.page;
+		pageSize = result.pageSize;
+		total = result.total;
+		totalPages = Math.ceil(total / pageSize);
 	}
 
+
 	onMount(() => {
-		listMedicinePage();
+		listMedicine();
 	});
 
 	function goToDetail(id) {
 		console.log(id);
-		goto(`/products/${id}`);
+		goto(`/medicines/${id}`);
 	}
 	function handleGoToPage(event) {
 		const selectedPage = event.detail;
