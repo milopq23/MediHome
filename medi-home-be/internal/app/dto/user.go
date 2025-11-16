@@ -16,3 +16,12 @@ type UserPaginationResponseDTO struct {
 	TotalUserActive int64         `json:"active_user"`
 	Data            []UserListDTO `json:"data"`
 }
+
+type UserProfileResponseDTO struct {
+	Name   string `json:"name"`
+	Phone  string `json:"phone"`
+	Email  string `json:"email"`
+	Gender string `json:"gender"`
+	Avatar string `json:"avatar"`
+	Point  int64  `json:"point"`
+}

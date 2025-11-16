@@ -36,29 +36,6 @@ func (Medicine) TableName() string {
 	return "medicines"
 }
 
-type DetailMedicineVM struct {
-	MedicineID       uint    `json:"medicine_id" gorm:"column:medicine_id"`
-	Code             string  `json:"code" gorm:"column:code"`
-	Name             string  `json:"name" gorm:"column:name"`
-	PriceForStrip    float64 `json:"price_for_strip" gorm:"column:price_for_strip"`
-	PriceForBox      float64 `json:"price_for_box" gorm:"column:price_for_box"`
-	CategoryName     string  `json:"cate_name" gorm:"column:cate_name"`
-	DosageFormName   string  `json:"dosage_name" gorm:"column:dosage_name"`
-	Thumbnail        string  `json:"thumbnail" gorm:"column:thumbnail"`
-	Image            string  `json:"image" gorm:"column:image"`
-	Prescription     string  `json:"prescription" gorm:"column:prescription"`
-	Usage            string  `json:"usage" gorm:"column:usage"`
-	Package          string  `json:"package" gorm:"column:package"`
-	Indication       string  `json:"indication" gorm:"column:indication"`
-	Adverse          string  `json:"adverse" gorm:"column:adverse"`
-	Contraindication string  `json:"contraindication" gorm:"column:contraindication"`
-	Precaution       string  `json:"precaution" gorm:"column:precaution"`
-	Ability          string  `json:"ability" gorm:"column:ability"`
-	Pregnancy        string  `json:"pregnancy" gorm:"column:pregnancy"`
-	DrugInteraction  string  `json:"drug_interaction" gorm:"column:drug_interaction"`
-	Storage          string  `json:"storage" gorm:"column:storage"`
-	Manufacturer     string  `json:"manufacturer" gorm:"column:manufacturer"`
-	Note             string  `json:"note" gorm:"column:note"`
-}
+
 
 

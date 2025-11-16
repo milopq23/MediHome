@@ -20,7 +20,7 @@ func UserRoutes(r *gin.RouterGroup) {
 	{
 		user.POST("/login", userAuth,userHandler.Login)
 		user.POST("/register", userHandler.Register)
-		user.GET("/profile/", userHandler.Profile)
+		user.GET("/profile/:id", userHandler.Profile)
 		user.PATCH("/profile/", userAuth, userHandler.Patch)
 		user.POST("/logout", userHandler.LogOut)
 	}	

@@ -16,8 +16,8 @@ type MedicineService interface {
 
 	//User
 	ListMedicine(page, pageSize int) (model.Pagination, error)
-	DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
-	DetailMedicinePrice(id int64) (model.DetailMedicineVM, error)
+	// DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
+	DetailMedicineUser(id int64) (dto.DetailMedicine, error)
 }
 
 type medicineService struct {
@@ -53,12 +53,41 @@ func (s *medicineService) ListMedicine(page, pageSize int) (model.Pagination, er
 	return s.repo.ListMedicineUser(page, pageSize)
 }
 
-func (s *medicineService) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
-	return s.repo.DetailMedicine(id)
-}
+// func (s *medicineService) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
+// 	return s.repo.DetailMedicine(id)
+// }
 
-func (s *medicineService) DetailMedicinePrice(id int64) (model.DetailMedicineVM, error) {
-	return s.repo.DetailMedicineWithPrice(id)
+func (s *medicineService) DetailMedicineUser(id int64) (dto.DetailMedicine, error) {
+	medicine, err := s.repo.DetailMedicineUser(id)
+	if err != nil {
+		return dto.DetailMedicine{}, err
+	}
+	return dto.DetailMedicine{
+		MedicineID:       medicine.MedicineID,
+		Code:             medicine.Code,
+		Name:             medicine.Name,
+		Thumbnail:        medicine.Thumbnail,
+		Image:            medicine.Image,
+		UnitPerStrip:     medicine.UnitPerStrip,
+		UnitPerBox:       medicine.UnitPerBox,
+		MedCategoryName:  medicine.MedCategoryName,
+		DosageFormName:   medicine.DosageFormName,
+		PriceForStrip:    medicine.PriceForStrip,
+		PriceForBox:      medicine.PriceForBox,
+		Prescription:     medicine.Prescription,
+		Usage:            medicine.Usage,
+		Package:          medicine.Package,
+		Indication:       medicine.Indication,
+		Adverse:          medicine.Adverse,
+		Contraindication: medicine.Contraindication,
+		Precaution:       medicine.Precaution,
+		Ability:          medicine.Ability,
+		Pregnancy:        medicine.Pregnancy,
+		DrugInteraction:  medicine.DrugInteraction,
+		Storage:          medicine.Storage,
+		Manufacturer:     medicine.Manufacturer,
+		Note:             medicine.Note,
+	}, nil
 }
 
 // func (s *medicineService) AddProductToCart(medicine_id int64) (model.CartItemDetail, error) {

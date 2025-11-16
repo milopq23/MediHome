@@ -16,9 +16,9 @@ import (
 type UserService interface {
 	TotalActive() (int64, error)
 	GetAll(page, pageSize int) (dto.UserPaginationResponseDTO, error)
-	GetByID(id uint) (model.User, error)
+	GetByID(id int64) (dto.UserProfileResponseDTO, error)
 	Create(user model.User) (model.User, error)
-	Patch(id uint, updates map[string]interface{}) (model.User, error)
+	Patch(id int64, updates map[string]interface{}) (model.User, error)
 	Delete(id uint) error
 	LoginUser(email string, password string) (string, model.User, error)
 	RegisterUser(email string, password string, checkpassword string, name string, phone string, gender string) (*model.User, error)
@@ -77,15 +77,28 @@ func (s *userService) GetAll(page, pageSize int) (dto.UserPaginationResponseDTO,
 	return user, nil
 }
 
-func (s *userService) GetByID(id uint) (model.User, error) {
-	return s.repo.FindByID(id)
+func (s *userService) GetByID(id int64) (dto.UserProfileResponseDTO, error) {
+	user, err := s.repo.FindByID(id)
+	if err != nil {
+		return dto.UserProfileResponseDTO{}, err
+	}
+
+	userRes := dto.UserProfileResponseDTO{
+		Name:   user.Name,
+		Phone:  user.Phone,
+		Email:  user.Email,
+		Gender: user.Gender,
+		Avatar: user.Avatar,
+		Point:  user.Point,
+	}
+	return userRes, err
 }
 
 func (s *userService) Create(user model.User) (model.User, error) {
 	return s.repo.Create(user)
 }
 
-func (s *userService) Patch(id uint, data map[string]interface{}) (model.User, error) {
+func (s *userService) Patch(id int64, data map[string]interface{}) (model.User, error) {
 	user, err := s.repo.FindByID(id)
 	if err != nil {
 		return model.User{}, err

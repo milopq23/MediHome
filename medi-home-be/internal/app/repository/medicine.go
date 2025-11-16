@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"log"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
@@ -18,8 +17,8 @@ type MedicineRepository interface {
 
 	//User
 	ListMedicineUser(page, pageSize int) (model.Pagination, error)
-	DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
-	DetailMedicineWithPrice(id int64) (model.DetailMedicineVM, error)
+	// DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
+	DetailMedicineUser(medicine_id int64) (DetailMedicine, error)
 }
 
 type medicineRepository struct{}
@@ -133,29 +132,74 @@ func (r *medicineRepository) ListMedicineUser(page, pageSize int) (model.Paginat
 	return *pagination, nil
 }
 
-func (r *medicineRepository) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
-	var medicine dto.UserDetailMedicineDTO
-	err := config.DB.Table("mv_detail_medicine").
-		Where("medicine_id = ?", id).
-		First(&medicine).Error // lấy lỗi từ .Error
+// func (r *medicineRepository) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
+// 	var medicine dto.UserDetailMedicineDTO
+// 	err := config.DB.Table("mv_detail_medicine").
+// 		Where("medicine_id = ?", id).
+// 		First(&medicine).Error // lấy lỗi từ .Error
 
-	if err != nil {
-		return dto.UserDetailMedicineDTO{}, err // trả về struct rỗng nếu lỗi
-	}
-	return medicine, nil
+// 	if err != nil {
+// 		return dto.UserDetailMedicineDTO{}, err // trả về struct rỗng nếu lỗi
+// 	}
+// 	return medicine, nil
+// }
+
+type DetailMedicine struct {
+	MedicineID       uint    `json:"medicine_id" gorm:"column:medicine_id"`
+	Code             string  `json:"code" `
+	Name             string  `json:"name" `
+	Thumbnail        string  `json:"thumbnail" `
+	Image            string  `json:"image" `
+	UnitPerStrip     int64   `json:"unit_per_strip"`
+	UnitPerBox       int64   `json:"unit_per_box"`
+	MedCategoryName  string  `json:"medcatename" gorm:"column:medcatename"`
+	DosageFormName   string  `json:"dosagename" gorm:"column:dosagename"`
+	PriceForStrip    float64 `json:"price_for_strip" gorm:"column:price_for_strip"`
+	PriceForBox      float64 `json:"price_for_box" gorm:"column:price_for_box"`
+	Prescription     string  `json:"prescription" `
+	Usage            string  `json:"usage"`
+	Package          string  `json:"package"`
+	Indication       string  `json:"indication"`
+	Adverse          string  `json:"adverse"`
+	Contraindication string  `json:"contraindication"`
+	Precaution       string  `json:"precaution"`
+	Ability          string  `json:"ability"`
+	Pregnancy        string  `json:"pregnancy"`
+	DrugInteraction  string  `json:"drug_interaction"`
+	Storage          string  `json:"storage" `
+	Manufacturer     string  `json:"manufacturer" `
+	Note             string  `json:"note" `
 }
 
-
-func (r *medicineRepository) DetailMedicineWithPrice(id int64) (model.DetailMedicineVM, error) {
-	var medicine model.DetailMedicineVM
-	err := config.DB.Table("medicine_detail_view").
-		Where("medicine_id = ?", id).
-		First(&medicine).Error 
-	
-	if err != nil {
-		return model.DetailMedicineVM{}, err 
-	}	
-	log.Print(medicine)
-	return medicine, nil
+func (r *medicineRepository) DetailMedicineUser(medicine_id int64) (DetailMedicine, error) {
+	var medicine DetailMedicine
+	query := `
+		select m.medicine_id, m.code, m.name, m.thumbnail, m.image, m.unit_per_strip, m.unit_per_box,
+		round((i.import_price * (1 + i.mark_up/100))/m.unit_per_strip) as price_for_strip,
+		round((i.import_price * (1 + i.mark_up/100))) as price_for_box,
+		mc.name as medcatename, df.name as dosagename, m.prescription, m.usage,
+		m.package, m.indication, m.adverse, m.contraindication, m.precaution, m.ability, m.pregnancy,
+		m.drug_interaction, m.storage, m.manufacturer, m.note
+		from medicines m
+		join medicinecates mc on mc.medicinecate_id = m.medicinecate_id
+		join dosageforms df on df.dosageform_id = m.dosageform_id
+		join batchsellings bs on bs.medicine_id = m.medicine_id
+		join inventories i on i.inventory_id = bs.inventory_id
+		where m.medicine_id = ?
+	`
+	err := config.DB.Raw(query, medicine_id).Scan(&medicine).Error
+	return medicine, err
 }
 
+// func (r *medicineRepository) DetailMedicineWithPrice(id int64) (model.DetailMedicineVM, error) {
+// 	var medicine model.DetailMedicineVM
+// 	err := config.DB.Table("medicine_detail_view").
+// 		Where("medicine_id = ?", id).
+// 		First(&medicine).Error
+
+// 	if err != nil {
+// 		return model.DetailMedicineVM{}, err
+// 	}
+// 	log.Print(medicine)
+// 	return medicine, nil
+// }

@@ -74,7 +74,7 @@ func (h *UserHandler) GetAll(c *gin.Context) {
 func (h *UserHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	log.Print(id)
-	user, err := h.service.GetByID(uint(id))
+	user, err := h.service.GetByID(int64(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
@@ -109,7 +109,7 @@ func (h *UserHandler) Patch(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Dữ liệu lỗi"})
 		return
 	}
-	updatedUser, err := h.service.Patch(uint(claims.UserID), input)
+	updatedUser, err := h.service.Patch(int64(claims.UserID), input)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Patch lỗi"})
 		return
@@ -169,13 +169,15 @@ func (h *UserHandler) Register(c *gin.Context) {
 }
 
 func (h *UserHandler) Profile(c *gin.Context) {
-	claimsRaw, exists := c.Get("claims")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
-		return
-	}
-	claims := claimsRaw.(*util.Claims)
-	user, err := h.service.GetByID(claims.UserID)
+	// claimsRaw, exists := c.Get("claims")
+	// if !exists {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+	// 	return
+	// }
+	// claims := claimsRaw.(*util.Claims)
+	// user, err := h.service.GetByID(claims.UserID)
+	id, _ := strconv.Atoi(c.Param("id"))
+	user, err := h.service.GetByID(int64(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return

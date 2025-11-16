@@ -13,7 +13,7 @@ type UserRepository interface {
 	//ADMIN
 	TotalActive() (int64, error)
 	GetAll(page, pageSize int) (model.Pagination, error)
-	FindByID(id uint) (model.User, error)
+	FindByID(id int64) (model.User, error)
 	Create(user model.User) (model.User, error)
 	Patch(id uint, updates map[string]interface{}) (model.User, error)
 	Delete(id uint) error
@@ -75,7 +75,7 @@ func (r *userRepository) GetAll(page, pageSize int) (model.Pagination, error) {
 	return *pagination, nil
 }
 
-func (r *userRepository) FindByID(id uint) (model.User, error) {
+func (r *userRepository) FindByID(id int64) (model.User, error) {
 	var user model.User
 	err := config.DB.Find(&user, id).Error
 	return user, err

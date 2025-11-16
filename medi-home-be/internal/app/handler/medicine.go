@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -92,20 +91,19 @@ func (h *MedicineHandler) ListMedicine(c *gin.Context) {
 	c.JSON(http.StatusOK, pagination)
 }
 
-func (h *MedicineHandler) DetailMedicine(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	medicine, err := h.service.DetailMedicine(int64(id))
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine not found"})
-		return
-	}
-	c.JSON(http.StatusOK, medicine)
-}
+// func (h *MedicineHandler) DetailMedicine(c *gin.Context) {
+// 	id, _ := strconv.Atoi(c.Param("id"))
+// 	medicine, err := h.service.DetailMedicine(int64(id))
+// 	if err != nil {
+// 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine not found"})
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, medicine)
+// }
 
-func (h *MedicineHandler) DetailMedicinePrice(c *gin.Context) {
+func (h *MedicineHandler) DetailMedicineUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	medicine, err := h.service.DetailMedicinePrice(int64(id))
-	log.Print(medicine)
+	medicine, err := h.service.DetailMedicineUser(int64(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine not found"})
 		return

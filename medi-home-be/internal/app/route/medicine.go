@@ -27,7 +27,7 @@ func MedicineRoute(r *gin.RouterGroup) {
 	{
 		medicine.GET("/",medicineHandler.ListMedicine)
 		// medicine.GET("/:id", medicineHandler.DetailMedicine)
-		medicine.GET("/:id", medicineHandler.DetailMedicinePrice)
+		medicine.GET("/:id", medicineHandler.DetailMedicineUser)
 	}
 
 	medicineCateRepo := repository.NewMedicineCateRepository()
