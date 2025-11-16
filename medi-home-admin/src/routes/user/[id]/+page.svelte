@@ -4,6 +4,7 @@
 
 	export let data;
 	let user = data.user;
+	console.log(data)
 	let title = 'Chi tiết người dùng';
 	pageTitle.set(title);
 </script>

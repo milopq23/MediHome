@@ -4,23 +4,36 @@
 	import TitlePage from '$lib/components/TitlePage.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { pageTitle } from '$lib/stores/store.js';
+
 	import { toasts } from '$lib/stores/toastMessage.js';
+	import { onMount } from 'svelte';
+	import { DeleteMedicine, ListMedicines } from '$lib/api/medicine.js';
 
-	export let data;
+	// export let data;
 
-	pageTitle.set('Trang quản lý thuốc');
+	// pageTitle.set('Trang quản lý thuốc');
 	let search = '';
-	let page = data.page;
-	let pageSize = data.pageSize;
-	let total = data.total;
+	let medicines = {};
+	let page = 1;
+	let pageSize = 10;
+	let total = 1;
 	let totalPages = Math.ceil(total / pageSize);
 
-	// let showPopup = true;
 	let selectedActionId = null;
 	let showDelete = false;
-	let medicines = data.medicines;
 
+	async function listMedicines(currentPage) {
+		const data = await ListMedicines(currentPage);
+		page = data.page;
+		pageSize = data.pageSize;
+		total = data.total;
+		totalPages = Math.ceil(total / pageSize);
+		medicines = data.medicines;
+	}
 
+	onMount(() => {
+		listMedicines();
+	});
 
 	//navigation
 	function viewDetailMedicine(id) {
@@ -32,31 +45,16 @@
 		goto(`/medicine/create`);
 	}
 
-
-	
 	async function deleteMedicine(id) {
-		try {
-			const res = await fetch(`medicine/`, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ id })
-			});
-
-			if (!res.ok) throw new Error(`Failed to delete medicine: ${res.status}`);
-
-			const result = await res.json();
-			return result;
-		} catch (error) {
-			console.error('Lỗi delete medicine:', error);
-			return json({ error: error.message }, { status: 500 });
-		}
+		await DeleteMedicine(id);
 	}
 
 	async function confirmDelete(id) {
 		try {
-			console.log(id);
 			await deleteMedicine(id);
 			toasts.add({ message: 'Xóa thành công', type: 'success' });
+
+			await listMedicines(page);
 		} catch (error) {
 			toasts.add({ message: 'Xóa thất bại', type: 'error' });
 		}

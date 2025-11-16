@@ -1,11 +1,9 @@
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function apiLoadMedicines(page = 1, pageSize = 10) {
+export async function ListMedicines(page = 1, pageSize = 15) {
 	try {
-		const medicineRes = await fetch(
-			`${API_URL}/api/admin/medicine/?page=${page}&page_size=${pageSize}`
-		);
-		const medicine = await medicineRes.json();
+		const res = await fetch(`${API_URL}/api/admin/medicine/?page=${page}&page_size=${pageSize}`);
+		const medicine = await res.json();
 		return {
 			medicines: medicine.data,
 			page: medicine.page,
@@ -17,7 +15,40 @@ export async function apiLoadMedicines(page = 1, pageSize = 10) {
 	}
 }
 
-export async function apiAddMedicine(medicine) {
+export async function DetailMedicine(medicine_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/admin/medicine/${medicine_id}`);
+		const medicine = await res.json();
+		console.log(medicine);
+		return medicine;
+	} catch (error) {
+		console.log('Lỗi gọi thuốc:', error);
+	}
+}
+
+export async function GetMedicineCate() {
+	try {
+		const res = await fetch(`${API_URL}/api/admin/medicinecate/`);
+		const medicineCate = await res.json();
+		console.log(medicineCate);
+		return medicineCate;
+	} catch (error) {
+		console.log('Lỗi gọi thuốc:', error);
+	}
+}
+
+export async function GetDosage() {
+	try {
+		const res = await fetch(`${API_URL}/api/admin/dosage/`);
+		const dosage = await res.json();
+		console.log(dosage);
+		return dosage;
+	} catch (error) {
+		console.log('Lỗi gọi thuốc:', error);
+	}
+}
+
+export async function AddMedicine(medicine) {
 	try {
 		const res = await fetch(`${API_URL}/api/admin/medicine`, {
 			medthod: 'POST',
@@ -33,9 +64,9 @@ export async function apiAddMedicine(medicine) {
 	}
 }
 
-export async function apiPatchMedicine(medicine) {
+export async function UpdateMedicine(medicine_id, medicine) {
 	try {
-		const res = await fetch(`${API_URL}/api/admin/medicine`, {
+		const res = await fetch(`${API_URL}/api/admin/medicine/${medicine_id}`, {
 			medthod: 'PATCH',
 			body: JSON.stringify(medicine)
 		});
@@ -48,13 +79,12 @@ export async function apiPatchMedicine(medicine) {
 	}
 }
 
-export async function apiDeleteMedicne(id) {
+export async function DeleteMedicine(id) {
 	try {
 		const res = await fetch(`${API_URL}/api/admin/medicine/${id}`, {
 			method: 'DELETE'
 		});
 		const result = await res.json();
-		// console.log('Lỗi result delete',result)
 		return result;
 	} catch (error) {
 		console.log('Lỗi delete medicine', error);
@@ -62,7 +92,7 @@ export async function apiDeleteMedicne(id) {
 }
 
 export async function apiUploadMedicine(file) {
-    const formData = new FormData();
+	const formData = new FormData();
 	formData.append('file', file);
 	formData.append('folder', 'medicine');
 	try {

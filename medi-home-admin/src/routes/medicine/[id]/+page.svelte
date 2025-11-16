@@ -1,21 +1,59 @@
 <script>
+	import { DetailMedicine, GetMedicineCate } from '$lib/api/medicine.js';
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
 	import { Plus } from 'lucide-svelte';
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	let title = 'Chi tiết thuốc';
 
-	export let data;
-	let { medicine, medicineCate, selectedParent, selectedChild, dosageForm } = data;
+	// export let data;
+	// let { medicine, medicineCate, selectedParent, selectedChild, dosageForm } = data;
 
 	let previewUrl = '';
 	let previewUrls = [];
+	let medicine = {};
+	let categories = {};
+	let selectedParent = null;
+	let selectedChild = null;
+	let id = null;
+	$: medicine_id = parseInt($page.params.id, 10);
 
-	let categories = medicineCate;
+	// let categories = medicineCate;
 
 	$: childCategories = selectedParent
-		? medicineCate.find((c) => c.medicinecate_id == selectedParent)?.children || []
+		? categories.find((c) => c.medicinecate_id === selectedParent)?.children || []
 		: [];
 
+	async function detailMedicine(medicine_id) {
+		const data = await DetailMedicine(medicine_id);
+		medicine = data;
+	}
+
+	async function getMedicineCate() {
+		const data = await GetMedicineCate();
+		categories = data || [];
+		await loadCategorySelection();
+	}
+	async function loadCategorySelection() {
+		if (!medicine.medicinecate_id || categories.length === 0) return;
+
+		for (const parent of categories) {
+			const child = parent.children?.find((c) => c.medicinecate_id === medicine.medicinecate_id);
+			if (child) {
+				selectedParent = parent.medicinecate_id;
+				selectedChild = child.medicinecate_id;
+				break;
+			}
+		}
+	}
+
+	onMount(async () => {
+		await getMedicineCate();
+		if (medicine_id) {
+			await detailMedicine(medicine_id);
+		}
+	});
 	// async function onFileChange(event) {
 	// 	file = event.target.files[0];
 	// 	if (file) {
@@ -71,7 +109,38 @@
 						required
 					/>
 				</div>
-				<div class="">
+				<div>
+					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Danh mục cha</label
+					>
+					<select
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						bind:value={selectedParent}
+					>
+						<option value="" disabled selected>-- Chọn danh mục --</option>
+						{#each categories as parent}
+							<option value={parent.medicinecate_id}>{parent.name}</option>
+						{/each}
+					</select>
+				</div>
+
+				<!-- Danh mục con -->
+				<div>
+					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+						>Danh mục con</label
+					>
+					<select
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						bind:value={selectedChild}
+						disabled={!selectedParent}
+					>
+						<option value="" disabled selected>-- Chọn danh mục con --</option>
+						{#each childCategories as child}
+							<option value={child.medicinecate_id}>{child.name}</option>
+						{/each}
+					</select>
+				</div>
+				<!-- <div class="">
 					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Danh mục cha</label
 					>
@@ -112,8 +181,8 @@
 							{/each}
 						</ul>
 					{/if}
-				</div>
-				<div class="">
+				</div> -->
+				<!-- <div class="">
 					<label
 						for="dosageForm"
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Dạng bào chế</label
@@ -130,7 +199,7 @@
 							<option class="" value={dosage.dosageform_id}>{dosage.name}</option>
 						{/each}
 					</select>
-				</div>
+				</div> -->
 
 				<div class="">
 					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
@@ -362,22 +431,7 @@
 					required
 				></textarea>
 			</div>
-			<div class="mb-6 flex items-start">
-				<div class="flex h-5 items-center">
-					<input
-						id="remember"
-						type="checkbox"
-						value=""
-						class="h-4 w-4 rounded-sm border border-gray-300 bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-						required
-					/>
-				</div>
-				<label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-					>I agree with the <a href="" class="text-blue-600 hover:underline dark:text-blue-500"
-						>terms and conditions</a
-					>.</label
-				>
-			</div>
+
 			<button
 				type="submit"
 				class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

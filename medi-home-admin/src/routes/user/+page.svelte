@@ -51,6 +51,7 @@
 	let formMode = 'create';
 
 	function viewDetailUser(id) {
+		
 		goto(`/user/${id}`);
 	}
 
