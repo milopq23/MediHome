@@ -31,7 +31,7 @@
 	});
 
 	function goToDetail(id) {
-		console.log(id)
+		console.log(id);
 		goto(`/products/${id}`);
 	}
 	function handleGoToPage(event) {

@@ -64,3 +64,19 @@ export async function GetVoucher(total) {
 		console.log('Failed GET Shipping' + error);
 	}
 }
+
+export async function CheckOut(user_id, payload) {
+	try {
+		const res = await fetch(`${API_URL}/api/order/checkout/${user_id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(payload)
+		});
+		const order = await res.json();
+		return order;
+	} catch (error) {
+		console.log('Failed GET Shipping' + error);
+	}
+}

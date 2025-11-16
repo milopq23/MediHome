@@ -52,8 +52,8 @@
 		shipping = await GetShipping(shipping_id);
 	}
 
-	async function getVoucher(total){
-		const voucher = await GetVoucher(tota)
+	async function getVoucher(total) {
+		const voucher = await GetVoucher(total);
 	}
 
 	async function updateQuantityOrType(cartitem_id, newQuantity, newType) {
