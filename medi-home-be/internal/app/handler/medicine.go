@@ -64,14 +64,14 @@ func (h *MedicineHandler) SaveImages(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Invalid medicine_id"})
 		return
 	}
-	log.Print("medicine_id",medicineID)
+	log.Print("medicine_id", medicineID)
 
 	var body dto.ImageMedicineDTO
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid body"})
 		return
 	}
-	log.Print("image",body.Urls)
+	log.Print("image", body.Urls)
 
 	if err := h.service.SaveImages(medicineID, body.Urls); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
@@ -137,5 +137,12 @@ func (h *MedicineHandler) DetailMedicineUser(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine not found"})
 		return
 	}
+	image, err := h.service.GetImages(int64(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Image not found"})
+		return
+	}
+
+	medicine.Images = image
 	c.JSON(http.StatusOK, medicine)
 }

@@ -15,6 +15,7 @@ type MedicineService interface {
 	Delete(id int64) error
 
 	SaveImages(medicineID int64, urls []string) error
+	GetImages(medicine_id int64) ([]string, error)
 
 	//User
 	ListMedicine(page, pageSize int) (model.Pagination, error)
@@ -68,6 +69,22 @@ func (s *medicineService) ListMedicine(page, pageSize int) (model.Pagination, er
 // 	return s.repo.DetailMedicine(id)
 // }
 
+func (s *medicineService) GetImages(medicine_id int64) ([]string, error) {
+	// Fetch images from the repository
+	images, err := s.repo.GetMedicineImage(medicine_id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Map model.Image to string URLs
+	imageURLs := make([]string, len(images))
+	for i, img := range images {
+		imageURLs[i] = img.ImageURL // assuming model.Image has a field URL
+	}
+
+	return imageURLs, nil
+}
+
 func (s *medicineService) DetailMedicineUser(id int64) (dto.DetailMedicine, error) {
 	medicine, err := s.repo.DetailMedicineUser(id)
 	if err != nil {
@@ -78,7 +95,6 @@ func (s *medicineService) DetailMedicineUser(id int64) (dto.DetailMedicine, erro
 		Code:             medicine.Code,
 		Name:             medicine.Name,
 		Thumbnail:        medicine.Thumbnail,
-		Image:            medicine.Image,
 		UnitPerStrip:     medicine.UnitPerStrip,
 		UnitPerBox:       medicine.UnitPerBox,
 		MedCategoryName:  medicine.MedCategoryName,

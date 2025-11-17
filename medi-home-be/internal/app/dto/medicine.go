@@ -45,30 +45,30 @@ type UserDetailMedicineDTO struct {
 }
 
 type DetailMedicine struct {
-	MedicineID       uint    `json:"medicine_id" gorm:"column:medicine_id"`
-	Code             string  `json:"code" `
-	Name             string  `json:"name" `
-	Thumbnail        string  `json:"thumbnail" `
-	Image            string  `json:"image" `
-	UnitPerStrip     int64   `json:"unit_per_strip"`
-	UnitPerBox       int64   `json:"unit_per_box"`
-	MedCategoryName  string  `json:"medcatename"`
-	DosageFormName   string  `json:"dosagename"`
-	PriceForStrip    float64 `json:"price_for_strip" gorm:"column:price_for_strip"`
-	PriceForBox      float64 `json:"price_for_box" gorm:"column:price_for_box"`
-	Prescription     string  `json:"prescription" `
-	Usage            string  `json:"usage"`
-	Package          string  `json:"package"`
-	Indication       string  `json:"indication"`
-	Adverse          string  `json:"adverse"`
-	Contraindication string  `json:"contraindication"`
-	Precaution       string  `json:"precaution"`
-	Ability          string  `json:"ability"`
-	Pregnancy        string  `json:"pregnancy"`
-	DrugInteraction  string  `json:"drug_interaction"`
-	Storage          string  `json:"storage" `
-	Manufacturer     string  `json:"manufacturer" `
-	Note             string  `json:"note" `
+	MedicineID       uint     `json:"medicine_id" gorm:"column:medicine_id"`
+	Code             string   `json:"code" `
+	Name             string   `json:"name" `
+	Thumbnail        string   `json:"thumbnail" `
+	Images           []string `json:"images"`
+	UnitPerStrip     int64    `json:"unit_per_strip"`
+	UnitPerBox       int64    `json:"unit_per_box"`
+	MedCategoryName  string   `json:"medcatename"`
+	DosageFormName   string   `json:"dosagename"`
+	PriceForStrip    float64  `json:"price_for_strip" gorm:"column:price_for_strip"`
+	PriceForBox      float64  `json:"price_for_box" gorm:"column:price_for_box"`
+	Prescription     bool     `json:"prescription" `
+	Usage            string   `json:"usage"`
+	Package          string   `json:"package"`
+	Indication       string   `json:"indication"`
+	Adverse          string   `json:"adverse"`
+	Contraindication string   `json:"contraindication"`
+	Precaution       string   `json:"precaution"`
+	Ability          string   `json:"ability"`
+	Pregnancy        string   `json:"pregnancy"`
+	DrugInteraction  string   `json:"drug_interaction"`
+	Storage          string   `json:"storage" `
+	Manufacturer     string   `json:"manufacturer" `
+	Note             string   `json:"note" `
 }
 
 type ImageMedicineDTO struct {

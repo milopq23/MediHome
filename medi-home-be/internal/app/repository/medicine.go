@@ -14,8 +14,9 @@ type MedicineRepository interface {
 	Create(medicine model.Medicine) (model.Medicine, error)
 	Patch(medicine model.Medicine) (model.Medicine, error)
 	Delete(id int64) error
-	
+
 	AddImages(medicine_id int64, urls []string) error
+	GetMedicineImage(medicine_id int64) ([]model.Image, error)
 
 	//User
 	ListMedicineUser(page, pageSize int) (model.Pagination, error)
@@ -162,50 +163,57 @@ func (r *medicineRepository) ListMedicineUser(page, pageSize int) (model.Paginat
 // }
 
 type DetailMedicine struct {
-	MedicineID       uint    `json:"medicine_id" gorm:"column:medicine_id"`
-	Code             string  `json:"code" `
-	Name             string  `json:"name" `
-	Thumbnail        string  `json:"thumbnail" `
-	Image            string  `json:"image" `
-	UnitPerStrip     int64   `json:"unit_per_strip"`
-	UnitPerBox       int64   `json:"unit_per_box"`
-	MedCategoryName  string  `json:"medcatename" gorm:"column:medcatename"`
-	DosageFormName   string  `json:"dosagename" gorm:"column:dosagename"`
-	PriceForStrip    float64 `json:"price_for_strip" gorm:"column:price_for_strip"`
-	PriceForBox      float64 `json:"price_for_box" gorm:"column:price_for_box"`
-	Prescription     string  `json:"prescription" `
-	Usage            string  `json:"usage"`
-	Package          string  `json:"package"`
-	Indication       string  `json:"indication"`
-	Adverse          string  `json:"adverse"`
-	Contraindication string  `json:"contraindication"`
-	Precaution       string  `json:"precaution"`
-	Ability          string  `json:"ability"`
-	Pregnancy        string  `json:"pregnancy"`
-	DrugInteraction  string  `json:"drug_interaction"`
-	Storage          string  `json:"storage" `
-	Manufacturer     string  `json:"manufacturer" `
-	Note             string  `json:"note" `
+	MedicineID       uint     `json:"medicine_id" gorm:"column:medicine_id"`
+	Code             string   `json:"code" `
+	Name             string   `json:"name" `
+	Thumbnail        string   `json:"thumbnail" `
+	// Images           []string `json:"images"`
+	UnitPerStrip     int64    `json:"unit_per_strip"`
+	UnitPerBox       int64    `json:"unit_per_box"`
+	MedCategoryName  string   `json:"medcatename" gorm:"column:medcatename"`
+	DosageFormName   string   `json:"dosagename" gorm:"column:dosagename"`
+	PriceForStrip    float64  `json:"price_for_strip" gorm:"column:price_for_strip"`
+	PriceForBox      float64  `json:"price_for_box" gorm:"column:price_for_box"`
+	Prescription     bool     `json:"prescription" `
+	Usage            string   `json:"usage"`
+	Package          string   `json:"package"`
+	Indication       string   `json:"indication"`
+	Adverse          string   `json:"adverse"`
+	Contraindication string   `json:"contraindication"`
+	Precaution       string   `json:"precaution"`
+	Ability          string   `json:"ability"`
+	Pregnancy        string   `json:"pregnancy"`
+	DrugInteraction  string   `json:"drug_interaction"`
+	Storage          string   `json:"storage" `
+	Manufacturer     string   `json:"manufacturer" `
+	Note             string   `json:"note" `
 }
 
 func (r *medicineRepository) DetailMedicineUser(medicine_id int64) (DetailMedicine, error) {
 	var medicine DetailMedicine
 	query := `
-		select m.medicine_id, m.code, m.name, m.thumbnail, m.image, m.unit_per_strip, m.unit_per_box,
-		round((i.import_price * (1 + i.mark_up/100))/m.unit_per_strip) as price_for_strip,
-		round((i.import_price * (1 + i.mark_up/100))) as price_for_box,
-		mc.name as medcatename, df.name as dosagename, m.prescription, m.usage,
-		m.package, m.indication, m.adverse, m.contraindication, m.precaution, m.ability, m.pregnancy,
-		m.drug_interaction, m.storage, m.manufacturer, m.note
+		select m.medicine_id, m.code, m.name, m.thumbnail, m.unit_per_strip, m.unit_per_box,
+			round((i.import_price * (1 + i.mark_up/100))/m.unit_per_strip) as price_for_strip,
+			round((i.import_price * (1 + i.mark_up/100))) as price_for_box,
+			mc.name as medcatename, df.name as dosagename, m.prescription, m.usage,
+			m.package, m.indication, m.adverse, m.contraindication, m.precaution, m.ability, m.pregnancy,
+			m.drug_interaction, m.storage, m.manufacturer, m.note
 		from medicines m
 		join medicinecates mc on mc.medicinecate_id = m.medicinecate_id
 		join dosageforms df on df.dosageform_id = m.dosageform_id
 		join batchsellings bs on bs.medicine_id = m.medicine_id
 		join inventories i on i.inventory_id = bs.inventory_id
 		where m.medicine_id = ?
+		
 	`
 	err := config.DB.Raw(query, medicine_id).Scan(&medicine).Error
 	return medicine, err
+}
+
+func (r *medicineRepository) GetMedicineImage(medicine_id int64) ([]model.Image, error) {
+	var image []model.Image
+	err := config.DB.Where("medicine_id = ?", medicine_id).Find(&image).Error
+	return image, err
 }
 
 // func (r *medicineRepository) DetailMedicineWithPrice(id int64) (model.DetailMedicineVM, error) {
