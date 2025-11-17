@@ -106,14 +106,30 @@ export async function UploadMedicine(file) {
 	}
 }
 
-export async function UploadMultiMedicine(file) {
+export async function UploadMultiMedicine(files) {
 	const formData = new FormData();
 	formData.append('file', files);
 	formData.append('folder', 'medicines');
 	try {
-		const res = await fetch(`${API_URL}/api/upload`, {
+		const res = await fetch(`${API_URL}/api/multi`, {
 			method: 'POST',
 			body: formData
+		});
+		const result = await res.json();
+		return result;
+	} catch (error) {
+		console.log('Upload ảnh thuốc', error);
+	}
+}
+
+export async function AddImage(medicine_id, urls) {
+	try {
+		const res = await fetch(`${API_URL}/api/admin/medicine/${medicine_id}/images`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ urls })
 		});
 		const result = await res.json();
 		return result;

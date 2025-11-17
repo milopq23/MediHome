@@ -4,7 +4,8 @@
 		GetDosage,
 		GetMedicineCate,
 		UpdateMedicine,
-		UploadMedicine
+		UploadMedicine,
+		UploadMultiMedicine
 	} from '$lib/api/medicine.js';
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
@@ -53,7 +54,28 @@
 		if (!file) return '';
 		const res = await UploadMedicine(file);
 		console.log('upload url', res);
-		return res // Giả sử API trả về { url: '...' }
+		return res;
+	}
+
+	export async function uploadMultiImages(medicine_id, files) {
+		try {
+			// Upload file lên server và lấy URLs
+			const res = await UploadMultiMedicine(files);
+
+			if (!res || !res.urls) {
+				throw new Error('Upload thất bại hoặc không có urls trả về');
+			}
+
+			const urls = res.urls;
+
+			// Gửi URLs lên backend gắn vào medicine
+			const result = await AddImage(medicine_id, urls);
+
+			return result;
+		} catch (error) {
+			console.error('Lỗi upload nhiều ảnh:', error);
+			throw error;
+		}
 	}
 
 	// async function uploadSubFiles(files) {
@@ -99,14 +121,14 @@
 
 	async function onSubmit() {
 		try {
-			// 1. Upload ảnh chính (nếu có file mới)
-			let thumbnailUrl = medicine.thumbnail; // giữ ảnh cũ nếu không đổi
+			let thumbnailUrl = medicine.thumbnail;
 			if (file) {
-				thumbnailUrl = await uploadFile(file); // upload file mới
+				thumbnailUrl = await uploadFile(file);
 				console.log(thumbnailUrl);
 			}
 
 			// 2. Upload ảnh phụ (nếu có)
+
 			// let subImages = medicine.sub_images || [];
 			// if (subFiles.length > 0) {
 			// 	const uploadedUrls = await uploadSubFiles(subFiles);
@@ -116,21 +138,19 @@
 			// 3. Dữ liệu gửi đi
 			const data = {
 				...medicine,
-				thumbnail: thumbnailUrl, // ảnh mới hoặc giữ cũ
+				thumbnail: thumbnailUrl,
 				// sub_images: subImages,
 				medicinecate_id: selectedChild || selectedParent
 			};
 
-			// 4. Gọi API
 			const res = await UpdateMedicine(medicine_id, data);
 
 			if (res?.status === 'success') {
 				toasts.success('Cập nhật thành công!');
 
-				// Cập nhật lại medicine + preview
 				medicine = { ...medicine, thumbnail: thumbnailUrl };
-				previewUrl = thumbnailUrl; // cập nhật preview
-				file = null; // reset input file
+				previewUrl = thumbnailUrl;
+				file = null;
 			} else {
 				toasts.error(res?.message || 'Cập nhật thất bại!');
 			}
@@ -140,7 +160,6 @@
 		}
 	}
 
-	// === onMount ===
 	onMount(async () => {
 		await getMedicineCate();
 		await getDosage();

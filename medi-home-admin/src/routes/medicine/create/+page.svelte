@@ -3,49 +3,107 @@
 	import { toasts } from '$lib/stores/toastMessage.js';
 	import { goto } from '$app/navigation';
 	import { Plus } from 'lucide-svelte';
+	import {
+		GetDosage,
+		GetMedicineCate,
+		UploadMedicine,
+		UploadMultiMedicine
+	} from '$lib/api/medicine.js';
+	import { onMount } from 'svelte';
 
-	
 	let medicine = {};
 	let title = 'Tạo thuốc';
 	pageTitle.set(title);
 
-	export let data;
-	const allCategories = data.medicineCate;
-	// const childcate = allCategories.children;
-	let selectedParent = '';
-	let selectedChild = '';
-
-	const parents = allCategories.filter((p) => p.parent_id === null);
-
-	$: children = selectedParent
-		? allCategories.find((p) => p.medicinecate_id == selectedParent)?.children || []
-		: [];
+	let categories = {};
+	let dosageForm = [];
 
 	let previewUrl = '';
 	let previewUrls = [];
+	let selectedParent = null;
+	let selectedChild = null;
 
-	async function addMedicine() {
-		try {
-			const res = await fetch('/medicine/create', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(medicine)
-			});
-			await res.json();
-		} catch (error) {
-			console.error('Lỗi khi thêm thuốc:', error);
+	$: childCategories = selectedParent
+		? categories.find((c) => c.medicinecate_id === selectedParent)?.children || []
+		: [];
+
+	async function getDosage() {
+		const data = await GetDosage();
+		dosageForm = data;
+	}
+
+	async function getMedicineCate() {
+		const data = await GetMedicineCate();
+		categories = data || [];
+		await loadCategorySelection();
+	}
+
+	async function uploadFile(file) {
+		if (!file) return '';
+		const res = await UploadMedicine(file);
+		console.log('upload url', res);
+		return res;
+	}
+
+	function onMainFileChange(event) {
+		const selectedFile = event.target.files[0];
+		if (selectedFile) {
+			file = selectedFile;
+			previewUrl = URL.createObjectURL(selectedFile); // preview ảnh mới
+		} else {
+			file = null;
+			previewUrl = medicine.thumbnail || '';
 		}
 	}
 
-	async function viewMedicine() {
-		try {
-			await addMedicine();
-			toasts.add({ message: 'Thêm thành công', type: 'success' });
-			goto(`/medicine`);
-		} catch (error) {
-			toasts.add({ message: 'Thêm thất bại', type: 'success' });
+	function onSubFileChange(event) {
+		const files = Array.from(event.target.files);
+		subFiles = files;
+		previewUrls = files.map((f) => URL.createObjectURL(f));
+	}
+
+	async function loadCategorySelection() {
+		if (!medicine.medicinecate_id || categories.length === 0) return;
+
+		for (const parent of categories) {
+			const child = parent.children?.find((c) => c.medicinecate_id === medicine.medicinecate_id);
+			console.log(child);
+			if (child) {
+				selectedParent = parent.medicinecate_id;
+				console.log(selectedParent);
+				selectedChild = child.medicinecate_id;
+				break;
+			}
 		}
 	}
+
+	onMount(() => {
+		getDosage();
+		getMedicineCate();
+	});
+
+	// async function addMedicine() {
+	// 	try {
+	// 		const res = await fetch('/medicine/create', {
+	// 			method: 'POST',
+	// 			headers: { 'Content-Type': 'application/json' },
+	// 			body: JSON.stringify(medicine)
+	// 		});
+	// 		await res.json();
+	// 	} catch (error) {
+	// 		console.error('Lỗi khi thêm thuốc:', error);
+	// 	}
+	// }
+
+	// async function viewMedicine() {
+	// 	try {
+	// 		await addMedicine();
+	// 		toasts.add({ message: 'Thêm thành công', type: 'success' });
+	// 		goto(`/medicine`);
+	// 	} catch (error) {
+	// 		toasts.add({ message: 'Thêm thất bại', type: 'success' });
+	// 	}
+	// }
 </script>
 
 <div class="flex items-center justify-center">
@@ -82,42 +140,35 @@
 						required
 					/>
 				</div>
-				<div class="">
+				<div>
 					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Danh mục cha</label
 					>
 					<select
-						id="category"
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 						bind:value={selectedParent}
-						on:change={() => console.log(selectedParent)}
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-						required
 					>
-						<option value="" disabled>Chọn danh mục</option>
-						{#each parents as p}
-							<option value={p.medicinecate_id}>{p.name}</option>
+						<option value="" disabled selected>-- Chọn danh mục --</option>
+						{#each categories as parent}
+							<option value={parent.medicinecate_id}>{parent.name}</option>
 						{/each}
 					</select>
 				</div>
 
-				<div class="">
+				<!-- Danh mục con -->
+				<div>
 					<label for="category" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Danh mục con</label
 					>
 					<select
-						id="childCategory"
-						bind:value={medicine.medicinecate_id}
-						on:change={() => console.log(medicine.medicinecate_id)}
-						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
-						required
+						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+						bind:value={selectedChild}
 						disabled={!selectedParent}
 					>
-						<option value="" disabled>Chọn danh mục</option>
-						{#if children.length > 0}
-							{#each children as c}
-								<option value={c.medicinecate_id}>{c.name}</option>
-							{/each}
-						{/if}
+						<option value="" disabled selected>-- Chọn danh mục con --</option>
+						{#each childCategories as child}
+							<option value={child.medicinecate_id}>{child.name}</option>
+						{/each}
 					</select>
 				</div>
 				<div class="">
@@ -126,14 +177,14 @@
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Dạng bào chế</label
 					>
 					<select
+						id="dosage"
 						bind:value={medicine.dosageform_id}
-						on:change={() => console.log(data.dosageform)}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900"
 						required
 					>
-						<option class="" value="" disabled>Chọn dạng bào chế</option>
+						<option class="" value="" disabled selected>Chọn danh mục</option>
 
-						{#each data.dosageForm as dosage}
+						{#each dosageForm as dosage}
 							<option class="" value={dosage.dosageform_id}>{dosage.name}</option>
 						{/each}
 					</select>
