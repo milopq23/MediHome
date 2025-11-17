@@ -14,6 +14,8 @@ type MedicineRepository interface {
 	Create(medicine model.Medicine) (model.Medicine, error)
 	Patch(medicine model.Medicine) (model.Medicine, error)
 	Delete(id int64) error
+	
+	AddImages(medicine_id int64, urls []string) error
 
 	//User
 	ListMedicineUser(page, pageSize int) (model.Pagination, error)
@@ -79,6 +81,21 @@ func (r *medicineRepository) FindByID(id int64) (model.Medicine, error) {
 func (r *medicineRepository) Create(medicine model.Medicine) (model.Medicine, error) {
 	err := config.DB.Create(&medicine).Error
 	return medicine, err
+}
+
+func (r *medicineRepository) AddImages(medicine_id int64, urls []string) error {
+
+	for _, url := range urls {
+		img := model.Image{
+			MedicineID: medicine_id,
+			ImageURL:   url,
+		}
+		if err := config.DB.Create(&img).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (r *medicineRepository) Patch(medicine model.Medicine) (model.Medicine, error) {

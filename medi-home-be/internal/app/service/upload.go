@@ -88,6 +88,5 @@ func (s *cloudinaryService) UploadMultiFileHandleRequestFromGin(c *gin.Context) 
 
 		urls = append(urls, url)
 	}
-
 	return urls, nil
 }

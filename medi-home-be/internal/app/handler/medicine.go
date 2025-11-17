@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"log"
+	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -46,12 +48,39 @@ func (h *MedicineHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	log.Print("medicine", medicine)
 	newMedicine, err := h.service.Create(medicine)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, newMedicine)
+}
+
+func (h *MedicineHandler) SaveImages(c *gin.Context) {
+	medicineIDStr := c.Param("medicine_id")
+	medicineID, err := strconv.ParseInt(medicineIDStr, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid medicine_id"})
+		return
+	}
+	log.Print("medicine_id",medicineID)
+
+	var body dto.ImageMedicineDTO
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid body"})
+		return
+	}
+	log.Print("image",body.Urls)
+
+	if err := h.service.SaveImages(medicineID, body.Urls); err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"message": "Images saved successfully",
+	})
 }
 
 func (h *MedicineHandler) Patch(c *gin.Context) {

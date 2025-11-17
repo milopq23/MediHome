@@ -3,13 +3,13 @@ package model
 import "time"
 
 type Medicine struct {
-	MedicineID       int64     `gorm:"column:medicine_id;primarykey;autoIncrement" json:"medicine_id"`
-	MedicineCateID   int64     `gorm:"column:medicinecate_id;not null" json:"medicinecate_id"`
-	DosageFormID     int64     `gorm:"column:dosageform_id;not null" json:"dosageform_id"`
-	Code             string    `gorm:"column:code;unique;not null" json:"code"`
-	Name             string    `gorm:"column:name;not null" json:"name"`
-	Thumbnail        string    `gorm:"column:thumbnail" json:"thumbnail"`
-	Image            string    `gorm:"column:image" json:"image"`
+	MedicineID     int64  `gorm:"column:medicine_id;primarykey;autoIncrement" json:"medicine_id"`
+	MedicineCateID int64  `gorm:"column:medicinecate_id;not null" json:"medicinecate_id"`
+	DosageFormID   int64  `gorm:"column:dosageform_id;not null" json:"dosageform_id"`
+	Code           string `gorm:"column:code;unique;not null" json:"code"`
+	Name           string `gorm:"column:name;not null" json:"name"`
+	Thumbnail      string `gorm:"column:thumbnail" json:"thumbnail"`
+	// Image            string    `gorm:"column:image" json:"image"`
 	Prescription     bool      `gorm:"column:prescription" json:"prescription"`
 	UnitPerStrip     int64     `gorm:"column:unit_per_strip" json:"unitstrip"`
 	UnitPerBox       int64     `gorm:"column:unit_per_box" json:"unitbox"`
@@ -29,13 +29,9 @@ type Medicine struct {
 	UpdatedAt        time.Time `gorm:"column:updated_at;autoUpdateTime"`
 
 	MedicineCate []MedicineCate `gorm:"foreignKey:MedicineCateID;references:MedicineCateID" json:"medicine_cate,omitempty"`
-	DosageForm   *DosageForm   `gorm:"foreignKey:DosageFormID;references:DosageFormID" json:"dosage_form,omitempty"`
+	DosageForm   *DosageForm    `gorm:"foreignKey:DosageFormID;references:DosageFormID" json:"dosage_form,omitempty"`
 }
 
 func (Medicine) TableName() string {
 	return "medicines"
 }
-
-
-
-

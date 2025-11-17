@@ -18,6 +18,7 @@ func NewUploadHandler(service service.CloudinaryService) *UploadHandler {
 
 func (h *UploadHandler) SingleUpload(c *gin.Context) {
 	url, err := h.CloudinaryService.HandelRequest(c)
+	log.Print("url", url)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   "Upload failed",
@@ -28,7 +29,6 @@ func (h *UploadHandler) SingleUpload(c *gin.Context) {
 
 	c.JSON(http.StatusOK, url)
 }
-
 
 func (h *UploadHandler) MultiUpload(c *gin.Context) {
 	log.Println(">> Nhận request multi_upload")

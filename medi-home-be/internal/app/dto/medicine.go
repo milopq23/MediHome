@@ -70,3 +70,7 @@ type DetailMedicine struct {
 	Manufacturer     string  `json:"manufacturer" `
 	Note             string  `json:"note" `
 }
+
+type ImageMedicineDTO struct {
+	Urls []string `json:"urls"`
+}

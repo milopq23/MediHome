@@ -101,7 +101,7 @@ func (s *cartService) AddMedicineToCart(cartItem dto.CartRequestDTO) (model.Cart
 		if cartItems[i].MedicineID == cartItem.MedicineID {
 
 			// nếu có rồi thì tăng quantity
-			cartItems[i].Quantity += 1
+			cartItems[i].Quantity += cartItem.Quantity
 			// cập nhật lại cart item trong DB
 			err := s.repo.UpdateCartItem(cartItems[i])
 			if err != nil {
@@ -111,11 +111,10 @@ func (s *cartService) AddMedicineToCart(cartItem dto.CartRequestDTO) (model.Cart
 		}
 	}
 
-	// 4. Nếu chưa có thì tạo mới với quantity = 1
 	newItem := model.CartItem{
 		CartID:     cartItem.CartID,
 		MedicineID: cartItem.MedicineID,
-		Quantity:   1,
+		Quantity:   cartItem.Quantity,
 		SelectType: cartItem.SelectType,
 		Price:      select_type.Price,
 	}
@@ -151,7 +150,7 @@ func (s *cartService) SelectType(select_type string, medicine_id int64) (dto.Sel
 	// 5. Trả về DTO
 	selected := dto.SelectTypeMedicineDTO{
 		MedicineID: medicine_id,
-		SelectType: select_type,	
+		SelectType: select_type,
 		Price:      math.Round(price*100) / 100,
 	}
 

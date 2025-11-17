@@ -14,6 +14,8 @@ type MedicineService interface {
 	Patch(medicine model.Medicine) (model.Medicine, error)
 	Delete(id int64) error
 
+	SaveImages(medicineID int64, urls []string) error
+
 	//User
 	ListMedicine(page, pageSize int) (model.Pagination, error)
 	// DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
@@ -39,6 +41,15 @@ func (s *medicineService) GetByID(id int64) (model.Medicine, error) {
 
 func (s *medicineService) Create(medicine model.Medicine) (model.Medicine, error) {
 	return s.repo.Create(medicine)
+}
+
+func (s *medicineService) SaveImages(medicineID int64, urls []string) error {
+
+	if len(urls) == 0 {
+		return nil // không save ảnh khi không có gì
+	}
+
+	return s.repo.AddImages(medicineID, urls)
 }
 
 func (s *medicineService) Patch(medicine model.Medicine) (model.Medicine, error) {

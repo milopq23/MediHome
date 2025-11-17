@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -107,7 +106,6 @@ func (h *CartHandler) AddCart(c *gin.Context) {
 		Quantity:   req.Quantity,
 		SelectType: req.SelectType,
 	}
-	log.Print(req)
 
 	if _, err := h.service.AddMedicineToCart(req); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

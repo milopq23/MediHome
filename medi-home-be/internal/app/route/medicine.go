@@ -1,9 +1,9 @@
 package route
 
 import (
+	"medi-home-be/internal/app/handler"
 	"medi-home-be/internal/app/repository"
 	"medi-home-be/internal/app/service"
-	"medi-home-be/internal/app/handler"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,21 +11,22 @@ import (
 func MedicineRoute(r *gin.RouterGroup) {
 	medicineRepo := repository.NewMedicineRepository()
 	cartRepo := repository.NewCartRepository()
-	medicineService := service.NewMedicineService(medicineRepo,cartRepo)
+	medicineService := service.NewMedicineService(medicineRepo, cartRepo)
 	medicineHandler := handler.NewMedicineHandler(medicineService)
 	adminMedicine := r.Group("/admin/medicine")
 	{
 		adminMedicine.GET("/", medicineHandler.GetAll)
 		adminMedicine.GET("/:id", medicineHandler.GetByID)
 		adminMedicine.POST("/", medicineHandler.Create)
+		adminMedicine.POST("/:medicine_id/images", medicineHandler.SaveImages)
 		adminMedicine.PUT("/:id", medicineHandler.Patch)
 		adminMedicine.PATCH("/:id", medicineHandler.Patch)
 		adminMedicine.DELETE("/:id", medicineHandler.Delete)
 	}
-	
+
 	medicine := r.Group("/medicine")
 	{
-		medicine.GET("/",medicineHandler.ListMedicine)
+		medicine.GET("/", medicineHandler.ListMedicine)
 		// medicine.GET("/:id", medicineHandler.DetailMedicine)
 		medicine.GET("/:id", medicineHandler.DetailMedicineUser)
 	}
