@@ -1,7 +1,7 @@
 // admin.js
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function getAllAdmin(page = 1, pageSize = 10) {
+export async function ListAdmin(page = 1, pageSize = 10) {
 	try {
 		const response = await fetch(`${API_URL}/api/admin/?page=${page}&page_size=${pageSize}`);
 		if (!response.ok) {

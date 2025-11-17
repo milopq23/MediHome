@@ -1,31 +1,30 @@
 // user.js
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function loadUsers(page = 1, pageSize = 10) {
+export async function ListUser(page = 1, pageSize = 15) {
 	try {
-		const userRes = await fetch(`${API_URL}/api/user/?page=${page}&page_size=${pageSize}`);
-		const user = await userRes.json();
-		// if(!userRes.ok){
-
-		// }
-
-		const userActiveRes = await fetch(`${API_URL}/api/user/total`);
-		const activeUser = await userActiveRes.json();
-
-		console.log(user)
-		console.log(activeUser)
-
-	
-
+		const res = await fetch(`${API_URL}/api/admin/user/?page=${page}&page_size=${pageSize}`);
+		const user = await res.json();
 		return {
 			users: user.data,
 			page: user.page,
 			pageSize: user.page_size,
 			total: user.total,
-			activeUser
+			activeUser: user.active_user
 		};
 	} catch (error) {
 		console.error('Lỗi khi gọi danh sách user:', error);
+		throw error;
+	}
+}
+
+export async function GetDetailUser(user_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/admin/user/${user_id}`);
+		const user = await res.json();
+		return user;
+	} catch (error) {
+		console.error('Lỗi khi gọi detail user:', error);
 		throw error;
 	}
 }
@@ -89,15 +88,14 @@ export async function editUser(id, user) {
 
 export async function deleteUser(id) {
 	try {
-		const res = await fetch(`${API_URL}/api/user/${id}`,{
-			method:'DELETE'
-
-		})
+		const res = await fetch(`${API_URL}/api/user/${id}`, {
+			method: 'DELETE'
+		});
 		if (!res.ok) {
 			throw new Error(`HTTP error! status: ${res.status}`);
 		}
 		const result = await res.json();
-		return result
+		return result;
 	} catch (error) {
 		console.error('API DELETE user lỗi:', error);
 		throw error;

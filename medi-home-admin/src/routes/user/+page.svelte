@@ -1,87 +1,79 @@
 <script>
 	import ToolBar from '$lib/components/ToolBar.svelte';
 	import { UserPlus, Pencil, Trash2, Eye, MoreVertical } from 'lucide-svelte';
-	import { loadUsers, addUser, editUser, deleteUser } from '$lib/api/user.js';
+	import { ListUser } from '$lib/api/user.js';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import { pageTitle } from '$lib/stores/store.js';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	let title = 'Danh sách người dùng';
 	pageTitle.set(title);
 
-	export let data;
-	let { users, page, pageSize, total, totalActiveUser } = data;
+	// export let data;
+	// let { users, page, pageSize, total, totalActiveUser } = data;
 	let selectedActionId = null;
 	let showDelete = false;
 	let search = '';
-	let totalPages = Math.ceil(total / pageSize);
 
-	function openAction(id) {
-		selectedActionId = selectedActionId === id ? null : id;
+	let users = {};
+	let page = 1;
+	let pageSize = 10;
+	let total = 1;
+	let totalPages = Math.ceil(total / pageSize);
+	let activeUser = 1;
+
+	async function listUser(currentPage) {
+		const data = await ListUser(currentPage);
+		page = data.page;
+		pageSize = data.pageSize;
+		total = data.total;
+		activeUser = data.activeUser;
+		totalPages = Math.ceil(total / pageSize);
+		users = data.users;
 	}
 
-	// viết thêm 1 api khác để chuyển
+	onMount(() => {
+		listUser();
+	});
 
-	// async function gotoPage(p) {
-	// 	const res = await fetch(`/user/?page=${p}`);
-	// 	const result = await res.json();
-	// 	products = result.products;
-	// 	page = p;
-	// }
+
 	function goToPage(p) {
 		if (p >= 1 && p <= totalPages) page = p;
 	}
 
-	let userActive = 1;
-	// let totalPages = 1;
-
 	let showForm = false;
 	let showConfirmDelete = false;
-
-	let user = {
-		user_id: null,
-		name: '',
-		email: '',
-		password: '',
-		phone: '',
-		gender: '',
-		is_verified: 'false'
-	};
 
 	let formMode = 'create';
 
 	function viewDetailUser(id) {
-		
 		goto(`/user/${id}`);
 	}
-
-	// onMount(() => {
-	// 	loadUserPage();
-	// });
 
 	function confirmDelete(id) {
 		showConfirmDelete = true;
 		user.user_id = id;
 	}
 
-	function openForm(mode, userData) {
-		formMode = mode;
-		if (userData) {
-			user = { ...userData };
-			console.log(user);
-		} else {
-			user = {
-				user_id: null,
-				name: '',
-				email: '',
-				password: '',
-				phone: '',
-				gender: '',
-				is_verified: 'Chưa xác thực'
-			};
-		}
-		showForm = true;
-	}
+	// function openForm(mode, userData) {
+	// 	formMode = mode;
+	// 	if (userData) {
+	// 		user = { ...userData };
+	// 		console.log(user);
+	// 	} else {
+	// 		user = {
+	// 			user_id: null,
+	// 			name: '',
+	// 			email: '',
+	// 			password: '',
+	// 			phone: '',
+	// 			gender: '',
+	// 			is_verified: 'Chưa xác thực'
+	// 		};
+	// 	}
+	// 	showForm = true;
+	// }
 
 	function toggleForm() {
 		showForm = !showForm;
@@ -146,8 +138,10 @@
 							>
 							<td class="p-2 lg:table-cell">
 								<div class="flex items-center gap-2 text-gray-600">
-									<button class="hidden cursor-pointer lg:table-cell" title="Xem" on:click={()=>viewDetailUser(user.user_id)}
-										><Eye class="h-4 w-4" /></button
+									<button
+										class="hidden cursor-pointer lg:table-cell"
+										title="Xem"
+										on:click={() => viewDetailUser(user.user_id)}><Eye class="h-4 w-4" /></button
 									>
 									<button class="hidden cursor-pointer lg:table-cell" title="Sửa"
 										><Pencil class="h-4 w-4" /></button

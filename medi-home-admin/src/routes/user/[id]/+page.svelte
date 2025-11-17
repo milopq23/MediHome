@@ -1,10 +1,10 @@
 <script>
 	import { pageTitle } from '$lib/stores/store.js';
 	import { addToast } from '$lib/stores/toastMessage.js';
+	import { page } from '$app/stores';
 
-	export let data;
-	let user = data.user;
-	console.log(data)
+	let id = null;
+	$: user_id = parseInt($page.params.id, 10);
 	let title = 'Chi tiết người dùng';
 	pageTitle.set(title);
 </script>
