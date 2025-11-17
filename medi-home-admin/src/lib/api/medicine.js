@@ -19,7 +19,6 @@ export async function DetailMedicine(medicine_id) {
 	try {
 		const res = await fetch(`${API_URL}/api/admin/medicine/${medicine_id}`);
 		const medicine = await res.json();
-		console.log(medicine);
 		return medicine;
 	} catch (error) {
 		console.log('Lỗi gọi thuốc:', error);
@@ -30,7 +29,6 @@ export async function GetMedicineCate() {
 	try {
 		const res = await fetch(`${API_URL}/api/admin/medicinecate/`);
 		const medicineCate = await res.json();
-		console.log(medicineCate);
 		return medicineCate;
 	} catch (error) {
 		console.log('Lỗi gọi thuốc:', error);
@@ -41,7 +39,6 @@ export async function GetDosage() {
 	try {
 		const res = await fetch(`${API_URL}/api/admin/dosage/`);
 		const dosage = await res.json();
-		console.log(dosage);
 		return dosage;
 	} catch (error) {
 		console.log('Lỗi gọi thuốc:', error);
@@ -67,15 +64,16 @@ export async function AddMedicine(medicine) {
 export async function UpdateMedicine(medicine_id, medicine) {
 	try {
 		const res = await fetch(`${API_URL}/api/admin/medicine/${medicine_id}`, {
-			medthod: 'PATCH',
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			},
 			body: JSON.stringify(medicine)
 		});
-		console.log('Log patch medicine', res);
 		const result = await res.json();
-		console.log('Lỗi result patch', result);
 		return result;
 	} catch (error) {
-		console.log('Lỗi patch user', error);
+		console.log('Lỗi patch update medicine', error);
 	}
 }
 
@@ -91,10 +89,27 @@ export async function DeleteMedicine(id) {
 	}
 }
 
-export async function apiUploadMedicine(file) {
+export async function UploadMedicine(file) {
 	const formData = new FormData();
 	formData.append('file', file);
-	formData.append('folder', 'medicine');
+	formData.append('folder', 'medicines');
+	try {
+		const res = await fetch(`${API_URL}/api/single`, {
+			method: 'POST',
+			body: formData
+		});
+		console.log('res', res);
+		const result = await res.json();
+		return result;
+	} catch (error) {
+		console.log('Upload ảnh thuốc', error);
+	}
+}
+
+export async function UploadMultiMedicine(file) {
+	const formData = new FormData();
+	formData.append('file', files);
+	formData.append('folder', 'medicines');
 	try {
 		const res = await fetch(`${API_URL}/api/upload`, {
 			method: 'POST',

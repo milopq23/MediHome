@@ -1,5 +1,11 @@
 <script>
-	import { DetailMedicine, GetMedicineCate } from '$lib/api/medicine.js';
+	import {
+		DetailMedicine,
+		GetDosage,
+		GetMedicineCate,
+		UpdateMedicine,
+		UploadMedicine
+	} from '$lib/api/medicine.js';
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
 	import { Plus } from 'lucide-svelte';
@@ -7,19 +13,19 @@
 	import { onMount } from 'svelte';
 	let title = 'Chi tiết thuốc';
 
-	// export let data;
-	// let { medicine, medicineCate, selectedParent, selectedChild, dosageForm } = data;
+	let id = null;
+	$: medicine_id = parseInt($page.params.id, 10);
 
 	let previewUrl = '';
 	let previewUrls = [];
 	let medicine = {};
 	let categories = {};
+	let dosageForm = [];
 	let selectedParent = null;
 	let selectedChild = null;
-	let id = null;
-	$: medicine_id = parseInt($page.params.id, 10);
 
-	// let categories = medicineCate;
+	let file = null;
+	let subFiles = [];
 
 	$: childCategories = selectedParent
 		? categories.find((c) => c.medicinecate_id === selectedParent)?.children || []
@@ -27,7 +33,14 @@
 
 	async function detailMedicine(medicine_id) {
 		const data = await DetailMedicine(medicine_id);
-		medicine = data;
+		medicine = data || {};
+		previewUrl = medicine.thumbnail || '';
+		await loadCategorySelection();
+	}
+
+	async function getDosage() {
+		const data = await GetDosage();
+		dosageForm = data;
 	}
 
 	async function getMedicineCate() {
@@ -35,45 +48,106 @@
 		categories = data || [];
 		await loadCategorySelection();
 	}
+
+	async function uploadFile(file) {
+		if (!file) return '';
+		const res = await UploadMedicine(file);
+		console.log('upload url', res);
+		return res // Giả sử API trả về { url: '...' }
+	}
+
+	// async function uploadSubFiles(files) {
+	// 	const urls = [];
+	// 	for (const file of files) {
+	// 		const url = await uploadFile(file);
+	// 		if (url) urls.push(url);
+	// 	}
+	// 	return urls;
+	// }
+
+	function onMainFileChange(event) {
+		const selectedFile = event.target.files[0];
+		if (selectedFile) {
+			file = selectedFile;
+			previewUrl = URL.createObjectURL(selectedFile); // preview ảnh mới
+		} else {
+			file = null;
+			previewUrl = medicine.thumbnail || '';
+		}
+	}
+
+	function onSubFileChange(event) {
+		const files = Array.from(event.target.files);
+		subFiles = files;
+		previewUrls = files.map((f) => URL.createObjectURL(f));
+	}
+
 	async function loadCategorySelection() {
 		if (!medicine.medicinecate_id || categories.length === 0) return;
 
 		for (const parent of categories) {
 			const child = parent.children?.find((c) => c.medicinecate_id === medicine.medicinecate_id);
+			console.log(child);
 			if (child) {
 				selectedParent = parent.medicinecate_id;
+				console.log(selectedParent);
 				selectedChild = child.medicinecate_id;
 				break;
 			}
 		}
 	}
 
+	async function onSubmit() {
+		try {
+			// 1. Upload ảnh chính (nếu có file mới)
+			let thumbnailUrl = medicine.thumbnail; // giữ ảnh cũ nếu không đổi
+			if (file) {
+				thumbnailUrl = await uploadFile(file); // upload file mới
+				console.log(thumbnailUrl);
+			}
+
+			// 2. Upload ảnh phụ (nếu có)
+			// let subImages = medicine.sub_images || [];
+			// if (subFiles.length > 0) {
+			// 	const uploadedUrls = await uploadSubFiles(subFiles);
+			// 	subImages = [...subImages, ...uploadedUrls];
+			// }
+
+			// 3. Dữ liệu gửi đi
+			const data = {
+				...medicine,
+				thumbnail: thumbnailUrl, // ảnh mới hoặc giữ cũ
+				// sub_images: subImages,
+				medicinecate_id: selectedChild || selectedParent
+			};
+
+			// 4. Gọi API
+			const res = await UpdateMedicine(medicine_id, data);
+
+			if (res?.status === 'success') {
+				toasts.success('Cập nhật thành công!');
+
+				// Cập nhật lại medicine + preview
+				medicine = { ...medicine, thumbnail: thumbnailUrl };
+				previewUrl = thumbnailUrl; // cập nhật preview
+				file = null; // reset input file
+			} else {
+				toasts.error(res?.message || 'Cập nhật thất bại!');
+			}
+		} catch (err) {
+			console.error(err);
+			toasts.error('Lỗi khi cập nhật!');
+		}
+	}
+
+	// === onMount ===
 	onMount(async () => {
 		await getMedicineCate();
+		await getDosage();
 		if (medicine_id) {
 			await detailMedicine(medicine_id);
 		}
 	});
-	// async function onFileChange(event) {
-	// 	file = event.target.files[0];
-	// 	if (file) {
-	// 		// Tạo URL tạm thời để preview
-	// 		previewUrl = URL.createObjectURL(file);
-	// 	} else {
-	// 		previewUrl = '';
-	// 	}
-	// }
-
-	// function onFileChange(event) {
-	// 	const files = event.target.files;
-	// 	for (const file of files) {
-	// 		const reader = new FileReader();
-	// 		reader.onload = (e) => {
-	// 			previewUrls = [...previewUrls, e.target.result]; // thêm URL mới vào mảng
-	// 		};
-	// 		reader.readAsDataURL(file);
-	// 	}
-	// }
 </script>
 
 <div class="flex items-center justify-center">
@@ -82,7 +156,7 @@
 			<h1 class="text-5xl font-extrabold">{title}</h1>
 		</div>
 
-		<form>
+		<form on:submit|preventDefault={onSubmit}>
 			<div class="mb-6 grid gap-6 md:grid-cols-3">
 				<div class="col-span-1">
 					<label for="code" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
@@ -182,7 +256,7 @@
 						</ul>
 					{/if}
 				</div> -->
-				<!-- <div class="">
+				<div class="">
 					<label
 						for="dosageForm"
 						class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Dạng bào chế</label
@@ -199,8 +273,7 @@
 							<option class="" value={dosage.dosageform_id}>{dosage.name}</option>
 						{/each}
 					</select>
-				</div> -->
-
+				</div>
 				<div class="">
 					<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 						>Đơn vị(viên/vỉ)</label
@@ -231,7 +304,6 @@
 						>Đóng gói</label
 					>
 					<input
-						type="url"
 						bind:value={medicine.package}
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 						placeholder="Hộp 10 vỉ x 10 viên"
@@ -271,22 +343,26 @@
 				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
 					>Ảnh chính:
 				</label>
-				<div class="flex justify-center">
-					{#if previewUrl}
-						<img
-							src={previewUrl}
-							alt="Ảnh preview"
-							class="max-h-[200px] max-w-[200px] cursor-pointer rounded object-contain"
-						/>
-					{:else}
-						<div
-							class="flex h-[200px] w-[200px] items-center justify-center rounded-xl border-solid bg-gray-300"
-						>
-							<Plus class="h-5 w-5" />
-						</div>
-					{/if}
-					<input class="hidden" type="file" accept="image/*" on:change={onFileChange} />
-				</div>
+				<label>
+					<div class="flex justify-center">
+						{#if previewUrl}
+							<div class="relative">
+								<img
+									src={previewUrl}
+									alt="Preview"
+									class="max-h-[200px] max-w-[200px] rounded object-contain"
+								/>
+							</div>
+						{:else}
+							<div
+								class="flex h-[200px] w-[200px] items-center justify-center rounded-xl bg-gray-300"
+							>
+								<Plus class="h-5 w-5" />
+							</div>
+						{/if}
+						<input class="hidden" type="file" accept="image/*" on:change={onMainFileChange} />
+					</div>
+				</label>
 			</div>
 			<div>
 				<label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
@@ -308,7 +384,7 @@
 							<Plus class="h-5 w-5" />
 						</div>
 					{/if}
-					<input class="hidden" type="file" multiple accept="image/*" on:change={onFileChange} />
+					<input class="hidden" type="file" multiple accept="image/*" on:change={onSubFileChange} />
 				</label>
 			</div>
 			<div class="mb-6">

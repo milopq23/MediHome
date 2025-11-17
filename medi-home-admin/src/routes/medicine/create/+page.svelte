@@ -2,8 +2,9 @@
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
 	import { goto } from '$app/navigation';
-
 	import { Plus } from 'lucide-svelte';
+
+	
 	let medicine = {};
 	let title = 'Tạo thuốc';
 	pageTitle.set(title);
