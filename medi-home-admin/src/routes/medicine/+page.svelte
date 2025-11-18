@@ -19,7 +19,7 @@
 	let total = 1;
 	let totalPages = Math.ceil(total / pageSize);
 
-	let selectedActionId = null;
+	let selectOption = null;
 	let showDelete = false;
 
 	async function listMedicines(currentPage) {
@@ -35,20 +35,6 @@
 		listMedicines();
 	});
 
-	//navigation
-	function viewDetailMedicine(id) {
-		toasts.add({ message: 'Lưu thành công', type: 'success' });
-		goto(`/medicine/${id}`);
-	}
-
-	function create() {
-		goto(`/medicine/create`);
-	}
-
-	async function deleteMedicine(id) {
-		await DeleteMedicine(id);
-	}
-
 	async function confirmDelete(id) {
 		try {
 			await deleteMedicine(id);
@@ -61,8 +47,22 @@
 		showDelete = false;
 	}
 
-	function openAction(id) {
-		selectedActionId = selectedActionId === id ? null : id;
+	async function deleteMedicine(id) {
+		await DeleteMedicine(id);
+	}
+
+	//navigation
+	function viewDetailMedicine(id) {
+		toasts.add({ message: 'Lưu thành công', type: 'success' });
+		goto(`/medicine/${id}`);
+	}
+
+	function create() {
+		goto(`/medicine/create`);
+	}
+
+	function openMoreOption(id) {
+		selectOption = selectOption === id ? null : id;
 	}
 
 	function goToPage(p) {
@@ -117,11 +117,8 @@
 								<div class="flex items-center gap-2 text-gray-600">
 									<button
 										class="hidden cursor-pointer md:table-cell"
-										title="Xem"
+										title="Sửa"
 										on:click={() => viewDetailMedicine(medicine.medicine_id)}
-										><Eye class="h-4 w-4" /></button
-									>
-									<button class="hidden cursor-pointer md:table-cell" title="Sửa"
 										><Pencil class="h-4 w-4" /></button
 									>
 									<button
@@ -157,12 +154,12 @@
 									{/if}
 									<div>
 										<div class="relative inline-block w-2 md:hidden">
-											<button on:click={() => openAction(medicine.medicine_id)}>
+											<button on:click={() => openMoreOption(medicine.medicine_id)}>
 												<MoreVertical class="h-4 w-4" />
 											</button>
 										</div>
 
-										{#if selectedActionId === medicine.medicine_id}
+										{#if selectOption === medicine.medicine_id}
 											<div
 												class="absolute right-5 z-10 mt-1 w-30 divide-y divide-gray-100 rounded-lg bg-white shadow-sm dark:bg-gray-700"
 											>

@@ -2,8 +2,9 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 
 export async function ListVoucher() {
 	try {
-		const res = await fetch(`${API_URL}/api/voucher`);
+		const res = await fetch(`${API_URL}/api/voucher/`);
 		const voucher = await res.json();
+		console.log(voucher);
 		return voucher;
 	} catch (error) {
 		console.log('Lỗi Get Voucher' + error);
