@@ -320,102 +320,19 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 			tx.Rollback()
 			return model.Order{}, err
 		}
+		_, err = s.LogTransactionOut(selectType.InventoryID, item.Quantity)
+		if err != nil {
+			log.Printf("Lỗi ghi log transaction: %v", err)
+			tx.Rollback()
+			return model.Order{}, err
+		}
+
 	}
 
 	// commit toàn bộ
 	if err := tx.Commit().Error; err != nil {
 		return model.Order{}, err
 	}
-
-	// user, err := s.repoCart.GetCartUser(req.UserID)
-	// if err != nil {
-	// 	return model.Order{}, err
-	// }
-
-	// cartItems, err := s.repoCart.GetCartItem(user.CartID)
-	// if err != nil {
-	// 	return model.Order{}, err
-	// }
-
-	// var totalPrice float64
-	// for _, item := range cartItems {
-	// 	selectType, err := s.SelectType(item.SelectType, item.MedicineID)
-	// 	if err != nil {
-	// 		return model.Order{}, err
-	// 	}
-	// 	totalPrice += selectType.Price * float64(item.Quantity)
-	// }
-
-	// //giảm giá
-	// var discount float64
-
-	// var voucher model.Voucher
-	// if req.VoucherCode != "" {
-	// 	discount, err = s.repoVoucher.ClassifyVoucher(req.VoucherCode, totalPrice)
-	// 	if err != nil {
-	// 		return model.Order{}, err
-	// 	}
-
-	// 	voucher, err = s.repoVoucher.GetVoucherByCode(req.VoucherCode)
-	// 	if err != nil {
-	// 		return model.Order{}, err
-	// 	}
-	// }
-
-	// //giá sau khi giảm
-	// final_amount := totalPrice + s.ShippingPrice(req.ShippingID) - discount
-
-	// order := model.Order{
-	// 	UserID:        req.UserID,
-	// 	AddressID:     3,
-	// 	VoucherID:     voucher.VoucherID,
-	// 	ShippingID:    req.ShippingID,
-	// 	OrderStatus:   "Chờ xác nhận",
-	// 	PaymentMethod: req.PaymentMethod,
-	// 	PaymentStatus: "Chưa thanh toán",
-	// 	TotalAmount:   totalPrice,
-	// 	FinalAmount:   final_amount,
-	// }
-	// ordered, err := s.repoOrder.CreateOrder(order)
-	// if err != nil {
-	// 	log.Printf("Lỗi không tạo order: %v", err)
-	// 	return model.Order{}, err
-	// }
-
-	// for _, item := range cartItems {
-	// 	selectType, err := s.SelectType(item.SelectType, item.MedicineID)
-	// 	if err != nil {
-	// 		log.Printf("Lỗi không lấy được giá tiền: %v", err)
-	// 		return model.Order{}, err
-	// 	}
-
-	// 	orderDetail := model.OrderDetail{
-	// 		OrderID:     ordered.OrderID,
-	// 		InventoryID: selectType.InventoryID,
-	// 		MedicineID:  item.MedicineID,
-	// 		Quantity:    item.Quantity,
-	// 		UnitPrice:   selectType.Price,
-	// 		SelectType:  item.SelectType,
-	// 	}
-
-	// 	err = s.repoInventory.DecreaseQuantity(selectType.InventoryID, item.Quantity)
-	// 	if err != nil {
-	// 		log.Printf("Lỗi giảm số lượng inventory: %v", err)
-	// 		return model.Order{}, err
-	// 	}
-
-	// 	_, err = s.LogTransactionOut(selectType.InventoryID, item.Quantity)
-	// 	if err != nil {
-	// 		log.Printf("Lỗi ghi log transaction: %v", err)
-	// 		return model.Order{}, err
-	// 	}
-
-	// 	_, err = s.repoOrder.CreateOrderDetail(orderDetail)
-	// 	if err != nil {
-	// 		log.Printf("Lỗi tạo order detail: %v", err)
-	// 		return model.Order{}, err
-	// 	}
-	// }
 
 	return ordered, nil
 }

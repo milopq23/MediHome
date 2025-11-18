@@ -6,11 +6,14 @@ import (
 )
 
 type VoucherService interface {
-	GetAllVoucher() ([]model.Voucher, error)
 	FindVoucherActive(total float64) ([]model.Voucher, error)
-	CreateVoucher(voucher model.Voucher) (model.Voucher, error)
+
 	GetVoucherByCode(code string) (model.Voucher, error)
-	PatchVoucher(voucher model.Voucher) (model.Voucher, error)
+
+	GetAllVoucher() ([]model.Voucher, error)
+	GetDetailVoucher(id int64) (model.Voucher, error)
+	CreateVoucher(voucher model.Voucher) (model.Voucher, error)
+	UpdateVoucher(voucher_id int64, data map[string]interface{}) (model.Voucher, error)
 	DeleteVoucher(id int64) error
 }
 
@@ -22,29 +25,12 @@ func NewVoucherService(repo repository.VoucherRepository) VoucherService {
 	return &voucherService{repo}
 }
 
-func (s *voucherService) GetAllVoucher() ([]model.Voucher, error) {
-	return s.repo.GetAllVoucher()
-}
-
 func (s *voucherService) FindVoucherActive(total float64) ([]model.Voucher, error) {
 	return s.repo.FindActiveVoucher(total)
 }
 
-func (s *voucherService) CreateVoucher(voucher model.Voucher) (model.Voucher, error) {
-	return s.repo.CreateVoucher(voucher)
-}
-
 func (s *voucherService) GetVoucherByCode(code string) (model.Voucher, error) {
 	return s.repo.GetVoucherByCode(code)
-}
-
-func (s *voucherService) PatchVoucher(voucher model.Voucher) (model.Voucher, error) {
-
-	return s.repo.PatchVoucher(voucher)
-}
-
-func (s *voucherService) DeleteVoucher(id int64) error {
-	return s.repo.DeleteVoucher(id)
 }
 
 // func (s *voucherService) ValidateVoucher() (model.Voucher,error){
@@ -64,3 +50,23 @@ func (s *voucherService) DeleteVoucher(id int64) error {
 //     }
 // 	return vouchers,nill
 // }
+
+func (s *voucherService) GetAllVoucher() ([]model.Voucher, error) {
+	return s.repo.GetAllVoucher()
+}
+
+func (s *voucherService) GetDetailVoucher(id int64) (model.Voucher, error) {
+	return s.repo.GetDetailVoucher(id)
+}
+
+func (s *voucherService) CreateVoucher(voucher model.Voucher) (model.Voucher, error) {
+	return s.repo.CreateVoucher(voucher)
+}
+
+func (s *voucherService) UpdateVoucher(voucher_id int64, data map[string]interface{}) (model.Voucher, error) {
+	return s.repo.UpdateVoucher(voucher_id, data)
+}
+
+func (s *voucherService) DeleteVoucher(id int64) error {
+	return s.repo.DeleteVoucher(id)
+}

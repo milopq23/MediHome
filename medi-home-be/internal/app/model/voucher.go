@@ -3,15 +3,15 @@ package model
 import "time"
 
 type Voucher struct {
-	VoucherID        int64     `gorm:"column:voucher_id;primarykey;autoIncrement"`
+	VoucherID        int64     `gorm:"column:voucher_id;primarykey;autoIncrement" json:"voucher_id"`
 	Code             string    `gorm:"column:code;unique;not null" json:"code"`
 	Name             string    `gorm:"column:name;not null" json:"name"`
 	Description      string    `gorm:"column:description" json:"description"`
 	StartDate        time.Time `gorm:"column:start_date;not null" json:"start_date"`
 	EndDate          time.Time `gorm:"column:end_date;not null" json:"end_date"`
 	IsActive         bool      `gorm:"column:is_active;not null" json:"is_active"`
-	DiscountType     string    `gorm:"column:discount_type;not null" json:"discount_type"` // percentage or fixed
-	DiscountValue    float64   `gorm:"column:discount_value;not null" jsson:"discount_value"`
+	DiscountType     string    `gorm:"column:discount_type;not null" json:"discount_type"`
+	DiscountValue    float64   `gorm:"column:discount_value;not null" json:"discount_value"`
 	MinOrderValue    float64   `gorm:"column:min_order_value;not null" json:"min_order_value"`
 	MaxDiscountValue float64   `gorm:"column:max_discount_value;not null" json:"max_discount_value"`
 	UsageLimit       int64     `gorm:"column:usage_limit;not null" json:"usage_limit"`

@@ -17,9 +17,10 @@ func VoucherRoutes(r *gin.RouterGroup) {
 	{
 		voucher.GET("/", voucherHandler.GetAllVoucher)
 		voucher.GET("/active", voucherHandler.FindActiveVoucher)
+		voucher.GET("/:id", voucherHandler.GetDetailVoucher)
 		voucher.POST("/", voucherHandler.CreateVoucher)
-		voucher.GET("/:code", voucherHandler.GetVoucherByCode)
-		voucher.PATCH("/", voucherHandler.PatchVoucher)
+		voucher.GET("/code/:code", voucherHandler.GetVoucherByCode)
+		voucher.PATCH("/:id", voucherHandler.PatchVoucher)
 		voucher.DELETE("/:id", voucherHandler.DeleteVoucher)
 	}
 }

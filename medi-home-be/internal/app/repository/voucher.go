@@ -9,16 +9,16 @@ import (
 )
 
 type VoucherRepository interface {
-	GetAllVoucher() ([]model.Voucher, error)
 	FindActiveVoucher(total float64) ([]model.Voucher, error)
-
-	CreateVoucher(voucher model.Voucher) (model.Voucher, error)
 	GetVoucherByCode(code string) (model.Voucher, error)
-	PatchVoucher(voucher model.Voucher) (model.Voucher, error)
-	DeleteVoucher(id int64) error
-
 	UpdateAllStatus() error
 	ClassifyVoucher(code string, total float64) (float64, error)
+
+	GetAllVoucher() ([]model.Voucher, error)
+	GetDetailVoucher(id int64) (model.Voucher, error)
+	CreateVoucher(voucher model.Voucher) (model.Voucher, error)
+	UpdateVoucher(voucher_id int64, data map[string]interface{}) (model.Voucher, error)
+	DeleteVoucher(id int64) error
 }
 
 type voucherRepository struct{}
@@ -34,23 +34,6 @@ type VoucherValidate struct {
 	TypeVoucher string `json:"type"`
 }
 
-func (r *voucherRepository) GetAllVoucher() ([]model.Voucher, error) {
-	var voucher []model.Voucher
-	err := config.DB.Find(&voucher).Error
-	if err != nil {
-		return []model.Voucher{}, err
-	}
-	return voucher, err
-}
-
-func (r *voucherRepository) CreateVoucher(voucher model.Voucher) (model.Voucher, error) {
-	err := config.DB.Create(&voucher).Error
-	if err != nil {
-		return model.Voucher{}, err
-	}
-	return voucher, nil
-}
-
 func (r *voucherRepository) GetVoucherByCode(code string) (model.Voucher, error) {
 	var voucher model.Voucher
 	err := config.DB.Where("code = ?", code).First(&voucher).Error
@@ -58,22 +41,6 @@ func (r *voucherRepository) GetVoucherByCode(code string) (model.Voucher, error)
 		return model.Voucher{}, err
 	}
 	return voucher, nil
-}
-
-func (r *voucherRepository) PatchVoucher(voucher model.Voucher) (model.Voucher, error) {
-	err := config.DB.Save(&voucher).Error
-	if err != nil {
-		return model.Voucher{}, err
-	}
-	return voucher, nil
-}
-
-func (r *voucherRepository) DeleteVoucher(id int64) error {
-	err := config.DB.Delete(&model.Voucher{}, id).Error
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (r *voucherRepository) ClassifyVoucher(code string, total float64) (float64, error) {
@@ -139,5 +106,54 @@ func (r *voucherRepository) UpdateAllStatus() error {
 	}
 	log.Printf("Hiện có %d voucher đang còn hiệu lực\n", count)
 
+	return nil
+}
+
+func (r *voucherRepository) GetAllVoucher() ([]model.Voucher, error) {
+	var voucher []model.Voucher
+	err := config.DB.Find(&voucher).Error
+	if err != nil {
+		return []model.Voucher{}, err
+	}
+	return voucher, err
+}
+
+func (r *voucherRepository) GetDetailVoucher(id int64) (model.Voucher, error) {
+	var voucher model.Voucher
+	err := config.DB.Where("voucher_id = ?", id).First(&voucher).Error
+	if err != nil {
+		return model.Voucher{}, err
+	}
+	return voucher, err
+
+}
+func (r *voucherRepository) CreateVoucher(voucher model.Voucher) (model.Voucher, error) {
+	err := config.DB.Create(&voucher).Error
+	if err != nil {
+		return model.Voucher{}, err
+	}
+	return voucher, nil
+}
+
+func (r *voucherRepository) UpdateVoucher(voucher_id int64, data map[string]interface{}) (model.Voucher, error) {
+	err := config.DB.Model(&model.Voucher{}).
+		Where("voucher_id = ?", voucher_id).
+		Updates(data).Error
+	if err != nil {
+		return model.Voucher{}, err
+	}
+
+	var voucher model.Voucher
+	if err := config.DB.Where("voucher_id = ?", voucher_id).First(&voucher).Error; err != nil {
+		return model.Voucher{}, err
+	}
+	return voucher, nil
+}
+
+func (r *voucherRepository) DeleteVoucher(id int64) error {
+	err := config.DB.Delete(&model.Voucher{}, id).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

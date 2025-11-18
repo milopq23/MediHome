@@ -108,7 +108,7 @@ func (s *userService) Patch(id int64, data map[string]interface{}) (model.User, 
 		"email":       true,
 		"phone":       true,
 		"avatar":      true,
-		"pass	word":   true,
+		"password":    true,
 		"gender":      true,
 		"is_verified": true,
 	}
