@@ -11,6 +11,17 @@ export async function ListVoucher() {
 	}
 }
 
+export async function DetailVoucher(voucher_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/voucher/${voucher_id}`);
+		const voucher = await res.json();
+		console.log(voucher);
+		return voucher;
+	} catch (error) {
+		console.log('Lỗi Get Detail Voucher' + error);
+	}
+}
+
 export async function CreateVoucher(voucher) {
 	try {
 		const res = await fetch(`${API_URL}/api/voucher`, {
@@ -20,7 +31,7 @@ export async function CreateVoucher(voucher) {
 			},
 			body: JSON.stringify(voucher)
 		});
-		const newVoucher = res.json();
+		const newVoucher = await res.json();
 		return newVoucher;
 	} catch (error) {
 		console.log('Lỗi tạo voucher' + error);
@@ -30,13 +41,14 @@ export async function CreateVoucher(voucher) {
 export async function UpdateVoucher(voucher_id, updatedData) {
 	try {
 		const res = await fetch(`${API_URL}/api/voucher/${voucher_id}`, {
-			method: 'POST',
+			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(updatedData)
 		});
-		const voucher = res.json();
+		const voucher = await res.json();
+		console.log(voucher);
 		return voucher;
 	} catch (error) {
 		console.log('Lỗi update voucher' + error);

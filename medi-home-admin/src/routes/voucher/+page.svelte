@@ -2,6 +2,7 @@
 	import { ListVoucher, DeleteVoucher } from '$lib/api/voucher.js';
 	import { Pencil, Trash2, MoreVertical, Eye, Plus } from 'lucide-svelte';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	let search = '';
 	let vouchers = [];
@@ -34,7 +35,7 @@
 	}
 
 	function viewDetailVoucher(id) {
-		toasts.add({ message: 'Lưu thành công', type: 'success' });
+		// toasts.add({ message: 'Lưu thành công', type: 'success' });
 		goto(`/voucher/${id}`);
 	}
 
