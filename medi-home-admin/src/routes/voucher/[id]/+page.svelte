@@ -5,7 +5,8 @@
 	import { ArrowLeft } from 'lucide-svelte';
 	import HeaderDetail from '$lib/components/HeaderDetail.svelte';
 
-	let title = 'Trang chi tiết voucher';
+	let start_date = '';
+	let end_date = '';
 	let voucher = {};
 
 	let id = null;
@@ -18,12 +19,21 @@
 	async function loadDetailVoucher(voucher_id) {
 		const data = await DetailVoucher(voucher_id);
 		voucher = data;
+
+		start_date = voucher.start_date ? voucher.start_date.split('T')[0] : '';
+		end_date = voucher.end_date ? voucher.end_date.split('T')[0] : '';
 	}
 
+	// $: voucher.start_date = start_date;
+	// $: voucher.end_date = end_date;
 	async function updateVoucher() {
 		const data = { ...voucher };
 		await UpdateVoucher(voucher_id, data);
 	}
+
+	// $: if (voucher) {
+
+	// }
 </script>
 
 <div class="flex items-center justify-center py-10">
@@ -46,7 +56,7 @@
 			<!-- Name -->
 			<div>
 				<label for="name" class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200">
-					Voucher:
+					Tên voucher:
 				</label>
 				<input
 					type="text"
@@ -102,7 +112,33 @@
 					/>
 				</div>
 			{/if}
+			<div>
+				<label
+					for="min_order_value"
+					class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200"
+				>
+					Ngày bắt đầu:
+				</label>
+				<input
+					type="date"
+					class="w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+					bind:value={start_date}
+				/>
+			</div>
 
+			<div>
+				<label
+					for="min_order_value"
+					class="mb-2 block text-sm font-semibold text-gray-700 dark:text-gray-200"
+				>
+					Ngày kết thúc:
+				</label>
+				<input
+					type="date"
+					class="w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-400 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+					bind:value={end_date}
+				/>
+			</div>
 			<!-- Min order value -->
 			<div>
 				<label

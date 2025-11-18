@@ -24,7 +24,7 @@ export async function DetailVoucher(voucher_id) {
 
 export async function CreateVoucher(voucher) {
 	try {
-		const res = await fetch(`${API_URL}/api/voucher`, {
+		const res = await fetch(`${API_URL}/api/voucher/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

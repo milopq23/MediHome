@@ -99,7 +99,7 @@
 							{#if voucher.discount_type === 'Phần trăm'}
 								<td class="hidden w-30 p-2 lg:table-cell">{voucher.discount_value}%</td>
 							{:else}
-								<td class="hidden w-30 p-2 lg:table-cell">{formatVND(voucher.max_discountvalue)}</td
+								<td class="hidden w-30 p-2 lg:table-cell">{formatVND(voucher.max_discount_value)}</td
 								>
 							{/if}
 							<td class="hidden w-30 p-2 lg:table-cell"
