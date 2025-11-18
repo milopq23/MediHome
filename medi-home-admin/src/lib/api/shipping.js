@@ -2,7 +2,17 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 
 export async function ListShipping() {
 	try {
-		const res = await fetch(`${API_URL}/api/shipping`);
+		const res = await fetch(`${API_URL}/api/shipping/`);
+		const shipping = await res.json();
+		return shipping;
+	} catch (error) {
+		console.log('Lỗi Get Voucher' + error);
+	}
+}
+
+export async function DetailShipping(shipping_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/shipping/${shipping_id}`);
 		const shipping = await res.json();
 		return shipping;
 	} catch (error) {
@@ -12,7 +22,7 @@ export async function ListShipping() {
 
 export async function CreateShipping(shipping) {
 	try {
-		const res = await fetch(`${API_URL}/api/shipping`, {
+		const res = await fetch(`${API_URL}/api/shipping/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

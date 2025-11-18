@@ -2,7 +2,6 @@
 	import { DetailVoucher, UpdateVoucher } from '$lib/api/voucher.js';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { ArrowLeft } from 'lucide-svelte';
 	import HeaderDetail from '$lib/components/HeaderDetail.svelte';
 
 	let start_date = '';
@@ -24,16 +23,12 @@
 		end_date = voucher.end_date ? voucher.end_date.split('T')[0] : '';
 	}
 
-	// $: voucher.start_date = start_date;
-	// $: voucher.end_date = end_date;
+	
 	async function updateVoucher() {
 		const data = { ...voucher };
 		await UpdateVoucher(voucher_id, data);
 	}
 
-	// $: if (voucher) {
-
-	// }
 </script>
 
 <div class="flex items-center justify-center py-10">

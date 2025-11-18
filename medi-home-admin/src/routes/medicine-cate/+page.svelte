@@ -9,7 +9,7 @@
 		apiUploadIcon
 	} from '$lib/api/medicine-cate.js';
 	import TitlePage from '$lib/components/TitlePage.svelte';
-	
+
 	export let data;
 
 	let categories = [];
@@ -127,6 +127,7 @@
 		}
 	}
 </script>
+
 <h1>{data.title}</h1>
 <div>
 	<TitlePage titleName="Danh sách thuốc" />

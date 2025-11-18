@@ -21,7 +21,7 @@
 
 <div class="flex items-center justify-center py-10">
 	<div class="w-full max-w-3xl rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
-		<HeaderDetail title="Trang chi tiết voucher" route="voucher" />
+		<HeaderDetail title="Tạo voucher" route="voucher" />
 
 		<form class="space-y-6" on:submit|preventDefault={createVoucher}>
 			<!-- Code -->
