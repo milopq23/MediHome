@@ -13,7 +13,7 @@ func DosageFormRoute(r *gin.RouterGroup){
 	dosageService := service.NewDosageFormService(dosageRepo)
 	dosageHandler := handler.NewDosageFormHandler(dosageService)
 
-	dosage := r.Group("/admin/dosage")
+	dosage := r.Group("/dosage")
 	{
 		dosage.GET("/",dosageHandler.GetAll)
 		dosage.GET("/:id",dosageHandler.GetByID)

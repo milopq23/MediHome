@@ -12,7 +12,7 @@ func AdminRoutes(r *gin.RouterGroup){
 	adminRepo := repository.NewAdminRepository()
 	adminService := service.NewAdminService(adminRepo)
 	adminHandler := handler.NewAdminHandler(adminService)
-	user := r.Group("/admin/staff")
+	user := r.Group("/staff")
 	{
 		user.GET("/",adminHandler.GetAll)
 		user.GET("/:id",adminHandler.GetByID)

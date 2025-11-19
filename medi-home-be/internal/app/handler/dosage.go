@@ -9,15 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DosageFormHandler struct{
+type DosageFormHandler struct {
 	service service.DosageFormService
 }
 
-func NewDosageFormHandler(service service.DosageFormService) *DosageFormHandler{
+func NewDosageFormHandler(service service.DosageFormService) *DosageFormHandler {
 	return &DosageFormHandler{service}
 }
 
-func (h *DosageFormHandler) GetAll(c *gin.Context){
+func (h *DosageFormHandler) GetAll(c *gin.Context) {
 	dosages, err := h.service.GetAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -28,7 +28,7 @@ func (h *DosageFormHandler) GetAll(c *gin.Context){
 
 func (h *DosageFormHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	dosage,err := h.service.GetByID(int64(id))
+	dosage, err := h.service.GetByID(int64(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "DosageForm not found"})
 		return
@@ -50,7 +50,7 @@ func (h *DosageFormHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newDosage)
 }
 
-func (h *DosageFormHandler) Patch(c *gin.Context){
+func (h *DosageFormHandler) Patch(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	var input map[string]interface{}
@@ -67,11 +67,11 @@ func (h *DosageFormHandler) Patch(c *gin.Context){
 	c.JSON(http.StatusOK, updated)
 }
 
-func (h *DosageFormHandler) Delete(c *gin.Context){
+func (h *DosageFormHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err := h.service.Delete(int64(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "Admin deleted"})
+	c.JSON(http.StatusOK, gin.H{"message": "Delete dosageform"})
 }

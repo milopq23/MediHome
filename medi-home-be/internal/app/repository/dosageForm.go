@@ -37,7 +37,7 @@ func (r *dosageFormRepository) Create(dosageForm model.DosageForm) (model.Dosage
 }
 
 func (r *dosageFormRepository) Patch(id int64, updates map[string]interface{}) (model.DosageForm, error) {
-	err := config.DB.Model(&model.DosageForm{}).Where("dosageform_id=?").Updates(updates).Error
+	err := config.DB.Model(&model.DosageForm{}).Where("dosageform_id=?", id).Updates(updates).Error
 	if err != nil {
 		return model.DosageForm{}, err
 	}
