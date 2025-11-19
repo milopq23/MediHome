@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_GO_PORT;
 
 export async function ListUser(page = 1, pageSize = 15) {
 	try {
-		const res = await fetch(`${API_URL}/api/admin/user/?page=${page}&page_size=${pageSize}`);
+		const res = await fetch(`${API_URL}/api/user/?page=${page}&page_size=${pageSize}`);
 		const user = await res.json();
 		return {
 			users: user.data,
@@ -20,7 +20,7 @@ export async function ListUser(page = 1, pageSize = 15) {
 
 export async function GetDetailUser(user_id) {
 	try {
-		const res = await fetch(`${API_URL}/api/admin/user/${user_id}`);
+		const res = await fetch(`${API_URL}/api/user/${user_id}`);
 		const user = await res.json();
 		return user;
 	} catch (error) {
