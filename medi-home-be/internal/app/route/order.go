@@ -28,12 +28,4 @@ func OrderRoute(r *gin.RouterGroup) {
 		order.PATCH("/approve/:id", orderHandler.ApproveStatus)
 		order.POST("/checkout/:id", orderHandler.CheckOut)
 	}
-	// userOrder := r.Group("/order")
-	// {
-	// 	//lấy tất cả và lọc theo loại
-	// 	order.GET("/", orderHandler.GetOrders)
-	// 	// order.GET("/:id", orderHandler.GetDetailOrder)
-	// 	order.GET("/:id",orderHandler.GetUserOrders)
-	// 	order.POST("/checkout/:id", orderHandler.CheckOut)
-	// }
 }

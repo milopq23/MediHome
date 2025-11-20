@@ -26,6 +26,15 @@ func (h *InventoryHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, inventories)
 }
 
+func (h *InventoryHandler) GetInventory(c *gin.Context) {
+	inventories, err := h.service.GetInventory()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, inventories)
+}
+
 func (h *InventoryHandler) Create(c *gin.Context) {
 	var inventory model.Inventory
 	if err := c.ShouldBindJSON(&inventory); err != nil {

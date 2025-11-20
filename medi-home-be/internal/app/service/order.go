@@ -130,6 +130,7 @@ func (s *orderService) GetStatusOrder(status string) ([]dto.AllOrderResponse, er
 			PaymentStatus: o.PaymentStatus,
 			FinalAmount:   o.FinalAmount,
 		})
+
 	}
 	return response, err
 }
@@ -152,6 +153,8 @@ func (s *orderService) GetAllUserOrder(user_id int64) ([]dto.AllOrderResponse, e
 			PaymentStatus: o.PaymentStatus,
 			FinalAmount:   o.FinalAmount,
 		})
+
+		// log.Print("date",.Date)
 	}
 	return response, err
 }
@@ -174,6 +177,7 @@ func (s *orderService) GetStatusUserOrder(user_id int64, status string) ([]dto.A
 			PaymentStatus: o.PaymentStatus,
 			FinalAmount:   o.FinalAmount,
 		})
+		// log.Print("o",o.Date)
 	}
 	return response, err
 }

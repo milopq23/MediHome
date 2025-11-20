@@ -48,7 +48,7 @@ type OrderList struct {
 func (r *orderRepository) GetViewAllOrder() ([]OrderList, error) {
 	var order []OrderList
 	query := `
-			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
+			select o.order_id,o.created_at as date,a.full_name,count(od.orderdetail_id) as order_item,
 			o.order_status,o.payment_method,o.payment_status,o.final_amount
 			from orders o
 			join addresses a on a.address_id = o.address_id
@@ -57,7 +57,7 @@ func (r *orderRepository) GetViewAllOrder() ([]OrderList, error) {
 			join orderdetails od on od.order_id = o.order_id
 			group by 
 				o.order_id,o.created_at,a.full_name,o.order_status,
-				o.payment_method,o.payment_status,o.total_amount,o.final_amount
+				o.payment_method,o.payment_status,o.final_amount
 			order by o.order_id desc
 		`
 	err := config.DB.Raw(query).Scan(&order).Error
@@ -67,7 +67,7 @@ func (r *orderRepository) GetViewAllOrder() ([]OrderList, error) {
 func (r *orderRepository) GetViewOrderStatus(status string) ([]OrderList, error) {
 	var order []OrderList
 	query := `
-			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
+			select o.order_id,o.created_at as date,a.full_name,count(od.orderdetail_id) as order_item,
 			o.order_status,o.payment_method,o.payment_status,o.final_amount
 			from orders o
 			join addresses a on a.address_id = o.address_id
@@ -77,7 +77,7 @@ func (r *orderRepository) GetViewOrderStatus(status string) ([]OrderList, error)
 			where o.order_status = ? 
 			group by 
 				o.order_id,o.created_at,a.full_name,o.order_status,
-				o.payment_method,o.payment_status,o.total_amount,o.final_amount,
+				o.payment_method,o.payment_status,o.final_amount
 			order by o.order_id desc
 		`
 	err := config.DB.Raw(query, status).Scan(&order).Error
@@ -87,7 +87,7 @@ func (r *orderRepository) GetViewOrderStatus(status string) ([]OrderList, error)
 func (r *orderRepository) GetViewAllOrderUser(user_id int64) ([]OrderList, error) {
 	var order []OrderList
 	query := `
-			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
+			select o.order_id,o.created_at as date,a.full_name,count(od.orderdetail_id) as order_item,
 			o.order_status,o.payment_method,o.payment_status,o.final_amount
 			from orders o
 			join addresses a on a.address_id = o.address_id
@@ -108,7 +108,7 @@ func (r *orderRepository) GetViewAllOrderUser(user_id int64) ([]OrderList, error
 func (r *orderRepository) GetViewOrderStatusByUser(user_id int64, status string) ([]OrderList, error) {
 	var order []OrderList
 	query := `
-			select o.order_id,o.created_at,a.full_name,count(od.orderdetail_id) as order_item,
+			select o.order_id,o.created_at as date,a.full_name,count(od.orderdetail_id) as order_item,
 			o.order_status,o.payment_method,o.payment_status,o.final_amount
 			from orders o
 			join addresses a on a.address_id = o.address_id
@@ -121,7 +121,6 @@ func (r *orderRepository) GetViewOrderStatusByUser(user_id int64, status string)
 			order by o.order_id desc
 		`
 	err := config.DB.Raw(query, status, user_id).Scan(&order).Error
-	// log.Print("repo",order)
 	return order, err
 }
 

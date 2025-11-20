@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type InventoryRepository interface {
+	GetInventory() ([]ListInventory, error)
 	// ADMIN
 	FindAll() ([]model.Inventory, error)
 	Create(inventory model.Inventory) (model.Inventory, error)
@@ -27,6 +29,12 @@ func (r *inventoryRepository) FindAll() ([]model.Inventory, error) {
 	var inventories []model.Inventory
 	err := config.DB.Find(&inventories).Error
 	return inventories, err
+}
+
+func (r *inventoryRepository) FindByID(id int64) (model.Inventory, error) {
+	var inventory model.Inventory
+	err := config.DB.First(&inventory, id).Error
+	return inventory, err
 }
 
 func (r *inventoryRepository) Create(inventory model.Inventory) (model.Inventory, error) {
@@ -49,9 +57,28 @@ func (r *inventoryRepository) Delete(id int64) error {
 	return err
 }
 
-func (r *inventoryRepository) FindByID(id int64) (model.Inventory, error) {
-	var inventory model.Inventory
-	err := config.DB.First(&inventory, id).Error
+type ListInventory struct {
+	Code           string    `json:"code"`
+	Name           string    `json:"name"`
+	Thumbnail      string    `json:"thumbnail"`
+	BatchNumber    string    `json:"batch_number"`
+	ImportPrice    float64   `json:"import_price"`
+	MarkUp         float64   `json:"mark_up"`
+	SellingPrice   float64   `json:"selling_price"`
+	ExpirationDate time.Time `json:"expiration_date"`
+	Quantity       int64     `json:"quantity"`
+	Status         string    `json:"status"`
+}
+
+func (r *inventoryRepository) GetInventory() ([]ListInventory, error) {
+	var inventory []ListInventory
+	query := `select m.code, m.name, m.thumbnail, i.batch_number, i.expiration_date , i.import_price, i.mark_up,
+		round(i.import_price * (1 + i.mark_up/100)) as selling_price,i.quantity, i.status
+		from batchsellings bs
+		join inventories i on i.inventory_id = bs.inventory_id
+		join medicines m on m.medicine_id = i.medicine_id
+		order by i.quantity asc`
+	err := config.DB.Raw(query).Scan(&inventory).Error
 	return inventory, err
 }
 
