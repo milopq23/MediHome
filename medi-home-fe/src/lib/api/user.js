@@ -27,6 +27,16 @@ export async function GetAllOrder(user_id, status) {
 	}
 }
 
+export async function GetDetailOrder(order_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/order/${order_id}`);
+		const order = await res.json();
+		return order;
+	} catch (error) {
+		console.log('Failed GET OrderDetail' + error);
+	}
+}
+
 // export async function apiLogin(email, password) {
 // 	try {
 // 		console.log(email);

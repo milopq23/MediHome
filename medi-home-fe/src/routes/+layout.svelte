@@ -9,7 +9,7 @@
 
 	export let data;
 	const { user } = data;
-	console.log(data);
+	// console.log(data);
 
 	let show = false;
 
@@ -29,7 +29,7 @@
 
 <div class="max-h-screen min-h-screen">
 	<Header {user} />
-	<main class="w-full flex-1 items-center justify-center bg-white px-0 md:px-20 lg:px-30">
+	<main class="w-full flex-1 items-center justify-center bg-gray-100 px-0 md:px-20 lg:px-30">
 		<slot />
 	</main>
 	{#if show}

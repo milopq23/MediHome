@@ -21,7 +21,6 @@
 		totalPages = Math.ceil(total / pageSize);
 	}
 
-
 	onMount(() => {
 		listMedicine();
 	});
