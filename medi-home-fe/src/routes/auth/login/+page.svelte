@@ -21,8 +21,8 @@
 		// 	body: JSON.stringify({ email, password })
 		// });
 		const data = await Login(email, password);
-		
 
+		goto('/');
 		// try {
 		// 	data = await res.json();
 		// } catch (err) {
@@ -32,7 +32,7 @@
 		// if (res.ok) {
 		// 	success = `Đăng nhập thành công! Chào mừng`;
 		// 	addAlert(success, 'success');
-		// 	goto('/');
+
 		// } else {
 		// 	error = `Lỗi: ${data.error || 'Đăng nhập thất bại'}`;
 		// 	addAlert(error, 'error');

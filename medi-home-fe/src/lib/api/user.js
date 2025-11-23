@@ -18,12 +18,14 @@ export async function GetAllOrder(status) {
 	try {
 		let url = `${API_URL}/api/order/user/`;
 
-		if (status && status.trim() !== '') {
-			url += `?status=${encodeURIComponent(status)}`;
+		if (status != null && String(status).trim() !== '') {
+			url += `?status=${encodeURIComponent(String(status).trim())}`;
 		}
+
 		const res = await fetch(url, {
 			credentials: 'include'
 		});
+		console.log(url);
 		const order = await res.json();
 		return order;
 	} catch (error) {
@@ -60,6 +62,22 @@ export async function Login(email, password) {
 		return data;
 	} catch (error) {
 		console.log('Lỗi token', error);
+	}
+}
+
+export async function Logout() {
+	try {
+		const res = await fetch(`${API_URL}/api/logout`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include'
+		});
+		const data = await res.json();
+		return data;
+	} catch (error) {
+		console.log('Lỗi LogOut', +error);
 	}
 }
 

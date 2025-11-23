@@ -80,7 +80,9 @@
 		calculateTotal();
 	}
 
-	// async function
+	async function checkOut() {
+		
+	}
 
 	onMount(() => {
 		getCart();
@@ -110,7 +112,7 @@
 							<tr class="transition hover:bg-gray-50">
 								<td class="flex items-center gap-4 px-4 py-3">
 									<img
-										src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?auto=format&fit=crop&w=100&q=80"
+										src={item.thumbnail}
 										alt={item.name}
 										class="size-16 rounded-md object-cover"
 									/>

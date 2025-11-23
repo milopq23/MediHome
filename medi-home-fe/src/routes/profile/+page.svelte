@@ -6,7 +6,6 @@
 	let orders = [];
 	let selectedOrder = null; // Lưu chi tiết đơn hàng khi mở popup
 	let showModal = false; // Điều khiển hiển thị modal
-	let status = null;
 
 	const statusMap = {
 		all: null,
@@ -22,8 +21,9 @@
 		info = await GetProfile();
 	}
 
-	async function getOrderUser() {
+	async function getOrderUser(status) {
 		const data = await GetAllOrder(status);
+		console.log('daat', data);
 		orders = data.data;
 	}
 
@@ -152,7 +152,7 @@
 				<button
 					on:click={() => {
 						selectedTab = tab;
-						getOrderUser(31, statusMap[tab]); // ← GỌI API
+						getOrderUser(statusMap[tab]); // ← GỌI API
 					}}
 					class="border-b-2 px-4 py-2 text-sm font-medium
         {selectedTab === tab

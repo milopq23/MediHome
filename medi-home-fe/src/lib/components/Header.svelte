@@ -1,10 +1,29 @@
 <script>
+	import { GetProfile, Logout } from '$lib/api/user.js';
+	import { onMount } from 'svelte';
 	import { sidebarOpen } from '../index.js';
 	import SearchBar from './SearchBar.svelte';
 
 	let showSearch = false;
 
-	export let user;
+	let user = null;
+
+	async function getInfo() {
+		const data = await GetProfile();
+		if (data && data.name) {
+			user = data; // chắc chắn user có name
+		} else {
+			user = null;
+		}
+	}
+
+	async function logout() {
+		const data = await Logout();
+	}
+
+	onMount(() => {
+		getInfo();
+	});
 
 	function toggleSidebar() {
 		sidebarOpen.update((n) => !n);
@@ -32,7 +51,6 @@
 			</div>
 		</div>
 
-		<!-- <SearchBar (Mobile)/> -->
 		<div class="flex flex-row items-center gap-4 md:flex">
 			{#if !showSearch}
 				<button
@@ -71,12 +89,13 @@
 			<div class="flex max-w-[190px] items-center">
 				{#if user}
 					<div
-						class="text-g ray-700 hidden w-full cursor-pointer items-center gap-2 transition-colors duration-200 hover:text-blue-600 md:flex"
+						class="hidden w-full cursor-pointer items-center gap-2 text-gray-700 transition-colors duration-200 hover:text-blue-600 md:flex"
 					>
 						<a href="/profile" class="truncate overflow-hidden whitespace-nowrap hover:underline">
-							Xin chào {user.name}
+							{user.name}
 						</a>
 					</div>
+					<div></div>
 					<a
 						href="/profile"
 						class="cursor-pointer items-center text-xl text-gray-700 transition-colors duration-200 hover:text-blue-600 md:hidden"
@@ -101,6 +120,16 @@
 					</div>
 				{/if}
 			</div>
+			{#if user}
+				<a
+					on:click={() => logout()}
+					href="auth/login"
+					class="flex items-center gap-1 text-gray-700 hover:text-blue-600"
+					aria-label="Đăng xuất"
+				>
+					Đăng xuất
+				</a>
+			{/if}
 		</div>
 	</div>
 </nav>
