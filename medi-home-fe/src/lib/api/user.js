@@ -2,9 +2,11 @@
 
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function GetProfile(user_id) {
+export async function GetProfile() {
 	try {
-		const res = await fetch(`${API_URL}/api/profile/${user_id}`);
+		const res = await fetch(`${API_URL}/api/profile/`, {
+			credentials: 'include'
+		});
 		const user = await res.json();
 		return user;
 	} catch (error) {
@@ -12,14 +14,16 @@ export async function GetProfile(user_id) {
 	}
 }
 
-export async function GetAllOrder(user_id, status) {
+export async function GetAllOrder(status) {
 	try {
-		let url = `${API_URL}/api/order/user/${user_id}`;
+		let url = `${API_URL}/api/order/user/`;
 
 		if (status && status.trim() !== '') {
 			url += `?status=${encodeURIComponent(status)}`;
 		}
-		const res = await fetch(url);
+		const res = await fetch(url, {
+			credentials: 'include'
+		});
 		const order = await res.json();
 		return order;
 	} catch (error) {
@@ -37,28 +41,33 @@ export async function GetDetailOrder(order_id) {
 	}
 }
 
-// export async function apiLogin(email, password) {
+export async function Login(email, password) {
+	try {
+		const res = await fetch(`${API_URL}/api/login`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				email,
+				password
+			})
+		});
+		console.log(res);
+		const data = await res.json();
+		console.log(data);
+		return data;
+	} catch (error) {
+		console.log('Lỗi token', error);
+	}
+}
+
+// export aysnc function GetLogin(){
 // 	try {
-// 		console.log(email);
-// 		const res = await fetch(`${API_URL}/api/login`, {
-// 			method: 'POST',
-// 			headers: {
-// 				'Content-Type': 'application/json'
-// 			},
-// 			body: JSON.stringify({
-// 				email, // phải là chuỗi
-// 				password
-// 			}) // phải là chuỗi
-// 		});
-
-// 		if (!res.ok) {
-// 			return 'Không nhận req';
-// 		}
-
-// 		const data = await res.json(); // Lấy token + user
-// 		return data;
+// 		return
 // 	} catch (error) {
-// 		console.log('Lỗi token', error);
+
 // 	}
 // }
 

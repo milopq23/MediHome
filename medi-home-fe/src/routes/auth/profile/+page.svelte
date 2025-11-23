@@ -6,6 +6,7 @@
 	let orders = [];
 	let selectedOrder = null; // Lưu chi tiết đơn hàng khi mở popup
 	let showModal = false; // Điều khiển hiển thị modal
+	let status = null;
 
 	const statusMap = {
 		all: null,
@@ -17,12 +18,12 @@
 
 	const countCompleted = () => orders.filter((o) => o.order_status === 'Hoàn thành').length;
 
-	async function getProfile(user_id) {
-		info = await GetProfile(user_id);
+	async function getProfile() {
+		info = await GetProfile();
 	}
 
-	async function getOrderUser(user_id, status) {
-		const data = await GetAllOrder(user_id, status);
+	async function getOrderUser() {
+		const data = await GetAllOrder(status);
 		orders = data.data;
 	}
 
@@ -43,8 +44,8 @@
 	}
 
 	onMount(() => {
-		getProfile(31);
-		getOrderUser(31, null); // mặc định load tất cả
+		getProfile();
+		getOrderUser(null); // mặc định load tất cả
 	});
 
 	let selectedTab = 'all';

@@ -1,8 +1,10 @@
 const API_URL = import.meta.env.VITE_GO_PORT;
 
-export async function GetCartUser(user_id) {
+export async function GetCartUser() {
 	try {
-		const cartRes = await fetch(`${API_URL}/api/cart/${user_id}`);
+		const cartRes = await fetch(`${API_URL}/api/cart/`, {
+			credentials: 'include'
+		});
 		const cart = await cartRes.json();
 		return cart;
 	} catch (error) {

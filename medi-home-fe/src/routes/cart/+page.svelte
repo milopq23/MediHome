@@ -41,8 +41,8 @@
 		return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
 	};
 
-	async function getCart(user_id) {
-		const data = await GetCartUser(user_id);
+	async function getCart() {
+		const data = await GetCartUser();
 		if (data) {
 			cart = data;
 		}
@@ -80,9 +80,10 @@
 		calculateTotal();
 	}
 
+	// async function
+
 	onMount(() => {
-		const user_id = 31;
-		getCart(user_id);
+		getCart();
 	});
 </script>
 

@@ -35,11 +35,11 @@
 	}
 </script>
 
-<h1 class="mb-4 text-2xl font-bold">Sản phẩm</h1>
+<h1 class="mb-4 text-2xl font-semibold">Sản phẩm</h1>
 
-<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+<div class="grid grid-cols-2 gap-8 px-20 py-10 sm:grid-cols-3 lg:grid-cols-4">
 	{#each medicines as medicine}
-		<button on:click={() => goToDetail(medicine.medicine_id)}>
+		<button class="" on:click={() => goToDetail(medicine.medicine_id)}>
 			<ProductCard
 				name={medicine.name}
 				thumbnail={medicine.thumbnail}

@@ -3,21 +3,17 @@
 
 <div>
 	<!-- order -->
-	<div>
-		
-	</div>
+	<div></div>
 	<!-- order summary -->
-	<div>
-
-	</div>
+	<div></div>
 </div>
-<div class="bg-white px-4 py-6 sm:px-8">
+<div class="bg-white px-20 py-10 sm:px-8">
 	<div class="mx-auto max-md:max-w-xl">
 		<div class="mb-16 flex items-start">
 			<div class="w-full">
 				<div class="flex w-full items-center">
 					<div
-						class="mx-[-1px] flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 p-1.5"
+						class=" flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 p-1.5"
 					>
 						<span class="text-sm font-semibold text-white">1</span>
 					</div>

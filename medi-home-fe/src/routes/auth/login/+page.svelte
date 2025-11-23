@@ -1,40 +1,42 @@
 <script>
 	// import { apiLogin } from '$lib/api/user';
 	import { goto } from '$app/navigation';
+	import { Login } from '$lib/api/user';
 	import { addAlert } from '$lib/stores/alert';
 
 	let showPassword = false;
 	let email = '';
 	let password = '';
-	let error = '';
-	let success = '';
+	// let error = '';
+	// let success = '';
 
 	async function handleSubmit(event) {
 		event.preventDefault();
-		error = '';
-		success = '';
+		// error = '';
+		// success = '';
 
-		const res = await fetch('/auth/login', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ email, password })
-		});
+		// const res = await fetch('/auth/login', {
+		// 	method: 'POST',
+		// 	headers: { 'Content-Type': 'application/json' },
+		// 	body: JSON.stringify({ email, password })
+		// });
+		const data = await Login(email, password);
+		
 
-		let data = {};
-		try {
-			data = await res.json();
-		} catch (err) {
-			console.error('Invalid JSON response', err);
-		}
+		// try {
+		// 	data = await res.json();
+		// } catch (err) {
+		// 	console.error('Invalid JSON response', err);
+		// }
 
-		if (res.ok) {
-			success = `Đăng nhập thành công! Chào mừng`;
-			addAlert(success, 'success');
-			goto('/');
-		} else {
-			error = `Lỗi: ${data.error || 'Đăng nhập thất bại'}`;
-			addAlert(error, 'error');
-		}
+		// if (res.ok) {
+		// 	success = `Đăng nhập thành công! Chào mừng`;
+		// 	addAlert(success, 'success');
+		// 	goto('/');
+		// } else {
+		// 	error = `Lỗi: ${data.error || 'Đăng nhập thất bại'}`;
+		// 	addAlert(error, 'error');
+		// }
 	}
 </script>
 

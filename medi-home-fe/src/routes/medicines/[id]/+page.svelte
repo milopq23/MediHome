@@ -54,7 +54,7 @@
 				class="w-150px aspect-square h-150 rounded-xl object-cover"
 			/>
 
-			<div class="scrollbar-hide flex flex-row gap-3 overflow-x-auto">
+			<div class="scrollbar-hide flex flex-row gap-8 overflow-x-auto">
 				{#each images as img}
 					<button
 						type="button"
