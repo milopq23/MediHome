@@ -136,6 +136,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 		return
 	}
 
+	log.Print(req)
 	token, user, err := h.service.LoginUser(strings.ToLower(req.Email), req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -151,6 +152,7 @@ func (h *UserHandler) Login(c *gin.Context) {
 			Role: "user",
 		},
 	}
+	log.Print("cookie", resp)
 	c.JSON(http.StatusOK, resp)
 }
 
@@ -169,15 +171,16 @@ func (h *UserHandler) Register(c *gin.Context) {
 }
 
 func (h *UserHandler) Profile(c *gin.Context) {
-	// claimsRaw, exists := c.Get("claims")
-	// if !exists {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
-	// 	return
-	// }
-	// claims := claimsRaw.(*util.Claims)
-	// user, err := h.service.GetByID(claims.UserID)
-	id, _ := strconv.Atoi(c.Param("id"))
-	user, err := h.service.GetByID(int64(id))
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
+	log.Print("claims", claims)
+	user, err := h.service.GetByID(int64(claims.UserID))
+	// id, _ := strconv.Atoi(c.Param("id"))
+	// user, err := h.service.GetByID(int64(id))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return

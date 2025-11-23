@@ -4,6 +4,7 @@ import (
 	"log"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/service"
+	"medi-home-be/pkg/util"
 	"net/http"
 	"strconv"
 
@@ -76,12 +77,17 @@ func (h *OrderHandler) GetDetailOrder(c *gin.Context) {
 }
 
 func (h *OrderHandler) GetUserOrders(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
 	status := c.Query("status")
 
 	if status == "" {
 		//lấy tất cả đơn hàng
-		orders, err := h.service.GetAllUserOrder(int64(id))
+		orders, err := h.service.GetAllUserOrder(int64(claims.UserID))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -94,7 +100,7 @@ func (h *OrderHandler) GetUserOrders(c *gin.Context) {
 		return
 	}
 	//truyền status vào để lấy loại
-	orders, err := h.service.GetStatusUserOrder(int64(id), status)
+	orders, err := h.service.GetStatusUserOrder(int64(claims.UserID), status)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

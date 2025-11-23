@@ -42,8 +42,16 @@ func (r *batchSellingRepository) CreateBatch(batch model.BatchSelling) (model.Ba
 	return batch, err
 }
 
-// func (r )
+func (r *batchSellingRepository) UpdateBatchSelling(medicine_id, inventory_id int64) (model.BatchSelling, error) {
+	var batchselling model.BatchSelling
+	err := config.DB.Model(&batchselling).Where("medicine_id  = ?", medicine_id).Update("inventory_id", inventory_id).Error
+	if err != nil {
+		return model.BatchSelling{}, err
+	}
+	err = config.DB.Where("medicine_id = ?", medicine_id).First(&batchselling).Error
+	if err != nil {
+		return model.BatchSelling{}, err
+	}
 
-// func (r *batchSellingRepository) UpdateBatch()  ([]model.BatchSelling,error) {
-
-// }
+	return batchselling, nil
+}

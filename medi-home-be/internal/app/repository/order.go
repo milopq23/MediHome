@@ -166,7 +166,7 @@ func (r *orderRepository) GetViewOrder(order_id int64) (Order, error) {
 			o.total_amount, o.final_amount
 			from orders o 
 			join addresses a on a.address_id = o.address_id
-			join vouchers v on v.voucher_id = o.voucher_id
+			left join vouchers v on v.voucher_id = o.voucher_id
 			join shippings s on s.shipping_id = o.shipping_id
 			where o.order_id = ?
 		`

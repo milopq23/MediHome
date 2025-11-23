@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"log"
 	"medi-home-be/internal/app/dto"
 	"medi-home-be/internal/app/service"
+	"medi-home-be/pkg/util"
 	"net/http"
 	"strconv"
 
@@ -17,38 +19,16 @@ func NewCartHandler(service service.CartService) *CartHandler {
 	return &CartHandler{service}
 }
 
-// func (h *CartHandler) GetCartUser(c *gin.Context) {
-// 	// claimsRaw, exists := c.Get("claims")
-// 	// if !exists {
-// 	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
-// 	// 	return
-// 	// }
-// 	// claims := claimsRaw.(*util.Claims)
-// 	// cartItem, err := h.service.GetCartByUser(int64(claims.UserID))
-// 	// if err != nil {
-// 	// 	c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-// 	// 	return
-// 	// }
-
-//		id, _ := strconv.Atoi(c.Param("id"))
-//		cartItem, err := h.service.GetCartByUser(int64(id))
-//		if err != nil {
-//			c.JSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
-//			return
-//		}
-//		c.JSON(http.StatusOK, gin.H{
-//			"data": cartItem,
-//		})
-//	}
 func (h *CartHandler) GetCartUser(c *gin.Context) {
-	idStr := c.Param("id")
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
 		return
 	}
+	claims := claimsRaw.(*util.Claims)
+	log.Print(claims.UserID)
 
-	cartItems, err := h.service.GetCartByUser(int64(id))
+	cartItems, err := h.service.GetCartByUser(int64(claims.UserID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
 		return

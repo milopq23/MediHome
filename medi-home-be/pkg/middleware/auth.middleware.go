@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
 	"medi-home-be/pkg/util"
@@ -28,12 +29,14 @@ func parseTokenAndSetClaims(c *gin.Context) (*util.Claims, bool) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing token"})
 		return nil, false
 	}
+	log.Print("token", tokenStr)
 
 	claims, err := util.ParseJWT(tokenStr)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 		return nil, false
 	}
+	log.Print("claim", claims)
 
 	// Lưu thông tin claims vào context Gin để handler có thể lấy
 	c.Set("claims", claims)

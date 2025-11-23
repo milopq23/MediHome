@@ -84,6 +84,7 @@ func (s *orderService) GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 	if err != nil {
 		return dto.OrderResponse{}, err
 	}
+	log.Print("inf", order_info)
 	var item_response []dto.OrderDetailResponse
 	for _, res := range detail_items {
 		item_response = append(item_response, dto.OrderDetailResponse{
@@ -108,6 +109,8 @@ func (s *orderService) GetDetailOrder(order_id int64) (dto.OrderResponse, error)
 		FinalAmount:   order_info.FinalAmount,
 		OrderDetail:   item_response,
 	}
+	log.Print(order_response)
+	log.Print(order_info)
 	return order_response, err
 }
 

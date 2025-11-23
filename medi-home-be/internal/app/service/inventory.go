@@ -11,6 +11,7 @@ type InventoryService interface {
 	Create(inventory model.Inventory) (model.Inventory, error)
 	Delete(id int64) error
 	GetInventory() ([]dto.ListInventoryDTO, error)
+	FindMedicine(medicine_id int64) ([]model.Inventory, error)
 }
 
 type inventoryService struct {
@@ -27,6 +28,10 @@ func (s *inventoryService) GetAll() ([]model.Inventory, error) {
 
 func (s *inventoryService) Create(inventory model.Inventory) (model.Inventory, error) {
 	return s.repo.Create(inventory)
+}
+
+func (s *inventoryService) FindMedicine(medicine_id int64) ([]model.Inventory, error) {
+	return s.repo.FindMedicine(medicine_id)
 }
 
 func (s *inventoryService) GetInventory() ([]dto.ListInventoryDTO, error) {

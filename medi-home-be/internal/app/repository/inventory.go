@@ -13,6 +13,7 @@ type InventoryRepository interface {
 	GetInventory() ([]ListInventory, error)
 	// ADMIN
 	FindAll() ([]model.Inventory, error)
+	FindMedicine(medicine_id int64) ([]model.Inventory, error)
 	Create(inventory model.Inventory) (model.Inventory, error)
 	DecreaseQuantity(tx *gorm.DB, inventory_id, quantity int64) error
 	// Patch(id int64, updates map[string]interface{}) (model.Inventory, error)
@@ -34,6 +35,12 @@ func (r *inventoryRepository) FindAll() ([]model.Inventory, error) {
 func (r *inventoryRepository) FindByID(id int64) (model.Inventory, error) {
 	var inventory model.Inventory
 	err := config.DB.First(&inventory, id).Error
+	return inventory, err
+}
+
+func (r *inventoryRepository) FindMedicine(medicine_id int64) ([]model.Inventory, error) {
+	var inventory []model.Inventory
+	err := config.DB.Where("medicine_id = ?", medicine_id).Find(&inventory).Error
 	return inventory, err
 }
 

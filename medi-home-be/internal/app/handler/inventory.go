@@ -26,6 +26,16 @@ func (h *InventoryHandler) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, inventories)
 }
 
+func (h *InventoryHandler) FindMedicine(c *gin.Context) {
+	medicine_id, err := strconv.Atoi(c.Param("id"))
+	inventories, err := h.service.FindMedicine(int64(medicine_id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, inventories)
+}
+
 func (h *InventoryHandler) GetInventory(c *gin.Context) {
 	inventories, err := h.service.GetInventory()
 	if err != nil {
