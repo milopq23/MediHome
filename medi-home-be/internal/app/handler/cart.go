@@ -47,15 +47,6 @@ func (h *CartHandler) GetCartUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// func (h *CartHandler) AddCart(c *gin.Context) {
-// 	// claimsRaw, exists := c.Get("claims")
-// 	// if !exists {
-// 	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
-// 	// 	return
-// 	// }
-// 	// claims := claimsRaw.(*util.Claims)
-
-// }
 
 func (h *CartHandler) DeleteItemCart(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
