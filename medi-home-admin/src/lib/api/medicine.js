@@ -37,7 +37,7 @@ export async function GetMedicineCate() {
 
 export async function GetDosage() {
 	try {
-		const res = await fetch(`${API_URL}/api/admin/dosage/`);
+		const res = await fetch(`${API_URL}/api/dosage/`);
 		const dosage = await res.json();
 		return dosage;
 	} catch (error) {
@@ -116,6 +116,7 @@ export async function UploadMultiMedicine(files) {
 			body: formData
 		});
 		const result = await res.json();
+		console.log('multi', result);
 		return result;
 	} catch (error) {
 		console.log('Upload ảnh thuốc', error);
@@ -135,5 +136,15 @@ export async function AddImage(medicine_id, urls) {
 		return result;
 	} catch (error) {
 		console.log('Upload ảnh thuốc', error);
+	}
+}
+
+export async function GetImages(medicine_id) {
+	try {
+		const res = await fetch(`${API_URL}/api/admin/medicine/image/${medicine_id}`);
+		const images = await res.json();
+		return images;
+	} catch (error) {
+		console.log('Lỗi gọi thuốc:', error);
 	}
 }

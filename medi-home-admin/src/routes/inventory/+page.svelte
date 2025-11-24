@@ -1,49 +1,33 @@
 <script>
-	import { ListDosage, DeleteDosage } from '$lib/api/dosageform.js';
-	import { Pencil, Trash2, MoreVertical} from 'lucide-svelte';
+	import { Pencil, Trash2, MoreVertical } from 'lucide-svelte';
+	import { ListInventory } from '$lib/api/inventory.js';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 
-	let search = '';
-	let dosageforms = [];
+	let search;
 	let showDelete = false;
-	let selectOption = null;
+	let inventories = [];
 
 	onMount(() => {
-		listDosages();
+		listInventory();
 	});
 
-	async function listDosages() {
-		const data = await ListDosage();
-		dosageforms = data;
+	async function listInventory() {
+		const data = await ListInventory();
+		inventories = data;
+		console.log(inventories);
 	}
 
-	async function deleteDosage(id) {
-		await DeleteDosage(id);
-	}
+	
+	const formatVND = (value) => {
+		return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+	};
 
-	async function confirmDelete(id) {
-		try {
-			await deleteDosage(id);
-			// toasts.add({ message: 'Xóa thành công', type: 'success' });
-		} catch (error) {
-			// toasts.add({ message: 'Xóa thất bại', type: 'error' });
-		}
-		showDelete = false;
-		await listDosages();
-	}
-
-	function viewDetailDosage(id) {
-		// toasts.add({ message: 'Lưu thành công', type: 'success' });
-		goto(`/dosage-form/${id}`);
-	}
-
-	function create() {
-		goto(`/dosage-form/create`);
-	}
-
-	function openMoreOption(id) {
-		selectOption = selectOption === id ? null : id;
+	function formatDate(isoString) {
+		const date = new Date(isoString);
+		const dd = String(date.getDate()).padStart(2, '0');
+		const mm = String(date.getMonth() + 1).padStart(2, '0');
+		const yyyy = date.getFullYear();
+		return `${dd}/${mm}/${yyyy}`;
 	}
 </script>
 
@@ -61,28 +45,38 @@
 			<table class="min-w-full divide-y divide-gray-200 text-sm">
 				<thead class="bg-gray-50 text-left text-gray-500">
 					<tr>
-						<th class="table-cell max-w-50 min-w-15 p-2">Mã</th>
-						<th class="table-cell w-30 p-2">Dạng bào chế</th>
-						<th class="table-cell p-2">Mô tả</th>
+						<th class="table-cell max-w-50 min-w-15 p-2">Mã thuốc</th>
+						<th class="table-cell p-2">Tên thuốc</th>
+						<th class="table-cell p-2">Lô</th>
+						<th class="table-cell p-2">Giá nhập</th>
+						<th class="table-cell p-2">Lợi nhuận</th>
+						<th class="table-cell p-2">Giá bán</th>
+						<th class="table-cell p-2">Ngày hết hạn</th>
+						<th class="table-cell p-2">Số lượng tồn</th>
+						<th class="table-cell p-2">Trạng thái</th>
 						<th class=""></th>
 					</tr>
 				</thead>
 				<tbody class="text-gray-800">
-					{#each dosageforms as dosage}
+					{#each inventories as inventory}
 						<tr class="border-b hover:bg-gray-50">
-							<td class="table-cell p-2">{dosage.dosageform_id}</td>
+							<td class="table-cell p-2">{inventory.code}</td>
 							<td class="table-cell p-2">
-								{dosage.name}
+								{inventory.name}
 							</td>
-							<td class="table-cell p-2">
-								<div class="line-clamp-3">{dosage.description}</div>
-							</td>
+							<td class="table-cell p-2">{inventory.batch_number}</td>
+							<td class="table-cell p-2">{formatVND(inventory.import_price)}</td>
+							<td class="table-cell p-2">{inventory.mark_up}%</td>
+							<td class="table-cell p-2">{formatVND(inventory.selling_price)}</td>
+							<td class="table-cell p-2">{formatDate(inventory.expiration_date)}</td>
+							<td class="table-cell p-2">{inventory.quantity}</td>
+							<td class="table-cell p-2">{inventory.status}</td>
 							<td class="p-2">
 								<div class="flex items-center gap-2 text-gray-600">
 									<button
 										class="hidden cursor-pointer md:table-cell"
 										title="Sửa"
-										on:click={() => viewDetailDosage(dosage.dosageform_id)}
+										on:click={() => viewDetailinventory(inventory.inventory_id)}
 										><Pencil class="h-4 w-4" /></button
 									>
 									<button
@@ -108,21 +102,21 @@
 												</button>
 												<button
 													class="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-													on:click={() => confirmDelete(dosage.dosageform_id)}
+													on:click={() => confirmDelete(inventory.inventory_id)}
 												>
 													Xác nhận
 												</button>
 											</div>
 										</div>
 									{/if}
-									<div>
+									<!-- <div>
 										<div class="relative inline-block w-2 md:hidden">
-											<button on:click={() => openMoreOption(dosage.dosageform_id)}>
+											<button on:click={() => openMoreOption(inventory.inventory_id)}>
 												<MoreVertical class="h-4 w-4" />
 											</button>
 										</div>
 
-										{#if selectOption === dosage.dosageform_id}
+										{#if selectOption === inventory.inventory_id}
 											<div
 												class="absolute right-5 z-10 mt-1 w-30 divide-y divide-gray-100 rounded-lg bg-white shadow-sm dark:bg-gray-700"
 											>
@@ -130,7 +124,7 @@
 													<li>
 														<button
 															class="flex w-20 items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600"
-															on:click={() => viewDetailDosage(dosage.dosageform_id)}
+															on:click={() => viewDetailinventory(inventory.inventory_id)}
 														>
 															<Pencil class="h-4 w-4" /> Sửa
 														</button>
@@ -146,7 +140,7 @@
 												</ul>
 											</div>
 										{/if}
-									</div>
+									</div> -->
 								</div>
 							</td>
 						</tr>

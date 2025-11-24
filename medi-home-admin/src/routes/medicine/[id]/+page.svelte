@@ -5,7 +5,9 @@
 		GetMedicineCate,
 		UpdateMedicine,
 		UploadMedicine,
-		UploadMultiMedicine
+		UploadMultiMedicine,
+		AddImage,
+		GetImages
 	} from '$lib/api/medicine.js';
 	import { pageTitle } from '$lib/stores/store.js';
 	import { toasts } from '$lib/stores/toastMessage.js';
@@ -21,6 +23,7 @@
 	let previewUrls = [];
 	let medicine = {};
 	let categories = {};
+	let images = [];
 	let dosageForm = [];
 	let selectedParent = null;
 	let selectedChild = null;
@@ -37,6 +40,12 @@
 		medicine = data || {};
 		previewUrl = medicine.thumbnail || '';
 		await loadCategorySelection();
+	}
+
+	async function getImages(medicine_id) {
+		const data = await GetImages(medicine_id);
+		images = data.image;
+		console.log(images);
 	}
 
 	async function getDosage() {
@@ -59,33 +68,33 @@
 
 	export async function uploadMultiImages(medicine_id, files) {
 		try {
-			// Upload file lên server và lấy URLs
-			const res = await UploadMultiMedicine(files);
+			if (!files || files.length === 0) return [];
 
-			if (!res || !res.urls) {
-				throw new Error('Upload thất bại hoặc không có urls trả về');
+			const uploadedUrls = [];
+
+			for (const file of files) {
+				try {
+					const url = await UploadMedicine(file); // upload từng file
+					if (url) uploadedUrls.push(url);
+				} catch (err) {
+					console.error(`Upload file ${file.name} thất bại:`, err);
+					// có thể toast lỗi cho từng file nếu muốn
+				}
 			}
 
-			const urls = res.urls;
+			if (uploadedUrls.length === 0) {
+				throw new Error('Không có file nào upload thành công');
+			}
 
-			// Gửi URLs lên backend gắn vào medicine
-			const result = await AddImage(medicine_id, urls);
-
+			// gửi URLs đã upload thành công lên backend
+			const result = await AddImage(medicine_id, uploadedUrls);
+			console.log('Uploaded images result:', result);
 			return result;
 		} catch (error) {
 			console.error('Lỗi upload nhiều ảnh:', error);
 			throw error;
 		}
 	}
-
-	// async function uploadSubFiles(files) {
-	// 	const urls = [];
-	// 	for (const file of files) {
-	// 		const url = await uploadFile(file);
-	// 		if (url) urls.push(url);
-	// 	}
-	// 	return urls;
-	// }
 
 	function onMainFileChange(event) {
 		const selectedFile = event.target.files[0];
@@ -100,8 +109,13 @@
 
 	function onSubFileChange(event) {
 		const files = Array.from(event.target.files);
-		subFiles = files;
-		previewUrls = files.map((f) => URL.createObjectURL(f));
+		if (files.length > 0) {
+			subFiles = files;
+			previewUrls = files.map((f) => URL.createObjectURL(f)); // preview ảnh mới
+		} else {
+			subFiles = null;
+			previewUrls = images || []; // nếu k chọn file mới, dùng ảnh từ backend
+		}
 	}
 
 	async function loadCategorySelection() {
@@ -127,15 +141,13 @@
 				console.log(thumbnailUrl);
 			}
 
-			// 2. Upload ảnh phụ (nếu có)
+			let subImages = medicine.sub_images || [];
+			if (subFiles.length > 0) {
+				const result = await uploadMultiImages(medicine_id, subFiles);
+				// result có thể trả về object backend, nếu backend trả về URLs thì dùng trực tiếp
+				subImages = [...subImages, ...(result.urls || [])];
+			}
 
-			// let subImages = medicine.sub_images || [];
-			// if (subFiles.length > 0) {
-			// 	const uploadedUrls = await uploadSubFiles(subFiles);
-			// 	subImages = [...subImages, ...uploadedUrls];
-			// }
-
-			// 3. Dữ liệu gửi đi
 			const data = {
 				...medicine,
 				thumbnail: thumbnailUrl,
@@ -165,6 +177,7 @@
 		await getDosage();
 		if (medicine_id) {
 			await detailMedicine(medicine_id);
+			await getImages(medicine_id);
 		}
 	});
 </script>
@@ -344,12 +357,19 @@
 					>Ảnh phụ:
 				</label>
 				<label class="flex cursor-pointer flex-wrap justify-center gap-2">
-					{#if previewUrls.length > 0}
-						{#each previewUrls as url, index}
+					{#if subFiles.length < 0}
+						<!-- {#each previewUrl as subImages, index}
 							<img
-								src={url}
+								src={subImages}
 								alt="Ảnh preview"
 								class="max-h-[200px] max-w-[200px] rounded object-contain"
+							/>
+						{/each} -->
+						{#each images as url}
+							<img
+								src={url}
+								alt="Ảnh đã upload"
+								class="max-h-[150px] max-w-[150px] rounded object-contain"
 							/>
 						{/each}
 					{:else}
