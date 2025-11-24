@@ -47,7 +47,6 @@ func (h *CartHandler) GetCartUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-
 func (h *CartHandler) DeleteItemCart(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	cartItem := h.service.DeleteCart(int64(id))
@@ -59,8 +58,13 @@ func (h *CartHandler) DeleteItemCart(c *gin.Context) {
 func (h *CartHandler) AddCart(c *gin.Context) {
 	var req dto.CartRequestDTO
 
-	id, _ := strconv.Atoi(c.Param("id"))
-	cart, err := h.service.GetCart(int64(id))
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
+	cart, err := h.service.GetCart(int64(claims.UserID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "cart not found"})
 		return

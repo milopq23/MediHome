@@ -137,15 +137,22 @@ func (h *OrderHandler) ApproveStatus(c *gin.Context) {
 }
 
 func (h *OrderHandler) CheckOut(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
 	var orderRequest dto.OrderRequestDTO
 	if err := c.ShouldBindJSON(&orderRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	log.Print(orderRequest.VoucherCode)
+
 	orderRequest = dto.OrderRequestDTO{
-		UserID:        int64(id),
+		UserID:        int64(claims.UserID),
 		VoucherCode:   orderRequest.VoucherCode,
 		ShippingID:    orderRequest.ShippingID,
 		PaymentMethod: orderRequest.PaymentMethod,

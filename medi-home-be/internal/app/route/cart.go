@@ -19,7 +19,7 @@ func CartRoute(r *gin.RouterGroup) {
 	cart := r.Group("/cart")
 	{
 		cart.GET("/", userAuth, cartHandler.GetCartUser)
-		cart.POST("/:id", cartHandler.AddCart)
+		cart.POST("/", userAuth, cartHandler.AddCart)
 		cart.PATCH("/:id", cartHandler.UpdateCart)
 		cart.DELETE("/:id", cartHandler.DeleteItemCart)
 	}

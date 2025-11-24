@@ -336,6 +336,12 @@ func (s *orderService) CheckOut(req dto.OrderRequestDTO) (model.Order, error) {
 
 	}
 
+	if err := s.repoCart.ClearCart(tx, user.CartID); err != nil {
+		tx.Rollback()
+		log.Print("Lỗi xoá cart")
+		return model.Order{}, err
+	}
+
 	// commit toàn bộ
 	if err := tx.Commit().Error; err != nil {
 		return model.Order{}, err

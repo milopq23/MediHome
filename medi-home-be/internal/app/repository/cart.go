@@ -4,6 +4,8 @@ import (
 	"log"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
+
+	"gorm.io/gorm"
 )
 
 type CartRepository interface {
@@ -13,12 +15,13 @@ type CartRepository interface {
 	GetCartItem(cart_id int64) ([]model.CartItem, error)
 	GetItem(cartitem_id int64) (model.CartItem, error)
 
+	ClearCart(tx *gorm.DB, cartID int64) error
+
 	//CRUD
 	AddCartItem(item model.CartItem) (model.CartItem, error)
 	UpdateCartItem(item model.CartItem) error
 	DeleteItem(cartitem_id int64) error
 
-	
 	FindInventory(inventory_id int64) (model.Inventory, error)
 	FindBatchSelling(medicine_id int64) (model.BatchSelling, error)
 	FindMedicine(medicine_id int64) (model.Medicine, error)
@@ -35,8 +38,19 @@ func NewCartRepository() CartRepository {
 // trả về cart_id từ user_id
 func (r *cartRepository) GetCartUser(user_id int64) (model.Cart, error) {
 	var cart model.Cart
-	err := config.DB.Where("user_id = ?", user_id).Find(&cart).Error
+	err := config.DB.Where(model.Cart{UserID: user_id}).FirstOrCreate(&cart).Error
+	if err != nil {
+		return model.Cart{}, err
+	}
 	return cart, err
+}
+
+//	func (r *cartRepository) ClearCart(cart_id int64) error {
+//		return config.DB.Where("cart_id = ?", cart_id).Delete(&model.CartItem{}).Error
+//	}
+func (r *cartRepository) ClearCart(tx *gorm.DB, cartID int64) error {
+
+	return tx.Where("cart_id = ?", cartID).Delete(&model.CartItem{}).Error
 }
 
 // trả về cart_item theo cart_id

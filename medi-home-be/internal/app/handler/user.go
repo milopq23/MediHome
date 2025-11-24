@@ -131,11 +131,11 @@ func (h *UserHandler) Delete(c *gin.Context) {
 
 func (h *UserHandler) Login(c *gin.Context) {
 	var req LoginRequest
+	log.Print(req)
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
-
 	log.Print(req)
 	token, user, err := h.service.LoginUser(strings.ToLower(req.Email), req.Password)
 	if err != nil {
