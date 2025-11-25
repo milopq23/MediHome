@@ -5,10 +5,12 @@
 		GetCartUser,
 		GetShipping,
 		GetVoucher,
+		CheckOut,
 		UpdateQuantityOrTypeCart
 	} from '$lib/api/cart';
 	import { updated } from '$app/state';
 	import { Trash2 } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 
 	let cart = {
 		cartitems: [],
@@ -16,6 +18,9 @@
 	};
 	let shipping = {};
 	let shipping_id;
+
+	let payment_method;
+	let voucher_code = '';
 
 	$: if (shipping_id) {
 		getShipping(shipping_id);
@@ -80,8 +85,39 @@
 		calculateTotal();
 	}
 
-	async function checkOut() {
-		
+	async function handleCheckOut() {
+		// if (!user) {
+		// 	alert('Bạn chưa đăng nhập');
+		// 	return;
+		// }
+		if (!shipping_id) {
+			alert('Vui lòng chọn phương thức giao hàng');
+			return;
+		}
+
+		if (!payment_method) {
+			alert('Vui lòng chọn phương thức thanh toán');
+			return;
+		}
+		console.log(payment_method);
+
+		const payload = {
+			shipping_id: Number(shipping_id),
+			payment_method
+		};
+
+		if (voucher_code.trim() !== '') {
+			payload.voucher_code = voucher_code.trim();
+		}
+
+		try {
+			const order = await CheckOut(payload);
+			console.log('Checkout success', order);
+			// redirect sang trang success hoặc orders
+			goto('/profile');
+		} catch (err) {
+			console.error('Checkout failed', err);
+		}
 	}
 
 	onMount(() => {
@@ -90,7 +126,6 @@
 </script>
 
 <div class="mx-auto px-4 py-8">
-	<h1 class="mb-6 text-2xl font-semibold text-gray-800">Giỏ hàng</h1>
 	<div class="flex px-30">
 		<div class="w-3/4 px-10">
 			<div class="pb-10">
@@ -219,6 +254,7 @@
 						<input
 							type="radio"
 							name="payment_method"
+							bind:group={payment_method}
 							value="COD"
 							class="text-brand border-default-medium focus:ring-brand-subtle h-4 w-4 rounded-full"
 						/>
@@ -232,6 +268,7 @@
 						<input
 							type="radio"
 							name="payment_method"
+							bind:group={payment_method}
 							value="MOMO"
 							class="text-brand border-default-medium focus:ring-brand-subtle h-4 w-4 rounded-full"
 						/>
@@ -245,6 +282,7 @@
 						<input
 							type="radio"
 							name="payment_method"
+							bind:group={payment_method}
 							value="VNPAY"
 							class="text-brand border-default-medium focus:ring-brand-subtle h-4 w-4 rounded-full"
 						/>
@@ -263,6 +301,7 @@
 				<input
 					type="text"
 					name="price"
+					bind:value={voucher_code}
 					placeholder="Code"
 					class="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none sm:text-sm"
 				/>
@@ -275,15 +314,15 @@
 					<span class="font-medium text-gray-800">{formatVND(cart.totalamount)}</span>
 				</div>
 
-				<div class="flex justify-between">
+				<!-- <div class="flex justify-between">
 					<span class="text-gray-600">Giảm giá voucher</span>
 					<span class="font-medium text-green-600">0đ</span>
-				</div>
+				</div> -->
 
-				<div class="flex justify-between">
+				<!-- <div class="flex justify-between">
 					<span class="text-gray-600">Tiết kiệm được</span>
 					<span class="font-medium text-green-600">29.800đ</span>
-				</div>
+				</div> -->
 
 				<div class="flex justify-between">
 					<span class="text-gray-600">Phí vận chuyển</span>
@@ -301,6 +340,7 @@
 
 			<!-- Nút hoàn tất -->
 			<button
+				on:click={handleCheckOut}
 				class="mt-4 w-full rounded-full bg-blue-600 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
 			>
 				Hoàn tất

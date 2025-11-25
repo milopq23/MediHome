@@ -1,11 +1,12 @@
 <script>
 	import { GetAllOrder, GetProfile, GetDetailOrder } from '$lib/api/user';
 	import { onMount } from 'svelte';
+	import { X } from 'lucide-svelte';
 
 	let info = {};
 	let orders = [];
 	let selectedOrder = null; // Lưu chi tiết đơn hàng khi mở popup
-	let showModal = false; // Điều khiển hiển thị modal
+	let showModal = true; // Điều khiển hiển thị modal
 
 	const statusMap = {
 		all: null,
@@ -30,6 +31,7 @@
 	async function openOrderDetail(order_id) {
 		try {
 			const result = await GetDetailOrder(order_id);
+			console.log(result);
 			selectedOrder = result.data;
 			showModal = true;
 		} catch (error) {
@@ -45,7 +47,7 @@
 
 	onMount(() => {
 		getProfile();
-		getOrderUser(null); // mặc định load tất cả
+		getOrderUser(null);
 	});
 
 	let selectedTab = 'all';
@@ -127,6 +129,10 @@
 					<p class="text-sm text-gray-500">Tích Điểm</p>
 					<p class="text-2xl font-bold text-blue-600">{info.point}</p>
 				</div>
+				<div class="rounded-lg bg-gray-50 p-4">
+					<p class="text-sm text-gray-500">Địa chỉ</p>
+					<p class="text-2xl font-bold text-blue-600"></p>
+				</div>
 
 				<!-- <div class="rounded-lg bg-gray-50 p-4">
 					<p class="text-sm text-gray-500">Đơn Hoàn Thành</p>
@@ -152,7 +158,7 @@
 				<button
 					on:click={() => {
 						selectedTab = tab;
-						getOrderUser(statusMap[tab]); // ← GỌI API
+						getOrderUser(statusMap[tab]);
 					}}
 					class="border-b-2 px-4 py-2 text-sm font-medium
         {selectedTab === tab
@@ -212,7 +218,6 @@
 		</div>
 	</div>
 </div>
-<!-- Modal Chi Tiết Đơn Hàng -->
 
 {#if showModal && selectedOrder}
 	<div class="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black p-4">
@@ -227,7 +232,6 @@
 			</div>
 
 			<div class="space-y-8 p-6">
-				<!-- Thông tin khách hàng -->
 				<div>
 					<h4 class="mb-3 text-lg font-semibold text-gray-700">Thông Tin Nhận Hàng</h4>
 					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -246,7 +250,6 @@
 					</div>
 				</div>
 
-				<!-- Thông tin đơn hàng -->
 				<div>
 					<h4 class="mb-3 text-lg font-semibold text-gray-700">Thông Tin Đơn Hàng</h4>
 					<div class="grid grid-cols-1 gap-4 md:grid-cols-2">

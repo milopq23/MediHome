@@ -19,6 +19,7 @@
 
 	async function logout() {
 		const data = await Logout();
+		await getInfo();
 	}
 
 	onMount(() => {
@@ -105,7 +106,7 @@
 					</a>
 				{:else}
 					<a
-						href="/login"
+						href="/auth/login"
 						class="hidden w-full rounded bg-blue-600 px-3 py-1 text-center text-white hover:bg-blue-700 md:inline-block"
 					>
 						<i class="fa-solid fa-user"></i>

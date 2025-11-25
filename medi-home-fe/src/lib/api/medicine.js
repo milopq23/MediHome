@@ -24,19 +24,21 @@ export async function DetailMedicine(id) {
 	}
 }
 
-export async function AddCart(user_id, medicine_id, select_type, quantity) {
+export async function AddCart(medicine_id, select_type, quantity) {
 	try {
-		const res = await fetch(`${API_URL}/api/cart/${user_id}`, {
+		const res = await fetch(`${API_URL}/api/cart/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
+			credentials: 'include',
 			body: JSON.stringify({
 				medicine_id,
 				select_type,
 				quantity
 			})
 		});
+		console.log('res cart:', res);
 		const cart = await res.json();
 		return cart;
 	} catch (error) {

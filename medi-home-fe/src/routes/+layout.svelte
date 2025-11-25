@@ -7,10 +7,6 @@
 	import { onMount } from 'svelte';
 	import AdBanner from '$lib/components/AdBanner.svelte';
 
-	export let data;
-	const { user } = data;
-	// console.log(data);
-
 	let show = false;
 
 	function goToTop() {
@@ -28,7 +24,7 @@
 </script>
 
 <div class="max-h-screen min-h-screen">
-	<Header {user} />
+	<Header />
 	<main class="w-full flex-1 items-center justify-center bg-gray-100 px-0 md:px-20 lg:px-30">
 		<slot />
 	</main>

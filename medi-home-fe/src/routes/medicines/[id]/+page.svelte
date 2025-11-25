@@ -21,8 +21,7 @@
 	}
 
 	async function addCart() {
-		const user_id = 31;
-		const res = await AddCart(user_id, medicine_id, select_type, quantity);
+		const res = await AddCart(medicine_id, select_type, quantity);
 	}
 
 	onMount(() => {
@@ -127,7 +126,7 @@
 						<span class="w-40 font-semibold">Chỉ định:</span>
 						<span>{medicine.indication}</span>
 					</li>
-					<li class="mb-2 flex">
+					<li class="mb-2 flex">	
 						<span class="w-40 font-semibold">Thuốc kê đơn:</span>
 						<span>{medicine.prescription === true ? 'Kê đơn' : 'Không kê đơn'}</span>
 					</li>

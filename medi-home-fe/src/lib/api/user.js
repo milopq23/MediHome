@@ -45,6 +45,8 @@ export async function GetDetailOrder(order_id) {
 
 export async function Login(email, password) {
 	try {
+		console.log(email);
+		console.log(password);
 		const res = await fetch(`${API_URL}/api/login`, {
 			method: 'POST',
 			headers: {

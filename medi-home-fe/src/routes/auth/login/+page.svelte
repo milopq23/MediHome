@@ -10,34 +10,45 @@
 	// let error = '';
 	// let success = '';
 
-	async function handleSubmit(event) {
-		event.preventDefault();
-		// error = '';
-		// success = '';
-
-		// const res = await fetch('/auth/login', {
-		// 	method: 'POST',
-		// 	headers: { 'Content-Type': 'application/json' },
-		// 	body: JSON.stringify({ email, password })
-		// });
-		const data = await Login(email, password);
-
-		goto('/');
-		// try {
-		// 	data = await res.json();
-		// } catch (err) {
-		// 	console.error('Invalid JSON response', err);
-		// }
-
-		// if (res.ok) {
-		// 	success = `Đăng nhập thành công! Chào mừng`;
-		// 	addAlert(success, 'success');
-
-		// } else {
-		// 	error = `Lỗi: ${data.error || 'Đăng nhập thất bại'}`;
-		// 	addAlert(error, 'error');
-		// }
+	async function handleSubmit() {
+		try {
+			const res = await Login(email, password);
+			addAlert('Đăng nhập thành công', 'success');
+			setTimeout(() => goto('/'), 3000);
+		} catch (err) {
+			addAlert('Đăng nhập thất bại', 'error');
+			console.error(err);
+		}
 	}
+
+	// async function handleSubmit(event) {
+	// 	event.preventDefault();
+	// 	// error = '';
+	// 	// success = '';
+
+	// 	// const res = await fetch('/auth/login', {
+	// 	// 	method: 'POST',
+	// 	// 	headers: { 'Content-Type': 'application/json' },
+	// 	// 	body: JSON.stringify({ email, password })
+	// 	// });
+	// 	const data = await Login(email, password);
+
+	// 	goto('/');
+	// 	// try {
+	// 	// 	data = await res.json();
+	// 	// } catch (err) {
+	// 	// 	console.error('Invalid JSON response', err);
+	// 	// }
+
+	// 	// if (res.ok) {
+	// 	// 	success = `Đăng nhập thành công! Chào mừng`;
+	// 	// 	addAlert(success, 'success');
+
+	// 	// } else {
+	// 	// 	error = `Lỗi: ${data.error || 'Đăng nhập thất bại'}`;
+	// 	// 	addAlert(error, 'error');
+	// 	// }
+	// }
 </script>
 
 <div class="flex min-h-screen items-center justify-center bg-snowblue">
@@ -50,7 +61,7 @@
 		<div class="flex flex-col items-stretch p-5 lg:flex-row">
 			<!-- Form -->
 			<div class="min-w- w-full lg:w-2/4">
-				<form class="space-y-4 p-10" on:submit={handleSubmit}>
+				<form class="space-y-4 p-10" on:submit|preventDefault={handleSubmit}>
 					<!-- Email -->
 					<div>
 						<label for="email" class="text-md mb-1 block px-2 font-medium text-charcoal"

@@ -67,15 +67,17 @@ export async function GetVoucher(total) {
 	}
 }
 
-export async function CheckOut(user_id, payload) {
+export async function CheckOut(payload) {
 	try {
-		const res = await fetch(`${API_URL}/api/order/checkout/${user_id}`, {
+		const res = await fetch(`${API_URL}/api/order/checkout/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
+			credentials: 'include',
 			body: JSON.stringify(payload)
 		});
+		console.log(payload);
 		const order = await res.json();
 		return order;
 	} catch (error) {
