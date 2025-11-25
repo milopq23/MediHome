@@ -17,6 +17,7 @@ func MedicineRoute(r *gin.RouterGroup) {
 	{
 		adminMedicine.GET("/", medicineHandler.GetAll)
 		adminMedicine.GET("/:id", medicineHandler.GetByID)
+		adminMedicine.GET("/image/:id", medicineHandler.GetImages)
 		adminMedicine.POST("/", medicineHandler.Create)
 		adminMedicine.POST("/:medicine_id/images", medicineHandler.SaveImages)
 		adminMedicine.PUT("/:id", medicineHandler.Patch)

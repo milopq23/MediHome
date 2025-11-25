@@ -57,6 +57,26 @@ func (h *MedicineHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newMedicine)
 }
 
+func (h *MedicineHandler) GetImages(c *gin.Context) {
+	medicineIDStr := c.Param("id")
+	medicineID, err := strconv.ParseInt(medicineIDStr, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid medicine_id"})
+		return
+	}
+	log.Print("medicine_id", medicineID)
+
+	image, err := h.service.GetImages(int64(medicineID))
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{	
+		"image": image,
+	})
+}
+
 func (h *MedicineHandler) SaveImages(c *gin.Context) {
 	medicineIDStr := c.Param("medicine_id")
 	medicineID, err := strconv.ParseInt(medicineIDStr, 10, 64)

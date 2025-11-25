@@ -4,8 +4,8 @@ import (
 	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
+	"medi-home-be/pkg/util"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,9 +19,13 @@ func NewAddressHandler(service service.AddressService) *AddressHandler {
 }
 
 func (h *AddressHandler) AddAddress(c *gin.Context) {
-
-	id, _ := strconv.Atoi(c.Param("id"))
-	user, err := h.service.GetAddressUser(int64(id))
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
+	user, err := h.service.GetAddressUser(int64(claims.UserID))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "user_id not found"})
 		return
@@ -37,4 +41,19 @@ func (h *AddressHandler) AddAddress(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Thêm thành công"})
+}
+
+func (h *AddressHandler) GetAddress(c *gin.Context) {
+	claimsRaw, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "No claims found"})
+		return
+	}
+	claims := claimsRaw.(*util.Claims)
+	address, err := h.service.GetAddress(int64(claims.UserID))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "user_id not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": address})
 }

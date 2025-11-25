@@ -9,6 +9,8 @@ import (
 type InventoryService interface {
 	GetAll() ([]model.Inventory, error)
 	Create(inventory model.Inventory) (model.Inventory, error)
+	DetailBatchSelling(medicine_id int64) (model.BatchSelling, error)
+	UpdateSellingBatch(medicine_id, inventory_id int64) (model.BatchSelling, error)
 	Delete(id int64) error
 	GetInventory() ([]dto.ListInventoryDTO, error)
 	FindMedicine(medicine_id int64) ([]model.Inventory, error)
@@ -32,6 +34,14 @@ func (s *inventoryService) Create(inventory model.Inventory) (model.Inventory, e
 
 func (s *inventoryService) FindMedicine(medicine_id int64) ([]model.Inventory, error) {
 	return s.repo.FindMedicine(medicine_id)
+}
+
+func (s *inventoryService) DetailBatchSelling(medicine_id int64) (model.BatchSelling, error) {
+	return s.repo.DetailBatchSelling(medicine_id)
+}
+
+func (s *inventoryService) UpdateSellingBatch(medicine_id, inventory_id int64) (model.BatchSelling, error) {
+	return s.repo.UpdateSellingBatch(medicine_id, inventory_id)
 }
 
 func (s *inventoryService) GetInventory() ([]dto.ListInventoryDTO, error) {

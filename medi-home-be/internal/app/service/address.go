@@ -8,6 +8,7 @@ import (
 type AddressService interface {
 	AddAddress(user_id int64, address model.Address) (model.Address, error)
 	GetAddressUser(user_id int64) (model.User, error)
+	GetAddress(user_id int64) ([]model.Address, error)
 }
 
 type addressService struct {
@@ -31,4 +32,8 @@ func (s *addressService) AddAddress(user_id int64, address model.Address) (model
 
 func (s *addressService) GetAddressUser(user_id int64) (model.User, error) {
 	return s.repo.GetAddressUser(user_id)
+}
+
+func (s *addressService) GetAddress(user_id int64) ([]model.Address, error) {
+	return s.repo.GetAddress(user_id)
 }

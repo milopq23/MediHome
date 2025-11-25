@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"medi-home-be/internal/app/model"
 	"medi-home-be/internal/app/service"
 	"net/http"
@@ -28,12 +29,26 @@ func (h *InventoryHandler) GetAll(c *gin.Context) {
 
 func (h *InventoryHandler) FindMedicine(c *gin.Context) {
 	medicine_id, err := strconv.Atoi(c.Param("id"))
+
 	inventories, err := h.service.FindMedicine(int64(medicine_id))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, inventories)
+	batchselling, err := h.service.DetailBatchSelling(int64(medicine_id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := struct {
+		Inventories interface{} `json:"inventories"`
+		InventoryID int64       `json:"inventory_id"`
+	}{
+		Inventories: inventories,
+		InventoryID: batchselling.InventoryID,
+	}
+	c.JSON(http.StatusOK, response)
 }
 
 func (h *InventoryHandler) GetInventory(c *gin.Context) {
@@ -59,20 +74,26 @@ func (h *InventoryHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, newInventory)
 }
 
-// func (h *InventoryHandler) Patch(c *gin.Context) {
-// 	var inventory model.Inventory
-// 	if err := c.ShouldBindJSON(&inventory); err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	updatedInventory, err := h.service.Patch(inventory.ID, inventory.ToMap())
-// 	if err != nil {
-// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-// 		return
-// 	}
+func (h *InventoryHandler) UpdateBatchSelling(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	var inventory struct {
+		InventoryID int64 `json:"inventory_id"`
+	}
+	log.Print(inventory.InventoryID)
+	if err := c.ShouldBindJSON(&inventory); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	log.Print(inventory.InventoryID)
 
-// 	c.JSON(http.StatusOK, updatedInventory)
-// }
+	updatedInventory, err := h.service.UpdateSellingBatch(int64(id), int64(inventory.InventoryID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedInventory)
+}
 
 func (h *InventoryHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))

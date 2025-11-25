@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"log"
 	"medi-home-be/config"
 	"medi-home-be/internal/app/model"
 	"time"
@@ -14,7 +15,9 @@ type InventoryRepository interface {
 	// ADMIN
 	FindAll() ([]model.Inventory, error)
 	FindMedicine(medicine_id int64) ([]model.Inventory, error)
+	DetailBatchSelling(medicine_id int64) (model.BatchSelling, error)
 	Create(inventory model.Inventory) (model.Inventory, error)
+	UpdateSellingBatch(medicine_id, inventory_id int64) (model.BatchSelling, error)
 	DecreaseQuantity(tx *gorm.DB, inventory_id, quantity int64) error
 	// Patch(id int64, updates map[string]interface{}) (model.Inventory, error)
 	Delete(id int64) error
@@ -42,6 +45,31 @@ func (r *inventoryRepository) FindMedicine(medicine_id int64) ([]model.Inventory
 	var inventory []model.Inventory
 	err := config.DB.Where("medicine_id = ?", medicine_id).Find(&inventory).Error
 	return inventory, err
+}
+
+func (r *inventoryRepository) DetailBatchSelling(medicine_id int64) (model.BatchSelling, error) {
+	var batchselling model.BatchSelling
+	err := config.DB.Where("medicine_id = ?", medicine_id).First(&batchselling).Error
+	return batchselling, err
+}
+
+func (r *inventoryRepository) UpdateSellingBatch(medicine_id, inventory_id int64) (model.BatchSelling, error) {
+	var batchselling model.BatchSelling
+	log.Print(inventory_id)
+	err := config.DB.Model(&batchselling).
+		Where("medicine_id = ?", medicine_id).
+		Update("inventory_id", inventory_id).
+		Error
+
+	if err != nil {
+		return batchselling, err
+	}
+
+	err = config.DB.Where("medicine_id = ?", medicine_id).First(&batchselling).Error
+	if err != nil {
+		return batchselling, err
+	}
+	return batchselling, err
 }
 
 func (r *inventoryRepository) Create(inventory model.Inventory) (model.Inventory, error) {

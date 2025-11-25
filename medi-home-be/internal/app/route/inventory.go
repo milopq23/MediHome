@@ -18,7 +18,7 @@ func InventoryRoute(r *gin.RouterGroup) {
 		inventory.GET("/", inventoryHandler.GetInventory)
 		inventory.GET("/:id", inventoryHandler.FindMedicine)
 		inventory.POST("/", inventoryHandler.Create)
-		// inventory.PATCH("/:id", inventoryHandler.Patch)
+		inventory.PATCH("/:id", inventoryHandler.UpdateBatchSelling)
 		inventory.DELETE("/:id", inventoryHandler.Delete)
 	}
 }

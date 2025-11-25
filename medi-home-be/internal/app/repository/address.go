@@ -8,6 +8,7 @@ import (
 
 type AddressRepository interface {
 	GetAddressUser(user_id int64) (model.User, error)
+	GetAddress(user_id int64) ([]model.Address, error)
 	CreateAddressForUser(address model.Address) (model.Address, error)
 	GetByID(id int64) (model.Address, error)
 }
@@ -33,5 +34,11 @@ func (r *addressRepository) CreateAddressForUser(address model.Address) (model.A
 func (r *addressRepository) GetByID(id int64) (model.Address, error) {
 	var address model.Address
 	err := config.DB.Find(&address).Error
+	return address, err
+}
+
+func (r *addressRepository) GetAddress(user_id int64) ([]model.Address, error) {
+	var address []model.Address
+	err := config.DB.Where("user_id = ?", user_id).Find(&address).Error
 	return address, err
 }
