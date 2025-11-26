@@ -72,28 +72,26 @@ func (h *MedicineHandler) GetImages(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{	
+	c.JSON(200, gin.H{
 		"image": image,
 	})
 }
 
 func (h *MedicineHandler) SaveImages(c *gin.Context) {
 	medicineIDStr := c.Param("medicine_id")
-	medicineID, err := strconv.ParseInt(medicineIDStr, 10, 64)
+	medicine_id, err := strconv.ParseInt(medicineIDStr, 10, 64)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "Invalid medicine_id"})
 		return
 	}
-	log.Print("medicine_id", medicineID)
 
 	var body dto.ImageMedicineDTO
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(400, gin.H{"error": "Invalid body"})
 		return
 	}
-	log.Print("image", body.Urls)
 
-	if err := h.service.SaveImages(medicineID, body.Urls); err != nil {
+	if err := h.service.SaveImages(medicine_id, body.Urls); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
@@ -140,15 +138,20 @@ func (h *MedicineHandler) ListMedicine(c *gin.Context) {
 	c.JSON(http.StatusOK, pagination)
 }
 
-// func (h *MedicineHandler) DetailMedicine(c *gin.Context) {
-// 	id, _ := strconv.Atoi(c.Param("id"))
-// 	medicine, err := h.service.DetailMedicine(int64(id))
-// 	if err != nil {
-// 		c.JSON(http.StatusNotFound, gin.H{"error": "Medicine not found"})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, medicine)
-// }
+func (h *MedicineHandler) ListMedicineWithCate(c *gin.Context) {
+	category, _ := strconv.Atoi(c.Param("id"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+	log.Print("cate", category)
+
+	pagination, err := h.service.ListMedicineWithCategory(page, pageSize, int64(category))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, pagination)
+}
 
 func (h *MedicineHandler) DetailMedicineUser(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))

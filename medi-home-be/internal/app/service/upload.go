@@ -77,7 +77,7 @@ func (s *cloudinaryService) UploadMultiFileHandleRequestFromGin(c *gin.Context) 
 		if err != nil {
 			continue
 		}
-
+			
 		url, err := s.UploadFile(file, fileHeader.Filename, folder)
 		file.Close()
 

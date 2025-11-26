@@ -28,8 +28,10 @@ func MedicineRoute(r *gin.RouterGroup) {
 	medicine := r.Group("/medicine")
 	{
 		medicine.GET("/", medicineHandler.ListMedicine)
+		medicine.GET("/category/:id", medicineHandler.ListMedicineWithCate)
 		// medicine.GET("/:id", medicineHandler.DetailMedicine)
 		medicine.GET("/:id", medicineHandler.DetailMedicineUser)
+
 	}
 
 	medicineCateRepo := repository.NewMedicineCateRepository()
@@ -45,5 +47,11 @@ func MedicineRoute(r *gin.RouterGroup) {
 		medicineCate.PUT("/:id", medicineCateHandler.Patch)
 		medicineCate.PATCH("/:id", medicineCateHandler.Patch)
 		medicineCate.DELETE("/:id", medicineCateHandler.Delete)
+	}
+
+	category := r.Group("/category")
+	{
+		category.GET("/", medicineCateHandler.ListParent)
+		category.GET("/:id", medicineCateHandler.GetChildren)
 	}
 }

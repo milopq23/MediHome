@@ -31,7 +31,6 @@ func (h *UploadHandler) SingleUpload(c *gin.Context) {
 }
 
 func (h *UploadHandler) MultiUpload(c *gin.Context) {
-	log.Println(">> Nhận request multi_upload")
 
 	urls, err := h.CloudinaryService.UploadMultiFileHandleRequestFromGin(c)
 	if err != nil {

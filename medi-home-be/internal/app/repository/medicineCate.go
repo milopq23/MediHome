@@ -9,6 +9,7 @@ type MedicineCateRepository interface {
 	FindAll() ([]model.MedicineCate, error)
 	FindByID(id int64) (model.MedicineCate, error)
 	Children() ([]model.MedicineCate, error)
+	GetChildren(id int64) ([]model.MedicineCate, error)
 	Parent() ([]model.MedicineCate, error)
 	ListChildren(id int64) (model.MedicineCate, error)
 	Create(medicineCate model.MedicineCate) (model.MedicineCate, error)
@@ -30,16 +31,18 @@ func (r *medicineCateRepository) FindAll() ([]model.MedicineCate, error) {
 	return medicineCates, err
 }
 
-// #region Find ID
 func (r *medicineCateRepository) FindByID(id int64) (model.MedicineCate, error) {
 	var medicineCate model.MedicineCate
 	err := config.DB.Find(&medicineCate, id).Error
 	return medicineCate, err
 }
 
-// #endregion
+func (r *medicineCateRepository) GetChildren(id int64) ([]model.MedicineCate, error) {
+	var category []model.MedicineCate
+	err := config.DB.Where("parent_id = ?", id).Find(&category).Error
+	return category, err
+}
 
-// #region List Cate con
 func (r *medicineCateRepository) ListChildren(id int64) (model.MedicineCate, error) {
 	var medicineCate model.MedicineCate
 	err := config.DB.Preload("Children").First(&medicineCate, id).Error
@@ -58,10 +61,6 @@ func (r *medicineCateRepository) Parent() ([]model.MedicineCate, error) {
 	return medicineCate, err
 }
 
-// #endregion
-
-// #region Create Cate cha
-
 func (r *medicineCateRepository) CreateParentCate(medicineCate model.MedicineCate) (model.MedicineCate, error) {
 	var parent_id *int64 = nil
 
@@ -75,18 +74,10 @@ func (r *medicineCateRepository) CreateParentCate(medicineCate model.MedicineCat
 	return medicineCate, err
 }
 
-// #endregion
-
-// #region Create Cate
-
 func (r *medicineCateRepository) Create(medicineCate model.MedicineCate) (model.MedicineCate, error) {
 	err := config.DB.Create(&medicineCate).Error
 	return medicineCate, err
 }
-
-// #endregion
-
-// #region Patch Cate
 
 func (r *medicineCateRepository) Patch(id uint, updates map[string]interface{}) (model.MedicineCate, error) {
 	err := config.DB.Model(&model.MedicineCate{}).Where("medicinecate_id=?", id).Updates(updates).Error
@@ -99,13 +90,7 @@ func (r *medicineCateRepository) Patch(id uint, updates map[string]interface{}) 
 	return updated, err
 }
 
-// #endregion
-
-// #region Delete Cate
-
 func (r *medicineCateRepository) Delete(id int64) error {
 	err := config.DB.Delete(&model.MedicineCate{}, id).Error
 	return err
 }
-
-// #endregion

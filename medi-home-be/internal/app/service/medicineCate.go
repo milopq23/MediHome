@@ -10,6 +10,7 @@ import (
 type MedicineCateService interface {
 	GetAll() ([]model.MedicineCate, error)
 	// ListChildren(id int64) (model.MedicineCate, error)
+	GetChildren(id int64) ([]model.MedicineCate, error)
 	ListChildren() ([]model.MedicineCate, error)
 	ListParent() ([]model.MedicineCate, error)
 	Create(medicineCate model.MedicineCate) (model.MedicineCate, error)
@@ -30,10 +31,9 @@ func (s *medicineCateService) GetAll() ([]model.MedicineCate, error) {
 	return s.repo.FindAll()
 }
 
-// func (s *medicineCateService) ListChildren(id int64) (model.MedicineCate, error) {
-// 	return s.repo.ListChildren(id)
-// }
-
+func (s *medicineCateService) GetChildren(id int64) ([]model.MedicineCate, error) {
+	return s.repo.GetChildren(id)
+}
 
 func (s *medicineCateService) ListChildren() ([]model.MedicineCate, error) {
 	return s.repo.Children()

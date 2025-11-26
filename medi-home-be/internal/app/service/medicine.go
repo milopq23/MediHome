@@ -19,7 +19,7 @@ type MedicineService interface {
 
 	//User
 	ListMedicine(page, pageSize int) (model.Pagination, error)
-	// DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error)
+	ListMedicineWithCategory(page, pageSize int, medicinecate_id int64) (model.Pagination, error)
 	DetailMedicineUser(id int64) (dto.DetailMedicine, error)
 }
 
@@ -44,13 +44,13 @@ func (s *medicineService) Create(medicine model.Medicine) (model.Medicine, error
 	return s.repo.Create(medicine)
 }
 
-func (s *medicineService) SaveImages(medicineID int64, urls []string) error {
+func (s *medicineService) SaveImages(medicine_id int64, urls []string) error {
 
 	if len(urls) == 0 {
 		return nil // không save ảnh khi không có gì
 	}
 
-	return s.repo.AddImages(medicineID, urls)
+	return s.repo.AddImages(medicine_id, urls)
 }
 
 func (s *medicineService) Patch(medicine model.Medicine) (model.Medicine, error) {
@@ -63,6 +63,10 @@ func (s *medicineService) Delete(id int64) error {
 
 func (s *medicineService) ListMedicine(page, pageSize int) (model.Pagination, error) {
 	return s.repo.ListMedicineUser(page, pageSize)
+}
+
+func (s *medicineService) ListMedicineWithCategory(page, pageSize int, medicinecate_id int64) (model.Pagination, error) {
+	return s.repo.ListMedicineWithCate(page, pageSize, medicinecate_id)
 }
 
 // func (s *medicineService) DetailMedicine(id int64) (dto.UserDetailMedicineDTO, error) {
